@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Lock, Mail, Loader2, ArrowRight, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
-export default function AdminLoginPage() {
+// Inner component that uses useSearchParams — must be inside <Suspense>
+function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const [email, setEmail] = useState("admin@portfolio.dev");
@@ -48,6 +49,67 @@ export default function AdminLoginPage() {
   };
 
   return (
+    <form onSubmit={onSubmit} className="mt-7 space-y-4">
+      <div>
+        <label htmlFor="email" className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Email
+        </label>
+        <div className="relative">
+          <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            id="email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-blue-400/60 focus:ring-2 focus:ring-blue-400/20"
+            placeholder="you@example.com"
+          />
+        </div>
+      </div>
+      <div>
+        <label htmlFor="password" className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Password
+        </label>
+        <div className="relative">
+          <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            id="password"
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-blue-400/60 focus:ring-2 focus:ring-blue-400/20"
+            placeholder="••••••••"
+          />
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-all hover:shadow-violet-600/50 disabled:opacity-70"
+      >
+        {loading ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Signing in…
+          </>
+        ) : (
+          <>
+            Sign in
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </>
+        )}
+      </button>
+    </form>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
     <div className="relative min-h-screen overflow-hidden bg-[#070a14] text-foreground flex items-center justify-center px-4">
       {/* ambient glow */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -78,62 +140,10 @@ export default function AdminLoginPage() {
             </p>
           </div>
 
-          <form onSubmit={onSubmit} className="mt-7 space-y-4">
-            <div>
-              <label htmlFor="email" className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-blue-400/60 focus:ring-2 focus:ring-blue-400/20"
-                  placeholder="you@example.com"
-                />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="password" className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="current-password"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-blue-400/60 focus:ring-2 focus:ring-blue-400/20"
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-all hover:shadow-violet-600/50 disabled:opacity-70"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Signing in…
-                </>
-              ) : (
-                <>
-                  Sign in
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </>
-              )}
-            </button>
-          </form>
+          {/* Wrap LoginForm (which uses useSearchParams) in Suspense */}
+          <Suspense fallback={<div className="mt-7 h-40 animate-pulse rounded-xl bg-white/5" />}>
+            <LoginForm />
+          </Suspense>
 
           <div className="mt-6 rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center text-xs text-muted-foreground">
             <span className="font-medium text-foreground/70">Demo credentials</span>

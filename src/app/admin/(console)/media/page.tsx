@@ -10,7 +10,7 @@ import {
   Copy,
   Check,
   Loader2,
-  ImageIconOff,
+  ImageOffIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { api, uploadFile, useAsync } from "@/components/admin/use-async";
@@ -190,7 +190,7 @@ export default function AdminMediaPage() {
             </div>
           ) : filtered.length === 0 ? (
             <EmptyState
-              icon={ImageIconOff}
+              icon={ImageOffIcon}
               title={search ? "No matches" : "No files yet"}
               hint={
                 search
