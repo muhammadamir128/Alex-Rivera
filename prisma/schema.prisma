@@ -1,12 +1,12 @@
 // Full-stack developer portfolio schema
-// SQLite-compatible: arrays stored as JSON strings (String), parsed in API layer
+// PostgreSQL (Neon) — arrays stored as JSON strings, parsed in API layer
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -23,7 +23,7 @@ model Admin {
 // Singleton profile row (id is fixed to "singleton")
 model Profile {
   id          String   @id @default("singleton")
-  name        String   @default("Alex Rivera")
+  name        String   @default("Muhammad Amir")
   title       String   @default("Full-Stack Developer")
   tagline     String   @default("Crafting performant web experiences end-to-end.")
   bio         String   @default("I build accessible, delightful products from database to pixel.")

@@ -63,12 +63,7 @@ export function Experience({ items }: { items: ExperienceData[] }) {
               const isLeft = i % 2 === 0;
               return (
                 <RevealItem key={exp.id}>
-                  <div
-                    className={cn(
-                      "relative grid sm:grid-cols-2 gap-x-12 gap-y-4",
-                      isLeft ? "" : "sm:[direction:rtl]"
-                    )}
-                  >
+                  <div className="relative grid sm:grid-cols-2 gap-y-4">
                     {/* node dot */}
                     <motion.span
                       initial={{ scale: 0 }}
@@ -82,7 +77,14 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                     </motion.span>
 
                     {/* card */}
-                    <div className={cn("pl-10 sm:pl-0 sm:[direction:ltr]", isLeft ? "sm:pr-12" : "sm:col-start-2 sm:pl-12")}>
+                    <div
+                      className={cn(
+                        "pl-10 sm:pl-0",
+                        isLeft
+                          ? "sm:col-start-1 sm:pr-12"
+                          : "sm:col-start-2 sm:pl-12"
+                      )}
+                    >
                       <div className="group relative overflow-hidden rounded-2xl glass p-5 transition-all hover:bg-white/[0.06] hover:shadow-xl hover:shadow-blue-500/5">
                         <div className="absolute -left-8 top-0 h-full w-px bg-gradient-to-b from-blue-500/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                         <div className="flex flex-wrap items-start justify-between gap-3">

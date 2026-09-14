@@ -385,7 +385,7 @@ export default function AdminSettingsPage() {
               id="seo-title"
               value={seoTitle}
               onChange={(e) => setSeoTitle(e.target.value)}
-              placeholder="Alex Rivera — Full-Stack Developer"
+              placeholder="Muhammad Amir — Full-Stack Developer"
             />
             <p className="text-[11px] text-muted-foreground">
               Falls back to "{profileData.name} — {profileData.title}" when blank.

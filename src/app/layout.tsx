@@ -23,7 +23,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Alex Rivera — Full-Stack Developer",
+  title: "Muhammad Amir — Full-Stack Developer",
   description:
     "Full-stack developer crafting fast, accessible web experiences with React, Next.js, Node.js and PostgreSQL. 3 years of professional experience.",
   keywords: [
@@ -34,22 +34,23 @@ export const metadata: Metadata = {
     "Node.js",
     "portfolio",
     "web developer",
+    "Muhammad Amir",
   ],
-  authors: [{ name: "Alex Rivera" }],
+  authors: [{ name: "Muhammad Amir" }],
   icons: {
     icon: "/logo.svg",
   },
   openGraph: {
-    title: "Alex Rivera — Full-Stack Developer",
+    title: "Muhammad Amir — Full-Stack Developer",
     description:
       "Full-stack developer crafting fast, accessible web experiences with React, Next.js, Node.js and PostgreSQL.",
-    url: "https://alexrivera.dev",
-    siteName: "Alex Rivera",
+    url: "https://muhammadamir.dev",
+    siteName: "Muhammad Amir",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Alex Rivera — Full-Stack Developer",
+    title: "Muhammad Amir — Full-Stack Developer",
     description: "Full-stack developer crafting fast, accessible web experiences.",
   },
 };

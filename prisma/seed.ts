@@ -17,7 +17,7 @@ async function main() {
     create: {
       email: ADMIN_EMAIL,
       passwordHash,
-      name: "Alex Rivera",
+      name: "Muhammad Amir",
     },
   });
   console.log(`✓ Admin seeded: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);
@@ -28,22 +28,21 @@ async function main() {
     update: {},
     create: {
       id: "singleton",
-      name: "Alex Rivera",
+      name: "Muhammad Amir",
       title: "Full-Stack Developer",
       tagline:
         "I design and build fast, accessible web products — from the database schema to the last pixel of micro-interaction.",
       bio: "I'm a full-stack developer with 3 years of professional experience building production web applications with React, Next.js, Node.js and PostgreSQL. I care deeply about performance, accessibility, and the small details that make a product feel crafted. When I'm not shipping, I'm exploring design systems, WebGL experiments, and the occasional weekend side project.",
       avatarUrl: "/uploads/avatar.svg",
       socialLinks: JSON.stringify({
-        github: "https://github.com/alexrivera",
-        linkedin: "https://linkedin.com/in/alexrivera",
-        twitter: "https://twitter.com/alexrivera",
-        dribbble: "https://dribbble.com/alexrivera",
-        email: "hello@alexrivera.dev",
-        website: "https://alexrivera.dev",
+        github: "https://github.com/muhammadamir",
+        linkedin: "https://linkedin.com/in/muhammadamir",
+        twitter: "https://twitter.com/muhammadamir",
+        email: "hello@muhammadamir.dev",
+        website: "https://muhammadamir.dev",
       }),
       seo: JSON.stringify({
-        title: "Alex Rivera — Full-Stack Developer",
+        title: "Muhammad Amir — Full-Stack Developer",
         description:
           "Full-stack developer crafting fast, accessible web experiences with React, Next.js and Node.js.",
         ogImage: "/uploads/og-cover.svg",
