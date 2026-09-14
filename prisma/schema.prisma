@@ -1,0 +1,126 @@
+// Full-stack developer portfolio schema
+// SQLite-compatible: arrays stored as JSON strings (String), parsed in API layer
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  lastLoginAt  DateTime?
+}
+
+// Singleton profile row (id is fixed to "singleton")
+model Profile {
+  id          String   @id @default("singleton")
+  name        String   @default("Alex Rivera")
+  title       String   @default("Full-Stack Developer")
+  tagline     String   @default("Crafting performant web experiences end-to-end.")
+  bio         String   @default("I build accessible, delightful products from database to pixel.")
+  avatarUrl    String?
+  // JSON string: { github, linkedin, twitter, dribbble, email, website }
+  socialLinks String   @default("{}")
+  // JSON string: { title, description, ogImage }
+  seo         String   @default("{}")
+  // JSON string: { projectsDelivered, technologies, clients, coffeeCups }
+  stats       String   @default("{}")
+  updatedAt   DateTime @updatedAt
+}
+
+model Skill {
+  id          String   @id @default(cuid())
+  name        String
+  category    String   @default("Frontend")
+  proficiency Int      @default(80)
+  order       Int      @default(0)
+  icon        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  role        String
+  company     String
+  location    String?
+  startDate   String
+  endDate     String?
+  current     Boolean  @default(false)
+  description String
+  // JSON string array of strings
+  techUsed    String   @default("[]")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  caseStudy   String   @default("")
+  // JSON string array of image URLs
+  coverImage  String?
+  images      String   @default("[]")
+  // JSON string array of tech tags
+  techTags    String   @default("[]")
+  liveUrl     String?
+  repoUrl     String?
+  isFeatured  Boolean  @default(false)
+  isPublished Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  company   String
+  message   String
+  avatarUrl String?
+  rating    Int      @default(5)
+  approved  Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  // honeypot: if "website" field filled, it's spam (we store anyway but flag)
+  isRead    Boolean  @default(false)
+  isSpam    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isRead, createdAt])
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  // optional project slug for project detail pages
+  slug      String?
+  // simple daily bucket for aggregation (YYYY-MM-DD)
+  day       String
+  createdAt DateTime @default(now())
+
+  @@index([path, day])
+  @@index([slug, day])
+}
