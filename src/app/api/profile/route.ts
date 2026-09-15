@@ -22,12 +22,15 @@ function normalize(profile: {
   };
 }
 
+import { getProfile, FALLBACK_PROFILE } from "@/lib/data";
+
 export async function GET() {
-  let profile = await db.profile.findUnique({ where: { id: "singleton" } });
-  if (!profile) {
-    profile = await db.profile.create({ data: { id: "singleton" } });
+  try {
+    const profile = await getProfile();
+    return ok(profile);
+  } catch {
+    return ok(FALLBACK_PROFILE);
   }
-  return ok(normalize(profile));
 }
 
 export async function PATCH(request: NextRequest) {

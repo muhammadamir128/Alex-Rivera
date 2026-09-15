@@ -2,9 +2,15 @@ import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { ok, badRequest, serverError } from "@/lib/api";
 
+import { getSkills, FALLBACK_SKILLS } from "@/lib/data";
+
 export async function GET() {
-  const skills = await db.skill.findMany({ orderBy: [{ order: "asc" }, { name: "asc" }] });
-  return ok(skills);
+  try {
+    const skills = await getSkills();
+    return ok(skills);
+  } catch {
+    return ok(FALLBACK_SKILLS);
+  }
 }
 
 export async function POST(request: NextRequest) {

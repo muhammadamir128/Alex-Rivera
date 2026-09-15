@@ -2,11 +2,15 @@ import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { ok, badRequest, serverError, stringifyJson } from "@/lib/api";
 
+import { getExperience, FALLBACK_EXPERIENCE } from "@/lib/data";
+
 export async function GET() {
-  const items = await db.experience.findMany({ orderBy: [{ order: "asc" }, { startDate: "desc" }] });
-  return ok(
-    items.map((e) => ({ ...e, techUsed: JSON.parse(e.techUsed || "[]") }))
-  );
+  try {
+    const items = await getExperience();
+    return ok(items);
+  } catch {
+    return ok(FALLBACK_EXPERIENCE);
+  }
 }
 
 export async function POST(request: NextRequest) {

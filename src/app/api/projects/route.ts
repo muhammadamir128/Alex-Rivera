@@ -5,6 +5,8 @@ import { parseJsonArray, stringifyJson } from "@/lib/api";
 import { slugify, uniqueSlug } from "@/lib/upload";
 import { getAdminWithRefresh } from "@/lib/session";
 
+import { getProjects, getProjectBySlug, FALLBACK_PROJECTS } from "@/lib/data";
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const featured = searchParams.get("featured");
@@ -12,38 +14,48 @@ export async function GET(request: NextRequest) {
   const slug = searchParams.get("slug");
   const all = searchParams.get("all") === "true";
 
-  // Admins (and only admins) can request unpublished projects via ?all=true
-  const isAdmin = all ? Boolean(await getAdminWithRefresh()) : false;
-  const includeUnpublished = all && isAdmin;
-
   if (slug) {
-    const project = await db.project.findUnique({ where: { slug } });
-    if (!project) return ok(null);
-    return ok({
-      ...project,
-      techTags: parseJsonArray(project.techTags),
-      images: parseJsonArray(project.images),
-    });
+    try {
+      const project = await getProjectBySlug(slug);
+      return ok(project);
+    } catch {
+      const fallback = FALLBACK_PROJECTS.find((p) => p.slug === slug);
+      return ok(fallback || null);
+    }
   }
 
-  const where: { isFeatured?: boolean; isPublished?: boolean; techTags?: { contains: string } } = includeUnpublished
-    ? {}
-    : { isPublished: true };
-  if (featured === "true") where.isFeatured = true;
-  if (tag) where.techTags = { contains: tag };
+  try {
+    const isAdmin = all ? Boolean(await getAdminWithRefresh()) : false;
+    const includeUnpublished = all && isAdmin;
 
-  const projects = await db.project.findMany({
-    where,
-    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-  });
+    const where: { isFeatured?: boolean; isPublished?: boolean; techTags?: { contains: string } } = includeUnpublished
+      ? {}
+      : { isPublished: true };
+    if (featured === "true") where.isFeatured = true;
+    if (tag) where.techTags = { contains: tag };
 
-  return ok(
-    projects.map((p) => ({
-      ...p,
-      techTags: parseJsonArray(p.techTags),
-      images: parseJsonArray(p.images),
-    }))
-  );
+    const projects = await db.project.findMany({
+      where,
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    });
+
+    if (projects && projects.length > 0) {
+      return ok(
+        projects.map((p) => ({
+          ...p,
+          techTags: parseJsonArray(p.techTags),
+          images: parseJsonArray(p.images),
+        }))
+      );
+    }
+  } catch (e) {
+    console.warn("API GET /api/projects DB query failed, returning fallback:", (e as Error).message);
+  }
+
+  let result = FALLBACK_PROJECTS;
+  if (featured === "true") result = result.filter((p) => p.isFeatured);
+  if (tag) result = result.filter((p) => p.techTags.includes(tag));
+  return ok(result);
 }
 
 export async function POST(request: NextRequest) {
