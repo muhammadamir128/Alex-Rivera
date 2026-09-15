@@ -13,6 +13,10 @@ import {
   Hash,
   Link2,
   CheckCircle2,
+  SlidersHorizontal,
+  RotateCcw,
+  Crop,
+  ZoomIn,
 } from "lucide-react";
 import { toast } from "sonner";
 import { api, uploadFile, useAsync } from "@/components/admin/use-async";
@@ -64,10 +68,14 @@ export default function AdminProfilePage() {
   const [tagline, setTagline] = useState("");
   const [bio, setBio] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [avatarPosY, setAvatarPosY] = useState(15);
+  const [avatarPosX, setAvatarPosX] = useState(50);
+  const [avatarZoom, setAvatarZoom] = useState(100);
   const [socialLinks, setSocialLinks] = useState<Record<string, string>>({});
   const [stats, setStats] = useState<Record<string, string>>({});
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [cropping, setCropping] = useState(false);
 
   // new stat key being added
   const [newStatKey, setNewStatKey] = useState("");
@@ -81,10 +89,15 @@ export default function AdminProfilePage() {
     setTagline(data.tagline || "");
     setBio(data.bio || "");
     setAvatarUrl(data.avatarUrl || "");
+    setAvatarPosY(data.stats?.avatarPosY !== undefined ? Number(data.stats.avatarPosY) : 15);
+    setAvatarPosX(data.stats?.avatarPosX !== undefined ? Number(data.stats.avatarPosX) : 50);
+    setAvatarZoom(data.stats?.avatarZoom !== undefined ? Number(data.stats.avatarZoom) : 100);
     setSocialLinks(data.socialLinks || {});
     const statsStr: Record<string, string> = {};
     for (const [k, v] of Object.entries(data.stats || {})) {
-      statsStr[k] = String(v ?? "");
+      if (!["avatarPosY", "avatarPosX", "avatarZoom"].includes(k)) {
+        statsStr[k] = String(v ?? "");
+      }
     }
     setStats(statsStr);
   }, [data]);
@@ -96,16 +109,23 @@ export default function AdminProfilePage() {
     if (tagline !== (data.tagline || "")) return true;
     if (bio !== (data.bio || "")) return true;
     if (avatarUrl !== (data.avatarUrl || "")) return true;
+    const serverPosY = data.stats?.avatarPosY !== undefined ? Number(data.stats.avatarPosY) : 15;
+    const serverPosX = data.stats?.avatarPosX !== undefined ? Number(data.stats.avatarPosX) : 50;
+    const serverZoom = data.stats?.avatarZoom !== undefined ? Number(data.stats.avatarZoom) : 100;
+    if (avatarPosY !== serverPosY || avatarPosX !== serverPosX || avatarZoom !== serverZoom) return true;
     const a = JSON.stringify(socialLinks);
     const b = JSON.stringify(data.socialLinks || {});
     if (a !== b) return true;
     const c = JSON.stringify(stats);
-    const d = JSON.stringify(
-      Object.fromEntries(Object.entries(data.stats || {}).map(([k, v]) => [k, String(v ?? "")]))
+    const filteredServerStats = Object.fromEntries(
+      Object.entries(data.stats || {})
+        .filter(([k]) => !["avatarPosY", "avatarPosX", "avatarZoom"].includes(k))
+        .map(([k, v]) => [k, String(v ?? "")])
     );
+    const d = JSON.stringify(filteredServerStats);
     if (c !== d) return true;
     return false;
-  }, [data, name, title, tagline, bio, avatarUrl, socialLinks, stats]);
+  }, [data, name, title, tagline, bio, avatarUrl, avatarPosY, avatarPosX, avatarZoom, socialLinks, stats]);
 
   const handleUpload = async (file: File | undefined) => {
     if (!file) return;
@@ -113,11 +133,66 @@ export default function AdminProfilePage() {
     try {
       const url = await uploadFile(file);
       setAvatarUrl(url);
-      toast.success("Avatar uploaded");
+      setAvatarPosY(15);
+      setAvatarPosX(50);
+      setAvatarZoom(100);
+      toast.success("Avatar uploaded! You can fine-tune alignment below.");
     } catch (e) {
       toast.error("Upload failed", { description: (e as Error).message });
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleCropAndSave = async () => {
+    if (!avatarUrl) return;
+    setCropping(true);
+    try {
+      const img = new window.Image();
+      img.crossOrigin = "anonymous";
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("Failed to load image for cropping"));
+        img.src = avatarUrl;
+      });
+
+      const canvas = document.createElement("canvas");
+      const targetSize = 800;
+      canvas.width = targetSize;
+      canvas.height = targetSize;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas context unavailable");
+
+      const scale = avatarZoom / 100;
+      const baseCropSize = Math.min(img.naturalWidth, img.naturalHeight);
+      const cropSize = baseCropSize / scale;
+
+      const maxOffsetX = Math.max(0, img.naturalWidth - cropSize);
+      const maxOffsetY = Math.max(0, img.naturalHeight - cropSize);
+
+      const srcX = maxOffsetX * (avatarPosX / 100);
+      const srcY = maxOffsetY * (avatarPosY / 100);
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, srcX, srcY, cropSize, cropSize, 0, 0, targetSize, targetSize);
+
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob((b) => resolve(b), "image/jpeg", 0.92)
+      );
+      if (!blob) throw new Error("Failed to generate cropped image");
+
+      const file = new File([blob], `avatar-cropped-${Date.now()}.jpg`, { type: "image/jpeg" });
+      const newUrl = await uploadFile(file);
+      setAvatarUrl(newUrl);
+      setAvatarPosX(50);
+      setAvatarPosY(50);
+      setAvatarZoom(100);
+      toast.success("Picture cropped & saved successfully!");
+    } catch (err) {
+      toast.error("Crop failed", { description: (err as Error).message });
+    } finally {
+      setCropping(false);
     }
   };
 
@@ -159,12 +234,17 @@ export default function AdminProfilePage() {
       bio,
       avatarUrl: avatarUrl || null,
       socialLinks,
-      stats: Object.fromEntries(
-        Object.entries(stats).map(([k, v]) => [
-          k,
-          v === "" ? "" : Number.isNaN(Number(v)) ? v : Number(v),
-        ])
-      ),
+      stats: {
+        ...Object.fromEntries(
+          Object.entries(stats).map(([k, v]) => [
+            k,
+            v === "" ? "" : Number.isNaN(Number(v)) ? v : Number(v),
+          ])
+        ),
+        avatarPosY,
+        avatarPosX,
+        avatarZoom,
+      },
     };
     try {
       const updated = await api<Profile>("/api/profile", {
@@ -175,7 +255,9 @@ export default function AdminProfilePage() {
       // resync local state with normalized response
       const statsStr: Record<string, string> = {};
       for (const [k, v] of Object.entries(updated.stats || {})) {
-        statsStr[k] = String(v ?? "");
+        if (!["avatarPosY", "avatarPosX", "avatarZoom"].includes(k)) {
+          statsStr[k] = String(v ?? "");
+        }
       }
       setStats(statsStr);
       toast.success("Profile saved");
@@ -214,7 +296,7 @@ export default function AdminProfilePage() {
         action={
           <Button
             onClick={submit}
-            disabled={!isDirty || saving || uploading}
+            disabled={!isDirty || saving || uploading || cropping}
             className="gap-2 bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-90"
           >
             {saving ? (
@@ -281,10 +363,17 @@ export default function AdminProfilePage() {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>Avatar</Label>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Avatar</Label>
+                {avatarUrl && (
+                  <span className="text-[11px] font-medium text-blue-400">
+                    Adjust position, zoom, or crop below
+                  </span>
+                )}
+              </div>
               <div className="flex items-start gap-4">
-                <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10">
+                <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-white/5 ring-2 ring-white/10 shadow-lg">
                   {uploading ? (
                     <div className="grid h-full w-full place-items-center bg-black/40">
                       <Loader2 className="h-6 w-6 animate-spin text-blue-400" />
@@ -293,7 +382,11 @@ export default function AdminProfilePage() {
                     <img
                       src={avatarUrl}
                       alt="avatar preview"
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover transition-all duration-150"
+                      style={{
+                        objectPosition: `${avatarPosX}% ${avatarPosY}%`,
+                        transform: avatarZoom !== 100 ? `scale(${avatarZoom / 100})` : undefined,
+                      }}
                     />
                   ) : (
                     <div className="grid h-full w-full place-items-center text-muted-foreground">
@@ -337,6 +430,189 @@ export default function AdminProfilePage() {
                   />
                 </div>
               </div>
+
+              {/* Picture Adjustment & Framing Controls */}
+              {avatarUrl && (
+                <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 space-y-3.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <SlidersHorizontal className="h-4 w-4 text-blue-400" />
+                      <span className="text-xs font-semibold text-foreground">
+                        Picture Alignment & Face Focus
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setAvatarPosX(50);
+                          setAvatarPosY(15);
+                          setAvatarZoom(100);
+                          toast.info("Reset to Face Focus (15%)");
+                        }}
+                        className="h-7 px-2 text-[11px] text-muted-foreground hover:text-foreground"
+                      >
+                        <RotateCcw className="mr-1 h-3 w-3" />
+                        Reset
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={cropping}
+                        onClick={handleCropAndSave}
+                        className="h-7 border-blue-500/30 bg-blue-500/10 px-2.5 text-[11px] text-blue-300 hover:bg-blue-500/20 hover:text-blue-200"
+                      >
+                        {cropping ? (
+                          <>
+                            <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                            Cropping…
+                          </>
+                        ) : (
+                          <>
+                            <Crop className="mr-1 h-3 w-3" />
+                            Crop & Save Permanently
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Quick Presets */}
+                  <div className="space-y-1.5">
+                    <span className="text-[11px] font-medium text-muted-foreground">
+                      Quick Alignment Presets:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAvatarPosY(12);
+                          setAvatarPosX(50);
+                        }}
+                        className={cn(
+                          "rounded-lg px-2.5 py-1 text-xs font-medium transition-colors border",
+                          avatarPosY <= 15
+                            ? "border-blue-500 bg-blue-500/20 text-blue-300"
+                            : "border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground"
+                        )}
+                      >
+                        👤 Face / Head (12%)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAvatarPosY(25);
+                          setAvatarPosX(50);
+                        }}
+                        className={cn(
+                          "rounded-lg px-2.5 py-1 text-xs font-medium transition-colors border",
+                          avatarPosY > 15 && avatarPosY <= 35
+                            ? "border-blue-500 bg-blue-500/20 text-blue-300"
+                            : "border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground"
+                        )}
+                      >
+                        👔 Upper Body (25%)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAvatarPosY(50);
+                          setAvatarPosX(50);
+                        }}
+                        className={cn(
+                          "rounded-lg px-2.5 py-1 text-xs font-medium transition-colors border",
+                          avatarPosY > 35 && avatarPosY <= 65
+                            ? "border-blue-500 bg-blue-500/20 text-blue-300"
+                            : "border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground"
+                        )}
+                      >
+                        🎯 Center (50%)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAvatarPosY(80);
+                          setAvatarPosX(50);
+                        }}
+                        className={cn(
+                          "rounded-lg px-2.5 py-1 text-xs font-medium transition-colors border",
+                          avatarPosY > 65
+                            ? "border-blue-500 bg-blue-500/20 text-blue-300"
+                            : "border-white/10 bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground"
+                        )}
+                      >
+                        🧍 Lower / Waist (80%)
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Range sliders */}
+                  <div className="grid gap-3 sm:grid-cols-3 pt-1">
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[11px]">
+                        <span className="text-muted-foreground">Vertical (Y)</span>
+                        <span className="font-mono text-blue-400 font-medium">{avatarPosY}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        value={avatarPosY}
+                        onChange={(e) => setAvatarPosY(Number(e.target.value))}
+                        className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                      />
+                      <div className="flex justify-between text-[9px] text-muted-foreground/60">
+                        <span>Top (Head)</span>
+                        <span>Bottom</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[11px]">
+                        <span className="text-muted-foreground">Horizontal (X)</span>
+                        <span className="font-mono text-blue-400 font-medium">{avatarPosX}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        value={avatarPosX}
+                        onChange={(e) => setAvatarPosX(Number(e.target.value))}
+                        className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                      />
+                      <div className="flex justify-between text-[9px] text-muted-foreground/60">
+                        <span>Left</span>
+                        <span>Right</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[11px]">
+                        <span className="text-muted-foreground">Zoom / Scale</span>
+                        <span className="font-mono text-blue-400 font-medium">
+                          {(avatarZoom / 100).toFixed(1)}x
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min={100}
+                        max={200}
+                        step={5}
+                        value={avatarZoom}
+                        onChange={(e) => setAvatarZoom(Number(e.target.value))}
+                        className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                      />
+                      <div className="flex justify-between text-[9px] text-muted-foreground/60">
+                        <span>1.0x (Normal)</span>
+                        <span>2.0x (Close-up)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </Section>
 
@@ -458,13 +734,16 @@ export default function AdminProfilePage() {
                 className="pointer-events-none absolute -top-12 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-gradient-to-br from-blue-500/30 to-violet-600/30 blur-3xl"
               />
               <div className="relative flex flex-col items-center text-center">
-                <div className="relative h-24 w-24 overflow-hidden rounded-3xl bg-gradient-to-br from-blue-500 to-violet-600 ring-4 ring-white/5">
+                <div className="relative h-24 w-24 overflow-hidden rounded-3xl bg-gradient-to-br from-blue-500 to-violet-600 ring-4 ring-white/5 shadow-2xl">
                   {avatarUrl ? (
-                     
                     <img
                       src={avatarUrl}
                       alt={name || "avatar"}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover transition-all duration-150"
+                      style={{
+                        objectPosition: `${avatarPosX}% ${avatarPosY}%`,
+                        transform: avatarZoom !== 100 ? `scale(${avatarZoom / 100})` : undefined,
+                      }}
                     />
                   ) : (
                     <div className="grid h-full w-full place-items-center text-2xl font-bold text-white">

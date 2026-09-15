@@ -153,7 +153,14 @@ export function Hero({ profile }: { profile: ProfileData }) {
               <img
                 src={profile.avatarUrl}
                 alt={`Portrait of ${profile.name}`}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover transition-transform duration-300"
+                style={{
+                  objectPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
+                  transform:
+                    profile.stats?.avatarZoom && profile.stats.avatarZoom !== 100
+                      ? `scale(${profile.stats.avatarZoom / 100})`
+                      : undefined,
+                }}
               />
             ) : (
               <div className="grid h-full w-full place-items-center bg-gradient-to-br from-blue-600/30 to-violet-600/30">

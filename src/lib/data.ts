@@ -73,7 +73,7 @@ export const FALLBACK_PROFILE: ProfileData = {
   title: "Full-Stack Developer",
   tagline: "I design and build fast, accessible web products — from the database schema to the last pixel of micro-interaction.",
   bio: "I'm a full-stack developer with 3 years of professional experience building production web applications with React, Next.js, Node.js and PostgreSQL. I care deeply about performance, accessibility, and the small details that make a product feel crafted. When I'm not shipping, I'm exploring design systems, WebGL experiments, and the occasional weekend side project.",
-  avatarUrl: "/uploads/avatar.svg",
+  avatarUrl: "/uploads/avatar.jpg",
   socialLinks: {
     github: "https://github.com/muhammadamir",
     linkedin: "https://linkedin.com/in/muhammadamir",
@@ -92,6 +92,9 @@ export const FALLBACK_PROFILE: ProfileData = {
     technologies: 18,
     clients: 9,
     coffeeCups: 1840,
+    avatarPosY: 15,
+    avatarPosX: 50,
+    avatarZoom: 100,
   },
   updatedAt: new Date("2026-01-01"),
 };

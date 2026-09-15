@@ -21,6 +21,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Star, ExternalLink, Github, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
 export type SortableProject = {
@@ -267,21 +268,12 @@ function SortableProjectRow({
         </button>
       </td>
       <td className="px-3 py-3 align-middle">
-        <button
-          onClick={onTogglePublished}
-          className={cn(
-            "relative h-5 w-9 rounded-full transition-colors",
-            p.isPublished ? "bg-blue-500" : "bg-white/10"
-          )}
-          aria-label={p.isPublished ? "Unpublish" : "Publish"}
-        >
-          <span
-            className={cn(
-              "absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform",
-              p.isPublished ? "translate-x-4" : "translate-x-0.5"
-            )}
-          />
-        </button>
+        <Switch
+          checked={p.isPublished}
+          onCheckedChange={onTogglePublished}
+          aria-label={p.isPublished ? "Unpublish project" : "Publish project"}
+          onClick={(e) => e.stopPropagation()}
+        />
       </td>
       <td className="px-3 py-3 text-right align-middle">
         <div className="flex items-center justify-end gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">

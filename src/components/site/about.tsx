@@ -16,8 +16,8 @@ export function About({ profile }: { profile: ProfileData }) {
     <section id="about" className="relative scroll-mt-24 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
-          {/* Left: section label */}
-          <div className="lg:sticky lg:top-28">
+          {/* Left: section label & visual */}
+          <div className="lg:sticky lg:top-28 space-y-6">
             <Reveal>
               <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-blue-400">
                 <span className="h-px w-8 bg-blue-400/60" />
@@ -26,6 +26,24 @@ export function About({ profile }: { profile: ProfileData }) {
               <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl text-balance">
                 A developer who sweats the <span className="gradient-text">small details</span>.
               </h2>
+            </Reveal>
+
+            {/* Featured workspace/setup image */}
+            <Reveal delay={0.15}>
+              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl sm:rounded-3xl glass neon-border shadow-xl">
+                <img
+                  src="/uploads/workspace.jpg"
+                  alt="Developer Workstation"
+                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+                <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs text-white/90">
+                  <span className="font-mono text-[11px] text-blue-300">Engineering Studio</span>
+                  <span className="rounded-full glass-strong px-2.5 py-0.5 text-[10px] text-white/80">
+                    High Performance
+                  </span>
+                </div>
+              </div>
             </Reveal>
           </div>
 

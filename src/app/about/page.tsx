@@ -124,7 +124,14 @@ export default async function AboutPage() {
                       alt={profile.name}
                       fill
                       priority
-                      className="object-cover"
+                      className="object-cover transition-transform duration-300"
+                      style={{
+                        objectPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
+                        transform:
+                          profile.stats?.avatarZoom && profile.stats.avatarZoom !== 100
+                            ? `scale(${profile.stats.avatarZoom / 100})`
+                            : undefined,
+                      }}
                     />
                   ) : (
                     <div className="grid h-full w-full place-items-center bg-gradient-to-br from-blue-600/40 via-violet-600/30 to-background text-6xl font-bold text-white">
@@ -191,6 +198,17 @@ export default async function AboutPage() {
             {/* Quick facts & setup */}
             <div className="flex flex-col gap-4">
               <div className="rounded-2xl glass p-6">
+                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl mb-5 shadow-lg border border-white/5">
+                  <img
+                    src="/uploads/workspace.jpg"
+                    alt="Developer Workspace"
+                    className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                  <span className="absolute bottom-2.5 left-3 rounded-full glass-strong px-2.5 py-0.5 text-[10px] font-mono text-blue-300">
+                    Daily Dev Environment
+                  </span>
+                </div>
                 <div className="flex items-center gap-3">
                   <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-500/10 text-blue-400">
                     <Laptop className="h-5 w-5" />
