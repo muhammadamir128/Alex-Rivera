@@ -36,3 +36,10 @@ export async function GET(_request: NextRequest) {
     return serverError("Failed to list media");
   }
 }
+
+export async function POST(request: NextRequest) {
+  // Delegate directly to the upload handler logic
+  const { POST: uploadHandler } = await import("@/app/api/upload/route");
+  return uploadHandler(request);
+}
+

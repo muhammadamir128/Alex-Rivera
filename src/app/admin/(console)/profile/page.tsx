@@ -284,9 +284,12 @@ export default function AdminProfilePage() {
             <div className="space-y-2">
               <Label>Avatar</Label>
               <div className="flex items-start gap-4">
-                <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10">
-                  {avatarUrl ? (
-                     
+                <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10">
+                  {uploading ? (
+                    <div className="grid h-full w-full place-items-center bg-black/40">
+                      <Loader2 className="h-6 w-6 animate-spin text-blue-400" />
+                    </div>
+                  ) : avatarUrl ? (
                     <img
                       src={avatarUrl}
                       alt="avatar preview"
@@ -299,18 +302,37 @@ export default function AdminProfilePage() {
                   )}
                 </div>
                 <div className="flex-1 space-y-2">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleUpload(e.target.files?.[0])}
-                    disabled={uploading}
-                    className="cursor-pointer file:bg-white/5 file:text-xs"
-                  />
-                  {uploading && <p className="text-[11px] text-blue-400">Uploading…</p>}
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        handleUpload(e.target.files?.[0]);
+                        e.target.value = "";
+                      }}
+                      disabled={uploading}
+                      className="cursor-pointer file:bg-white/5 file:text-xs"
+                    />
+                    {avatarUrl && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setAvatarUrl("");
+                          toast.info("Avatar cleared");
+                        }}
+                        className="text-xs text-muted-foreground hover:text-red-400 shrink-0"
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  {uploading && <p className="text-[11px] text-blue-400">Uploading image…</p>}
                   <Input
                     value={avatarUrl}
                     onChange={(e) => setAvatarUrl(e.target.value)}
-                    placeholder="or paste image URL"
+                    placeholder="or paste image URL (/uploads/...)"
                     className="font-mono text-xs"
                   />
                 </div>
