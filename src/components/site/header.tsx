@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Github, Linkedin, Twitter } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Magnetic } from "@/components/site/magnetic";
 import { ThemeToggle } from "@/components/site/theme-toggle";
@@ -18,7 +18,7 @@ const NAV = [
   { label: "Contact", href: "/contact", hash: "#contact" },
 ];
 
-export function SiteHeader({ name, socials }: { name: string; socials: Record<string, string> }) {
+export function SiteHeader({ name, socials }: { name: string; socials?: Record<string, string> }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -116,23 +116,6 @@ export function SiteHeader({ name, socials }: { name: string; socials: Record<st
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <div className="hidden md:flex items-center gap-1">
-              {socials.github && (
-                <SocialIcon href={socials.github} label="GitHub">
-                  <Github className="h-4 w-4" />
-                </SocialIcon>
-              )}
-              {socials.linkedin && (
-                <SocialIcon href={socials.linkedin} label="LinkedIn">
-                  <Linkedin className="h-4 w-4" />
-                </SocialIcon>
-              )}
-              {socials.twitter && (
-                <SocialIcon href={socials.twitter} label="Twitter">
-                  <Twitter className="h-4 w-4" />
-                </SocialIcon>
-              )}
-            </div>
             <Magnetic className="hidden sm:block">
               <Link
                 href="/contact"
@@ -187,27 +170,5 @@ export function SiteHeader({ name, socials }: { name: string; socials: Record<st
         </AnimatePresence>
       </div>
     </motion.header>
-  );
-}
-
-function SocialIcon({
-  href,
-  label,
-  children,
-}: {
-  href: string;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className="grid h-8 w-8 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
-    >
-      {children}
-    </a>
   );
 }

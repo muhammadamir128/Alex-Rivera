@@ -13,14 +13,17 @@ function LoginForm() {
   const [email, setEmail] = useState("admin@portfolio.dev");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
-  // If already logged in, bounce to dashboard
+  // Prefetch admin route in background so it compiles/loads ahead of time
   useEffect(() => {
+    router.prefetch("/admin");
+    // If already logged in, bounce to dashboard
     fetch("/api/auth/me", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (data?.admin) {
-          router.replace("/admin");
+          window.location.href = "/admin";
         }
       })
       .catch(() => {});
@@ -28,7 +31,7 @@ function LoginForm() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return;
+    if (loading || redirecting) return;
     setLoading(true);
     try {
       const res = await fetch("/api/auth/login", {
@@ -38,10 +41,12 @@ function LoginForm() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Login failed");
-      toast.success("Welcome back");
+      
+      setRedirecting(true);
+      toast.success("Welcome back! Redirecting...");
       const from = params.get("from") || "/admin";
-      router.replace(from);
-      router.refresh();
+      // Immediate direct navigation ensures clean cookie delivery and zero router latency
+      window.location.href = from;
     } catch (err) {
       toast.error("Login failed", { description: (err as Error).message });
       setLoading(false);
@@ -89,10 +94,15 @@ function LoginForm() {
 
       <button
         type="submit"
-        disabled={loading}
-        className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-all hover:shadow-violet-600/50 disabled:opacity-70"
+        disabled={loading || redirecting}
+        className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-all hover:shadow-violet-600/50 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-75"
       >
-        {loading ? (
+        {redirecting ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Opening dashboard…
+          </>
+        ) : loading ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
             Signing in…
@@ -104,6 +114,23 @@ function LoginForm() {
           </>
         )}
       </button>
+
+      {/* 1-click autofill demo credentials */}
+      <div
+        onClick={() => {
+          setEmail("admin@portfolio.dev");
+          setPassword("admin12345");
+          toast.info("Demo credentials filled!");
+        }}
+        className="mt-5 cursor-pointer rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center text-xs text-muted-foreground transition-all hover:border-blue-500/30 hover:bg-white/[0.05]"
+        role="button"
+        tabIndex={0}
+        title="Click to autofill"
+      >
+        <span className="font-medium text-foreground/70">Demo credentials (click to autofill)</span>
+        <br />
+        <span className="font-mono text-[11px] text-blue-300">admin@portfolio.dev</span> / <span className="font-mono text-[11px] text-violet-300">admin12345</span>
+      </div>
     </form>
   );
 }
@@ -140,16 +167,10 @@ export default function AdminLoginPage() {
             </p>
           </div>
 
-          {/* Wrap LoginForm (which uses useSearchParams) in Suspense */}
+          {/* Wrap LoginForm in Suspense */}
           <Suspense fallback={<div className="mt-7 h-40 animate-pulse rounded-xl bg-white/5" />}>
             <LoginForm />
           </Suspense>
-
-          <div className="mt-6 rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center text-xs text-muted-foreground">
-            <span className="font-medium text-foreground/70">Demo credentials</span>
-            <br />
-            admin@portfolio.dev / admin12345
-          </div>
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">

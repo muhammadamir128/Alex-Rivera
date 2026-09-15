@@ -10,7 +10,7 @@
     </linearGradient>
   </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
-  <text x="80" y="320" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="72" fill="#f8fafc">Alex Rivera</text>
+  <text x="80" y="320" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="72" fill="#f8fafc">Muhammad Amir</text>
   <text x="80" y="380" font-family="Inter, sans-serif" font-weight="400" font-size="32" fill="#94a3b8">Full-Stack Developer</text>
   <rect x="80" y="420" width="320" height="6" rx="3" fill="url(#grad)"/>
 </svg>

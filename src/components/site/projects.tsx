@@ -48,93 +48,107 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
   const filters = ["All", "Featured", ...allTags];
 
   return (
-    <section id="work" className="relative scroll-mt-24 py-24 sm:py-32">
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+    <section id="work" className="relative scroll-mt-24 py-16 sm:py-24 lg:py-28 overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute top-20 right-1/4 h-72 w-72 rounded-full bg-violet-600/10 blur-[100px]" />
       </div>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
-          <div className="flex flex-wrap items-end justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 sm:gap-6">
             <div>
               <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-blue-400">
                 <span className="h-px w-8 bg-blue-400/60" />
                 Selected work
               </p>
-              <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl text-balance">
+              <h2 className="mt-3 sm:mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
                 Projects that <span className="gradient-text">shipped</span>.
               </h2>
             </div>
-            <p className="max-w-sm text-sm text-muted-foreground">
+            <p className="max-w-md text-sm sm:text-base text-muted-foreground leading-relaxed">
               A snapshot of products I&apos;ve designed, built, and maintained end-to-end. Tap any
               card for the full case study.
             </p>
           </div>
         </Reveal>
 
-        {/* filters + search */}
+        {/* filters + search toolbar */}
         <Reveal delay={0.1}>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap gap-2">
-              {filters.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => setFilter(tag)}
-                  className={cn(
-                    "rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
-                    filter === tag
-                      ? "bg-gradient-to-r from-blue-500 to-violet-600 text-white shadow-lg shadow-violet-600/25"
-                      : "glass text-muted-foreground hover:text-foreground hover:bg-white/[0.06]"
+          <div className="mt-8 sm:mt-10 space-y-4">
+            {/* Row 1: Search bar and result count / clear button */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="relative w-full sm:w-72 md:w-80">
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search projects by title, tech..."
+                  className="w-full rounded-full border border-white/10 bg-white/[0.04] py-2 pl-10 pr-9 text-xs sm:text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:border-blue-400/50 focus:bg-white/[0.08] focus:ring-2 focus:ring-blue-500/20"
+                />
+                {search && (
+                  <button
+                    onClick={() => setSearch("")}
+                    className="absolute right-2.5 top-1/2 grid h-5 w-5 -translate-y-1/2 place-items-center rounded-full text-muted-foreground hover:bg-white/10 hover:text-foreground transition-colors"
+                    aria-label="Clear search"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+
+              {/* Status / count / reset */}
+              <div className="flex items-center justify-between sm:justify-end gap-3 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <span>Showing</span>
+                  <span className="font-mono font-medium text-foreground bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                    {visible.length}
+                  </span>
+                  <span>of {projects.length}</span>
+                  {filter !== "All" && (
+                    <span className="hidden xs:inline text-blue-400 font-medium">({filter})</span>
                   )}
-                >
-                  {tag}
-                  {tag === "Featured" && <Star className="ml-1 inline h-3 w-3" />}
-                </button>
-              ))}
+                </div>
+
+                {(search || filter !== "All") && (
+                  <button
+                    onClick={() => {
+                      setSearch("");
+                      setFilter("All");
+                    }}
+                    className="text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors underline underline-offset-4"
+                  >
+                    Clear filters
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="relative w-full sm:w-64">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search projects…"
-                className="w-full rounded-full border border-white/10 bg-white/[0.03] py-1.5 pl-9 pr-8 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-blue-400/50 focus:bg-white/[0.05]"
-              />
-              {search && (
-                <button
-                  onClick={() => setSearch("")}
-                  className="absolute right-2.5 top-1/2 grid h-4 w-4 -translate-y-1/2 place-items-center rounded-full text-muted-foreground hover:bg-white/10 hover:text-foreground"
-                  aria-label="Clear search"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              )}
+
+            {/* Row 2: Filter tags - scrollable on mobile with snap, clean flex-wrap on tablet/desktop */}
+            <div className="relative -mx-4 px-4 sm:mx-0 sm:px-0">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 pt-1 sm:pb-0 sm:flex-wrap scrollbar-none [mask-image:linear-gradient(to_right,black_90%,transparent_100%)] sm:[mask-image:none]">
+                {filters.map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => setFilter(tag)}
+                    className={cn(
+                      "flex-shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
+                      filter === tag
+                        ? "bg-gradient-to-r from-blue-500 to-violet-600 text-white shadow-md shadow-violet-600/30 scale-[1.02]"
+                        : "glass text-muted-foreground hover:text-foreground hover:bg-white/[0.08]"
+                    )}
+                  >
+                    {tag}
+                    {tag === "Featured" && <Star className="ml-1 inline h-3 w-3 fill-amber-300 text-amber-300" />}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-          {/* result count */}
-          {(search || filter !== "All") && (
-            <p className="mt-3 text-xs text-muted-foreground">
-              Showing{" "}
-              <span className="font-mono text-foreground/80">{visible.length}</span>{" "}
-              of {projects.length} project{projects.length === 1 ? "" : "s"}
-              {filter !== "All" && (
-                <>
-                  {" "}in <span className="text-blue-300">{filter}</span>
-                </>
-              )
-              }
-              {search && (
-                <>
-                  {" "}matching &ldquo;<span className="text-foreground/80">{search}</span>&rdquo;
-                </>
-              )}
-            </p>
-          )}
         </Reveal>
 
-        {/* grid — asymmetric: featured projects span 2 columns on large screens */}
+        {/* grid — asymmetric with dense auto-flow */}
         <motion.div
           layout
-          className="mt-10 grid auto-rows-[1fr] grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-8 sm:mt-10 grid auto-rows-[1fr] grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 [grid-auto-flow:dense]"
         >
           <AnimatePresence mode="popLayout">
             {visible.map((project, i) => (
@@ -317,11 +331,11 @@ function ProjectDialog({
 }) {
   return (
     <Dialog open={!!project} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[88vh] overflow-y-auto max-w-3xl gap-0 border-white/10 bg-[#0f1729]/95 p-0 backdrop-blur-2xl sm:rounded-3xl">
+      <DialogContent className="max-h-[88vh] overflow-y-auto w-[94vw] sm:max-w-3xl gap-0 border-white/10 bg-[#0f1729]/95 p-0 backdrop-blur-2xl rounded-2xl sm:rounded-3xl">
         {project && (
           <>
             {/* cover */}
-            <div className="relative aspect-[16/8] w-full overflow-hidden sm:rounded-t-3xl">
+            <div className="relative aspect-[16/9] sm:aspect-[16/8] w-full overflow-hidden rounded-t-2xl sm:rounded-t-3xl">
               {project.coverImage && (
                 <Image
                   src={project.coverImage}
@@ -334,24 +348,24 @@ function ProjectDialog({
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
               <button
                 onClick={onClose}
-                className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full glass-strong text-foreground hover:bg-white/10"
+                className="absolute right-3 top-3 grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full glass-strong text-foreground hover:bg-white/10 transition-colors"
                 aria-label="Close"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <DialogHeader className="px-6 pt-6 pb-2">
-              <div className="flex flex-wrap items-start justify-between gap-4">
+            <DialogHeader className="px-4 sm:px-6 pt-5 sm:pt-6 pb-2">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 <div>
-                  <DialogTitle className="font-display text-2xl font-bold tracking-tight">
+                  <DialogTitle className="font-display text-xl sm:text-2xl font-bold tracking-tight">
                     {project.title}
                   </DialogTitle>
-                  <p className="mt-2 text-sm text-muted-foreground">{project.description}</p>
+                  <p className="mt-2 text-xs sm:text-sm text-muted-foreground">{project.description}</p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   {project.liveUrl && (
-                    <Button asChild size="sm" className="bg-gradient-to-r from-blue-500 to-violet-600">
+                    <Button asChild size="sm" className="bg-gradient-to-r from-blue-500 to-violet-600 text-xs">
                       <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="mr-1 h-3.5 w-3.5" />
                         Live
@@ -359,14 +373,14 @@ function ProjectDialog({
                     </Button>
                   )}
                   {project.repoUrl && (
-                    <Button asChild size="sm" variant="outline" className="border-white/10 bg-white/5">
+                    <Button asChild size="sm" variant="outline" className="border-white/10 bg-white/5 text-xs">
                       <a href={project.repoUrl} target="_blank" rel="noopener noreferrer">
                         <Github className="mr-1 h-3.5 w-3.5" />
                         Code
                       </a>
                     </Button>
                   )}
-                  <Button asChild size="sm" variant="ghost" className="text-muted-foreground hover:text-foreground">
+                  <Button asChild size="sm" variant="ghost" className="text-xs text-muted-foreground hover:text-foreground">
                     <Link href={`/projects/${project.slug}`}>
                       <ArrowUpRight className="mr-1 h-3.5 w-3.5" />
                       Full page
@@ -376,7 +390,7 @@ function ProjectDialog({
               </div>
             </DialogHeader>
 
-            <div className="px-6 pb-8 pt-4">
+            <div className="px-4 sm:px-6 pb-6 sm:pb-8 pt-3 sm:pt-4">
               <div className="flex flex-wrap gap-1.5">
                 {project.techTags.map((t) => (
                   <Badge

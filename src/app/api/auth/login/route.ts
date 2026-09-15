@@ -33,12 +33,16 @@ export async function POST(request: NextRequest) {
     return unauthorized("Invalid email or password");
   }
 
-  await db.admin.update({
+  // Set session cookies immediately
+  const cookiePromise = setSessionCookies(admin.id, admin.email);
+
+  // Update lastLoginAt non-blocking to prevent unnecessary wait
+  db.admin.update({
     where: { id: admin.id },
     data: { lastLoginAt: new Date() },
-  });
+  }).catch((err) => console.warn("Failed to update lastLoginAt:", err));
 
-  await setSessionCookies(admin.id, admin.email);
+  await cookiePromise;
   return ok({
     admin: { id: admin.id, email: admin.email, name: admin.name },
   });

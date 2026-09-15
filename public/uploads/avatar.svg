@@ -18,5 +18,5 @@
   <circle cx="200" cy="165" r="62" fill="none" stroke="url(#ring)" stroke-width="3" opacity="0.85"/>
   <circle cx="200" cy="155" r="44" fill="url(#ring)" opacity="0.9"/>
   <path d="M120 300 Q200 230 280 300 L280 360 Q200 330 120 360 Z" fill="url(#ring)" opacity="0.55"/>
-  <text x="200" y="380" font-family="Space Grotesk, sans-serif" font-size="14" fill="#cbd5e1" text-anchor="middle" letter-spacing="2">ALEX RIVERA</text>
+  <text x="200" y="380" font-family="Space Grotesk, sans-serif" font-size="14" fill="#cbd5e1" text-anchor="middle" letter-spacing="2">MUHAMMAD AMIR</text>
 </svg>
