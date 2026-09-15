@@ -200,28 +200,28 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <header>
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-blue-400">
+          <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.2em] text-blue-400">
             <ShieldCheck className="h-3.5 w-3.5" />
             Dashboard
           </p>
-          <h1 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+          <h1 className="mt-1.5 font-display text-2xl font-bold tracking-tight sm:text-3xl">
             Welcome back{admin?.name ? `, ${admin.name}` : ""} 👋
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground">
             Here&apos;s what&apos;s happening with your portfolio today.
           </p>
         </motion.div>
       </header>
 
       {/* stat cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card, i) => {
           const Icon = card.icon;
           return (
@@ -233,26 +233,26 @@ export default function AdminDashboardPage() {
             >
               <Link
                 href={card.href}
-                className="group relative block overflow-hidden rounded-2xl glass p-5 transition-all hover:bg-white/[0.06] hover:shadow-xl hover:shadow-blue-500/5"
+                className="group relative block overflow-hidden rounded-xl glass p-3.5 sm:p-4 transition-all hover:bg-white/[0.06] hover:shadow-lg hover:shadow-blue-500/5"
               >
                 <div
-                  className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${card.color} opacity-20 blur-2xl transition-opacity group-hover:opacity-40`}
+                  className={`absolute -right-6 -top-6 h-16 w-16 rounded-full bg-gradient-to-br ${card.color} opacity-20 blur-xl transition-opacity group-hover:opacity-40`}
                 />
                 <div className="flex items-start justify-between">
                   <div
-                    className={`grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br ${card.color} text-white shadow-lg`}
+                    className={`grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br ${card.color} text-white shadow-md`}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-4 w-4" />
                   </div>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                  <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
                 </div>
-                <div className="mt-4 font-display text-3xl font-bold tracking-tight">
+                <div className="mt-2.5 font-display text-2xl font-bold tracking-tight">
                   {card.value}
                 </div>
-                <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
+                <div className="mt-0.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                   {card.label}
                 </div>
-                <div className="mt-2 text-[11px] text-muted-foreground/80">{card.hint}</div>
+                <div className="mt-1 text-[10px] text-muted-foreground/75 truncate">{card.hint}</div>
               </Link>
             </motion.div>
           );

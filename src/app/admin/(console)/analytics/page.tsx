@@ -58,7 +58,7 @@ export default function AdminAnalyticsPage() {
     fetch("/api/analytics/summary", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => d && setData(d))
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, []);
 
@@ -116,28 +116,27 @@ export default function AdminAnalyticsPage() {
               key={card.label}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.05 * i }}
-            >
-              <div className="relative overflow-hidden rounded-2xl glass p-5">
+              transition={{ duration: 0.4, delay: 0.05 * i }}>
+              <div className="relative overflow-hidden rounded-xl glass p-3.5 sm:p-4">
                 <div
-                  className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br ${card.color} opacity-20 blur-2xl`}
+                  className={`absolute -right-6 -top-6 h-16 w-16 rounded-full bg-gradient-to-br ${card.color} opacity-20 blur-xl`}
                 />
                 <div
-                  className={`grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br ${card.color} text-white shadow-lg`}
+                  className={`grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br ${card.color} text-white shadow-md`}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-4 w-4" />
                 </div>
                 {loading ? (
-                  <Skeleton className="mt-4 h-9 w-16" />
+                  <Skeleton className="mt-2.5 h-8 w-16" />
                 ) : (
-                  <div className="mt-4 font-display text-3xl font-bold tabular-nums tracking-tight">
+                  <div className="mt-2.5 font-display text-2xl font-bold tabular-nums tracking-tight">
                     {card.value}
                   </div>
                 )}
-                <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
+                <div className="mt-0.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                   {card.label}
                 </div>
-                <div className="mt-2 text-[11px] text-muted-foreground/80">{card.hint}</div>
+                <div className="mt-1 text-[10px] text-muted-foreground/75 truncate">{card.hint}</div>
               </div>
             </motion.div>
           );
@@ -260,8 +259,8 @@ export default function AdminAnalyticsPage() {
                   const label = v.slug
                     ? v.slug.replace(/-/g, " ")
                     : v.path === "/"
-                    ? "home"
-                    : v.path.replace(/^\//, "").replace(/-/g, " ") || "home";
+                      ? "home"
+                      : v.path.replace(/^\//, "").replace(/-/g, " ") || "home";
                   return (
                     <motion.li
                       key={v.id}

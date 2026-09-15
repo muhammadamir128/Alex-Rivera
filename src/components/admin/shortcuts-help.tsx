@@ -46,15 +46,16 @@ export function ShortcutsHelp({
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       const inField = ["INPUT", "TEXTAREA", "SELECT"].includes(tag);
-      if (e.key === "?" && !inField) {
+      if (e.key === "?") {
+        if (inField) return;
         e.preventDefault();
-        setOpen((v) => !v);
+        setOpen(!open);
       }
       if (e.key === "Escape") setOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [open, setOpen]);
 
   // "g" + letter navigation
   useEffect(() => {

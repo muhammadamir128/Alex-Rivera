@@ -409,37 +409,65 @@ export default function AdminSettingsPage() {
 
           <div className="space-y-2">
             <Label>OG image</Label>
-            <div className="flex items-start gap-4">
-              <div className="h-20 w-32 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-white/5">
+
+            {/* Preview + controls stacked vertically for cleaner layout */}
+            <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3 space-y-3">
+              {/* Thumbnail preview */}
+              <div className="relative h-28 w-full overflow-hidden rounded-lg border border-white/10 bg-white/5">
                 {seoOgImage ? (
-                   
                   <img
                     src={seoOgImage}
-                    alt="og preview"
+                    alt="OG preview"
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="grid h-full w-full place-items-center text-muted-foreground">
-                    <ImagePlus className="h-5 w-5" />
+                  <div className="grid h-full w-full place-items-center gap-1 text-muted-foreground">
+                    <ImagePlus className="h-6 w-6" />
+                    <span className="text-[11px]">No OG image set</span>
                   </div>
                 )}
+                {seoOgImage && (
+                  <button
+                    type="button"
+                    onClick={() => setSeoOgImage("")}
+                    className="absolute right-2 top-2 rounded-md bg-black/60 px-2 py-0.5 text-[10px] text-red-400 hover:bg-black/80 hover:text-red-300 transition-colors"
+                  >
+                    Remove
+                  </button>
+                )}
+                <div className="absolute bottom-2 left-2 rounded-md bg-black/60 px-2 py-0.5 text-[10px] text-white/70">
+                  1200 × 630 recommended
+                </div>
               </div>
-              <div className="flex-1 space-y-2">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleUpload(e.target.files?.[0])}
-                  disabled={uploading}
-                  className="cursor-pointer file:bg-white/5 file:text-xs"
-                />
-                {uploading && <p className="text-[11px] text-blue-400">Uploading…</p>}
-                <Input
-                  value={seoOgImage}
-                  onChange={(e) => setSeoOgImage(e.target.value)}
-                  placeholder="or paste image URL (recommended 1200×630)"
-                  className="font-mono text-xs"
-                />
+
+              {/* File picker */}
+              <div className="flex items-center gap-2">
+                <label className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-muted-foreground hover:bg-white/[0.08] transition-colors">
+                    <ImagePlus className="h-3.5 w-3.5 shrink-0" />
+                    {uploading ? (
+                      <span className="text-blue-400">Uploading…</span>
+                    ) : (
+                      <span>Choose file to upload…</span>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleUpload(e.target.files?.[0])}
+                    disabled={uploading}
+                  />
+                </label>
               </div>
+
+              {/* URL input */}
+              <Input
+                value={seoOgImage}
+                onChange={(e) => setSeoOgImage(e.target.value)}
+                placeholder="or paste image URL (e.g. /uploads/og-cover.jpg)"
+                className="font-mono text-xs"
+              />
             </div>
           </div>
 
