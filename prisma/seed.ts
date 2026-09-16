@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@portfolio.dev";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin12345";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "alexrivera@gmail.com";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin@alex*2428#";
 
 async function main() {
   console.log("Seeding database...");
@@ -35,11 +35,12 @@ async function main() {
       bio: "I'm a full-stack developer with 3 years of professional experience building production web applications with React, Next.js, Node.js and PostgreSQL. I care deeply about performance, accessibility, and the small details that make a product feel crafted. When I'm not shipping, I'm exploring design systems, WebGL experiments, and the occasional weekend side project.",
       avatarUrl: "/uploads/avatar.svg",
       socialLinks: JSON.stringify({
-        github: "https://github.com/muhammadamir",
-        linkedin: "https://linkedin.com/in/muhammadamir",
+        github: "https://github.com/muhammadamir128",
+        linkedin: "https://www.linkedin.com/feed/",
         twitter: "https://twitter.com/muhammadamir",
-        email: "hello@muhammadamir.dev",
+        email: "muhammadamircs47@gmail.com",
         website: "https://muhammadamir.dev",
+        cv: "/cv.pdf",
       }),
       seo: JSON.stringify({
         title: "Muhammad Amir — Full-Stack Developer",
