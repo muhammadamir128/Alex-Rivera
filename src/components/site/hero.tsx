@@ -100,7 +100,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
             </Magnetic>
             <Magnetic strength={0.2}>
               <Link
-                href="#contact"
+                href="/contact"
                 className="inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all hover:bg-white/[0.08] hover:scale-[1.02] active:scale-[0.98]"
               >
                 <span>Get in touch</span>

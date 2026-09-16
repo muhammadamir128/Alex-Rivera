@@ -6,9 +6,9 @@ import { Skills } from "@/components/site/skills";
 import { Experience } from "@/components/site/experience";
 import { Projects } from "@/components/site/projects";
 import { Testimonials } from "@/components/site/testimonials";
-import { Contact } from "@/components/site/contact";
 import { Footer } from "@/components/site/footer";
 import { BackToTop } from "@/components/site/back-to-top";
+import { WhatsAppButton } from "@/components/site/whatsapp-button";
 import { SectionDivider } from "@/components/site/section-divider";
 
 export const revalidate = 0; // always fetch fresh admin-managed content
@@ -34,10 +34,9 @@ export default async function HomePage() {
             <Testimonials items={testimonials} />
           </>
         )}
-        <SectionDivider className="my-4" variant="gradient" />
-        <Contact profile={profile} />
       </main>
       <Footer profile={profile} />
+      <WhatsAppButton phone={profile.socialLinks?.whatsapp || "923069609884"} />
       <BackToTop />
     </div>
   );

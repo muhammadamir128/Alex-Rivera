@@ -56,6 +56,7 @@ const SOCIAL_FIELDS = [
   { key: "email", label: "Email", placeholder: "you@example.com" },
   { key: "website", label: "Website", placeholder: "https://yoursite.dev" },
   { key: "cv", label: "CV / Resume URL", placeholder: "/cv.pdf or https://drive.google.com/..." },
+  { key: "whatsapp", label: "WhatsApp Number", placeholder: "+923069609884" },
 ];
 
 export default function AdminProfilePage() {

@@ -4,6 +4,7 @@ import { getProfile } from "@/lib/data";
 import { SiteHeader } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { BackToTop } from "@/components/site/back-to-top";
+import { WhatsAppButton } from "@/components/site/whatsapp-button";
 import { Contact } from "@/components/site/contact";
 import {
   Accordion,
@@ -131,6 +132,7 @@ export default async function ContactPage() {
       </main>
 
       <Footer profile={profile} />
+      <WhatsAppButton phone={profile.socialLinks?.whatsapp || "923069609884"} />
       <BackToTop />
     </div>
   );

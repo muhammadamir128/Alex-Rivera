@@ -5,6 +5,7 @@ import { getProfile } from "@/lib/data";
 import { SiteHeader } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { BackToTop } from "@/components/site/back-to-top";
+import { WhatsAppButton } from "@/components/site/whatsapp-button";
 import { CountUp } from "@/components/site/count-up";
 import { Reveal, RevealStagger, RevealItem } from "@/components/site/reveal";
 import {
@@ -326,6 +327,7 @@ export default async function AboutPage() {
       </main>
 
       <Footer profile={profile} />
+      <WhatsAppButton phone={profile.socialLinks?.whatsapp || "923069609884"} />
       <BackToTop />
     </div>
   );

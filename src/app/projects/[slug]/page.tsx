@@ -339,7 +339,7 @@ export default async function ProjectDetailPage({ params }: Params) {
               </p>
               <div className="relative mt-6">
                 <Button asChild className="bg-gradient-to-r from-blue-500 to-violet-600 shadow-lg shadow-violet-600/25">
-                  <Link href="/#contact">Start a conversation</Link>
+                  <Link href="/contact">Start a conversation</Link>
                 </Button>
               </div>
             </div>
