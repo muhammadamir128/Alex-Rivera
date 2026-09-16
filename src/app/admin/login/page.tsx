@@ -10,7 +10,7 @@ import { toast } from "sonner";
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const [email, setEmail] = useState("admin@portfolio.dev");
+  const [email, setEmail] = useState("alexrivera@gmail.com");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
@@ -115,21 +115,21 @@ function LoginForm() {
         )}
       </button>
 
-      {/* 1-click autofill demo credentials */}
+      {/* 1-click autofill credentials */}
       <div
         onClick={() => {
-          setEmail("admin@portfolio.dev");
-          setPassword("admin12345");
-          toast.info("Demo credentials filled!");
+          setEmail("alexrivera@gmail.com");
+          setPassword("Admin@alex*2428#");
+          toast.info("Credentials filled!");
         }}
         className="mt-5 cursor-pointer rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center text-xs text-muted-foreground transition-all hover:border-blue-500/30 hover:bg-white/[0.05]"
         role="button"
         tabIndex={0}
         title="Click to autofill"
       >
-        <span className="font-medium text-foreground/70">Demo credentials (click to autofill)</span>
+        <span className="font-medium text-foreground/70">Admin credentials (click to autofill)</span>
         <br />
-        <span className="font-mono text-[11px] text-blue-300">admin@portfolio.dev</span> / <span className="font-mono text-[11px] text-violet-300">admin12345</span>
+        <span className="font-mono text-[11px] text-blue-300">alexrivera@gmail.com</span> / <span className="font-mono text-[11px] text-violet-300">Admin@alex*2428#</span>
       </div>
     </form>
   );

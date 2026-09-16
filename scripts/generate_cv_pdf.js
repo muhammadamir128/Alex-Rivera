@@ -1,0 +1,610 @@
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Muhammad Amir - Full-Stack Developer CV</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  @page {
+    size: A4;
+    margin: 8mm 10mm 6mm 10mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1e293b;
+    background: #ffffff;
+    line-height: 1.38;
+    font-size: 8.8pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .cv-container {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .header-left h1 {
+    font-size: 22pt;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #0f172a;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+
+  .header-left .title {
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: #2563eb;
+    margin-top: 3px;
+    letter-spacing: 0.2px;
+  }
+
+  .header-right {
+    text-align: right;
+    font-size: 8pt;
+    color: #475569;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+  }
+
+  .contact-item a {
+    color: #1e293b;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .icon {
+    font-weight: bold;
+    color: #2563eb;
+  }
+
+  /* Summary */
+  .summary {
+    background: #f8fafc;
+    border-left: 3px solid #2563eb;
+    padding: 6px 10px;
+    font-size: 8.5pt;
+    color: #334155;
+    margin-bottom: 10px;
+    border-radius: 0 4px 4px 0;
+    line-height: 1.42;
+  }
+
+  /* Layout */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 2.15fr 1fr;
+    gap: 14px;
+  }
+
+  /* Section Title */
+  .section-title {
+    font-size: 9.8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #0f172a;
+    border-bottom: 1.5px solid #e2e8f0;
+    padding-bottom: 3px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .section-title .bullet {
+    width: 5px;
+    height: 5px;
+    background: #2563eb;
+    border-radius: 50%;
+  }
+
+  /* Experience Entry */
+  .item-block {
+    margin-bottom: 8px;
+  }
+
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1px;
+  }
+
+  .item-role {
+    font-size: 9.3pt;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .item-company {
+    font-weight: 600;
+    color: #2563eb;
+  }
+
+  .item-date {
+    font-size: 7.6pt;
+    font-weight: 600;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 1px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  .item-location {
+    font-size: 7.6pt;
+    color: #64748b;
+    margin-bottom: 3px;
+  }
+
+  .item-bullets {
+    list-style-type: none;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  .item-bullets li {
+    position: relative;
+    padding-left: 11px;
+    font-size: 8.2pt;
+    color: #334155;
+    margin-bottom: 2.5px;
+    line-height: 1.36;
+  }
+
+  .item-bullets li::before {
+    content: "•";
+    position: absolute;
+    left: 1px;
+    color: #2563eb;
+    font-weight: bold;
+  }
+
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3.5px;
+    margin-top: 3px;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.8pt;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #dbeafe;
+    padding: 1px 4.5px;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+
+  /* Projects Section */
+  .project-block {
+    margin-bottom: 6.5px;
+  }
+
+  .project-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1px;
+  }
+
+  .project-title {
+    font-size: 8.8pt;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .project-link {
+    font-size: 7.2pt;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .project-desc {
+    font-size: 8pt;
+    color: #475569;
+    line-height: 1.35;
+    margin-bottom: 2px;
+  }
+
+  /* Skills in Sidebar */
+  .skill-group {
+    margin-bottom: 7px;
+  }
+
+  .skill-group-title {
+    font-size: 7.8pt;
+    font-weight: 700;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3.5px;
+  }
+
+  .skill-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3.5px;
+  }
+
+  .skill-pill {
+    font-size: 7.5pt;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+    padding: 1.5px 5.5px;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+
+  .skill-pill.featured {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #166534;
+    font-weight: 600;
+  }
+
+  /* Education & Info */
+  .education-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 6px 8px;
+    margin-bottom: 6px;
+  }
+
+  .edu-degree {
+    font-size: 8.4pt;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .edu-meta {
+    font-size: 7.6pt;
+    color: #64748b;
+    margin-top: 1px;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+
+  .stat-card {
+    background: #f1f5f9;
+    padding: 5px 6px;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 11.5pt;
+    font-weight: 800;
+    color: #2563eb;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 6.8pt;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="cv-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <h1>Muhammad Amir</h1>
+      <div class="title">Senior Full-Stack Developer &amp; Web Architect</div>
+    </div>
+    <div class="header-right">
+      <div class="contact-item">
+        <a href="mailto:muhammadamircs47@gmail.com">muhammadamircs47@gmail.com</a>
+        <span class="icon">✉</span>
+      </div>
+      <div class="contact-item">
+        <a href="tel:+923069609884">+92 306 9609884</a>
+        <span class="icon">📱</span>
+      </div>
+      <div class="contact-item">
+        <span>Pakistan (Remote Worldwide)</span>
+        <span class="icon">📍</span>
+      </div>
+      <div class="contact-item">
+        <a href="https://github.com/muhammadamir128" target="_blank">github.com/muhammadamir128</a>
+        <span class="icon">🐙</span>
+      </div>
+      <div class="contact-item">
+        <a href="https://linkedin.com/feed" target="_blank">linkedin.com/in/muhammadamir</a>
+        <span class="icon">💼</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Executive Summary -->
+  <div class="summary">
+    <strong>Executive Profile:</strong> Full-Stack Developer with 3+ years of production experience designing and building high-performance, accessible web systems end-to-end. Specialized in <strong>Next.js 15 (App Router), React 19, TypeScript, Node.js</strong>, and relational databases (PostgreSQL, Prisma ORM). Track record of cutting p95 load times by 75%, scaling multi-tenant SaaS architectures, and shipping pixel-crafted, responsive user interfaces.
+  </div>
+
+  <div class="main-grid">
+    <!-- Left Column: Experience & Key Projects -->
+    <main>
+      <!-- Work Experience -->
+      <section>
+        <h2 class="section-title"><span class="bullet"></span> Professional Experience</h2>
+
+        <div class="item-block">
+          <div class="item-header">
+            <div class="item-role">Senior Full-Stack Developer <span class="item-company">@ Nimbus Labs</span></div>
+            <span class="item-date">Feb 2024 – Present</span>
+          </div>
+          <div class="item-location">Remote · SaaS Analytics Platform (12k+ MAU)</div>
+          <ul class="item-bullets">
+            <li>Architected the platform migration from legacy monolithic services to a modular <strong>Next.js App Router + tRPC</strong> stack, reducing p95 load times from <strong>3.2s to 0.8s</strong>.</li>
+            <li>Engineered scalable database schema and query optimizations with <strong>PostgreSQL &amp; Prisma ORM</strong>, handling over 2.4M monthly data points.</li>
+            <li>Designed and maintained a unified internal design system with 100% WCAG AA accessibility compliance and micro-animations.</li>
+            <li>Mentored junior developers, spearheaded agile development cycles, and established automated CI/CD pipelines on Vercel.</li>
+          </ul>
+          <div class="tech-tags">
+            <span class="tag">Next.js 15</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">tRPC</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">Prisma</span>
+            <span class="tag">Redis</span>
+            <span class="tag">Tailwind</span>
+          </div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-header">
+            <div class="item-role">Full-Stack Developer <span class="item-company">@ Atlas Studio</span></div>
+            <span class="item-date">Jan 2023 – Jan 2024</span>
+          </div>
+          <div class="item-location">Berlin, DE (Remote) · Fintech &amp; Healthcare Products</div>
+          <ul class="item-bullets">
+            <li>Engineered client products from concept to production using <strong>React, Node.js, NestJS</strong>, and REST/GraphQL APIs.</li>
+            <li>Shipped a zero-friction KYC onboarding workflow that securely processed over <strong>4,200+ identity verifications</strong> in its debut quarter.</li>
+            <li>Integrated automated end-to-end testing with Playwright, decreasing production regressions and bug reports by <strong>60%</strong>.</li>
+          </ul>
+          <div class="tech-tags">
+            <span class="tag">React</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">NestJS</span>
+            <span class="tag">GraphQL</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">Docker</span>
+          </div>
+        </div>
+
+        <div class="item-block">
+          <div class="item-header">
+            <div class="item-role">Web Developer <span class="item-company">@ Pixel &amp; Co.</span></div>
+            <span class="item-date">Mar 2022 – Dec 2022</span>
+          </div>
+          <div class="item-location">Remote · Agency Web Solutions</div>
+          <ul class="item-bullets">
+            <li>Developed high-traffic responsive web applications and integrated headless CMS APIs for rapid marketing iteration.</li>
+            <li>Automated continuous integration and deployment pipelines, slashing staging deploy times from <strong>25 min to &lt;4 min</strong>.</li>
+          </ul>
+          <div class="tech-tags">
+            <span class="tag">Next.js</span>
+            <span class="tag">Tailwind CSS</span>
+            <span class="tag">Headless CMS</span>
+            <span class="tag">Git</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Projects -->
+      <section style="margin-top: 8px;">
+        <h2 class="section-title"><span class="bullet"></span> Featured Production Projects</h2>
+
+        <div class="project-block">
+          <div class="project-title-row">
+            <span class="project-title">Aurora Analytics — Real-Time SaaS Metrics</span>
+            <span class="project-link">Featured Project</span>
+          </div>
+          <p class="project-desc">Real-time user journey and event-tracking analytics dashboard with sub-100ms queries and custom charting.</p>
+          <div class="tech-tags">
+            <span class="tag">Next.js</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">Prisma</span>
+            <span class="tag">Redis</span>
+            <span class="tag">D3.js</span>
+          </div>
+        </div>
+
+        <div class="project-block">
+          <div class="project-title-row">
+            <span class="project-title">Lumen Commerce — Headless Storefront</span>
+            <span class="project-link">Live Platform</span>
+          </div>
+          <p class="project-desc">Headless storefront with Stripe checkout and instant search. Achieved 98+ Lighthouse performance score and 40% conversion increase.</p>
+          <div class="tech-tags">
+            <span class="tag">Next.js 15</span>
+            <span class="tag">Shopify API</span>
+            <span class="tag">Stripe</span>
+            <span class="tag">Tailwind CSS</span>
+          </div>
+        </div>
+
+        <div class="project-block">
+          <div class="project-title-row">
+            <span class="project-title">Pulse Chat — WebSocket Messaging Engine</span>
+            <span class="project-link">Open Source</span>
+          </div>
+          <p class="project-desc">Real-time chat platform with typing indicators, presence, and lightning-fast sub-50ms message search across 2M records.</p>
+          <div class="tech-tags">
+            <span class="tag">Socket.io</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">Redis</span>
+            <span class="tag">Meilisearch</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Right Column: Skills, Highlights & Education -->
+    <aside>
+      <!-- Stats Highlights -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num">3+</div>
+          <div class="stat-label">Years Exp</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">24+</div>
+          <div class="stat-label">Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Success</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">&lt;24h</div>
+          <div class="stat-label">Response</div>
+        </div>
+      </div>
+
+      <!-- Skills Section -->
+      <section>
+        <h2 class="section-title"><span class="bullet"></span> Technical Skills</h2>
+
+        <div class="skill-group">
+          <div class="skill-group-title">Frontend &amp; UI</div>
+          <div class="skill-pills">
+            <span class="skill-pill featured">Next.js 15</span>
+            <span class="skill-pill featured">React 19</span>
+            <span class="skill-pill featured">TypeScript</span>
+            <span class="skill-pill">Tailwind CSS</span>
+            <span class="skill-pill">Framer Motion</span>
+            <span class="skill-pill">HTML5 / CSS3</span>
+            <span class="skill-pill">Responsive Design</span>
+            <span class="skill-pill">UI / UX Systems</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-title">Backend &amp; API</div>
+          <div class="skill-pills">
+            <span class="skill-pill featured">Node.js</span>
+            <span class="skill-pill">Express</span>
+            <span class="skill-pill">REST APIs</span>
+            <span class="skill-pill">GraphQL</span>
+            <span class="skill-pill">tRPC</span>
+            <span class="skill-pill">Server Actions</span>
+            <span class="skill-pill">Socket.io</span>
+            <span class="skill-pill">JWT Auth</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-title">Databases &amp; Cloud</div>
+          <div class="skill-pills">
+            <span class="skill-pill featured">PostgreSQL</span>
+            <span class="skill-pill featured">Prisma ORM</span>
+            <span class="skill-pill">SQLite</span>
+            <span class="skill-pill">Redis Cache</span>
+            <span class="skill-pill">Neon DB</span>
+            <span class="skill-pill">Supabase</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-title">Tools &amp; Workflow</div>
+          <div class="skill-pills">
+            <span class="skill-pill">Git &amp; GitHub</span>
+            <span class="skill-pill">Docker</span>
+            <span class="skill-pill">Vercel</span>
+            <span class="skill-pill">CI / CD</span>
+            <span class="skill-pill">Playwright / Jest</span>
+            <span class="skill-pill">Linux / Bash</span>
+            <span class="skill-pill">VS Code</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Education -->
+      <section style="margin-top: 10px;">
+        <h2 class="section-title"><span class="bullet"></span> Education</h2>
+        <div class="education-card">
+          <div class="edu-degree">BS in Computer Science</div>
+          <div class="edu-meta">Software Engineering &amp; Web Systems</div>
+          <div class="edu-meta" style="margin-top: 2px; font-weight: 600; color: #2563eb;">2019 – 2023</div>
+        </div>
+      </section>
+
+      <!-- Languages -->
+      <section style="margin-top: 8px;">
+        <h2 class="section-title"><span class="bullet"></span> Languages</h2>
+        <div class="skill-pills">
+          <span class="skill-pill">English (Professional)</span>
+          <span class="skill-pill">Urdu (Native)</span>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+</body>
+</html>
+`;
+
+const htmlPath = path.join(__dirname, 'cv_template.html');
+fs.writeFileSync(htmlPath, htmlContent, 'utf8');
+
+const outputPath = path.resolve('public/cv.pdf');
+const chromePath = 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe';
+const edgePath = 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe';
+
+const browserExe = fs.existsSync(chromePath) ? chromePath : edgePath;
+const tempUserData = 'C:\\\\Users\\\\Muhammad Amir\\\\AppData\\\\Local\\\\Temp\\\\cv_pdf_render';
+const cmd = `"${browserExe}" --headless --disable-gpu --user-data-dir="${tempUserData}" --print-to-pdf="${outputPath}" --no-pdf-header-footer "file:///${htmlPath.replace(/\\/g, '/')}"`;
+
+execSync(cmd, { stdio: 'inherit' });
+console.log('CV PDF compiled successfully!');

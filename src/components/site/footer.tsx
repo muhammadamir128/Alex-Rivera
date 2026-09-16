@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Github,
   Linkedin,
@@ -15,11 +17,34 @@ import {
   Sparkles,
   Lock,
   Code2,
+  X,
+  KeyRound,
+  ArrowRight,
 } from "lucide-react";
 import type { ProfileData } from "@/lib/data";
 
 export function Footer({ profile }: { profile: ProfileData }) {
+  const router = useRouter();
   const [copied, setCopied] = useState(false);
+  const [pinModalOpen, setPinModalOpen] = useState(false);
+  const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState("");
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
+  const handlePinSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (pin.trim() === "2993") {
+      setIsUnlocked(true);
+      setPinError("");
+      setTimeout(() => {
+        setPinModalOpen(false);
+        router.push("/admin/login");
+      }, 400);
+    } else {
+      setPinError("Incorrect password. Please try again.");
+    }
+  };
+
   const s = profile.socialLinks || {};
   const email = s.email || "muhammadamircs47@gmail.com";
   const year = new Date().getFullYear();
@@ -239,13 +264,20 @@ export function Footer({ profile }: { profile: ProfileData }) {
               </div>
 
               <div className="pt-2">
-                <Link
-                  href="/admin"
-                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPinModalOpen(true);
+                    setPin("");
+                    setPinError("");
+                    setIsUnlocked(false);
+                  }}
+                  aria-label="Admin Access"
+                  title="Admin Access"
+                  className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-white/5 bg-white/[0.02] text-muted-foreground/40 transition-all hover:border-white/15 hover:bg-white/[0.06] hover:text-white active:scale-95 cursor-pointer"
                 >
                   <Lock className="h-3 w-3" />
-                  Admin Console
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -269,6 +301,99 @@ export function Footer({ profile }: { profile: ProfileData }) {
           </button>
         </div>
       </div>
+
+      {/* Admin Passcode Modal */}
+      <AnimatePresence>
+        {pinModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setPinModalOpen(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 12 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-[#090d16] p-6 shadow-2xl text-foreground"
+            >
+              <button
+                type="button"
+                onClick={() => setPinModalOpen(false)}
+                className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-lg text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors cursor-pointer"
+                aria-label="Close modal"
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500/20 to-violet-600/20 border border-white/10 text-blue-400">
+                  <KeyRound className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-semibold text-white">Admin Verification</h3>
+                  <p className="text-xs text-muted-foreground">Enter password to proceed</p>
+                </div>
+              </div>
+
+              <form onSubmit={handlePinSubmit} className="space-y-4">
+                <div className="space-y-1.5">
+                  <input
+                    type="password"
+                    autoFocus
+                    value={pin}
+                    onChange={(e) => {
+                      setPin(e.target.value);
+                      if (pinError) setPinError("");
+                    }}
+                    placeholder="Enter password"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 tracking-wider"
+                  />
+                  {pinError && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-xs text-rose-400 font-medium"
+                    >
+                      {pinError}
+                    </motion.p>
+                  )}
+                  {isUnlocked && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-xs text-emerald-400 font-medium flex items-center gap-1"
+                    >
+                      <Check className="h-3.5 w-3.5" /> Password verified! Redirecting to Admin Login...
+                    </motion.p>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setPinModalOpen(false)}
+                    className="rounded-lg px-3 py-1.5 text-xs text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-500 to-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-violet-600/25 transition-all hover:brightness-110 active:scale-95 cursor-pointer"
+                  >
+                    <span>Proceed</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </footer>
   );
 }

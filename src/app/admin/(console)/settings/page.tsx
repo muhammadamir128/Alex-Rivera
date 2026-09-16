@@ -77,7 +77,12 @@ export default function AdminSettingsPage() {
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
   const [seoOgImage, setSeoOgImage] = useState("");
+  const [ogImgError, setOgImgError] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    setOgImgError(false);
+  }, [seoOgImage]);
   const [savingSeo, setSavingSeo] = useState(false);
   const [exporting, setExporting] = useState(false);
 
@@ -414,16 +419,19 @@ export default function AdminSettingsPage() {
             <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3 space-y-3">
               {/* Thumbnail preview */}
               <div className="relative h-28 w-full overflow-hidden rounded-lg border border-white/10 bg-white/5">
-                {seoOgImage ? (
+                {seoOgImage && !ogImgError ? (
                   <img
                     src={seoOgImage}
                     alt="OG preview"
+                    onError={() => setOgImgError(true)}
                     className="h-full w-full object-cover"
                   />
                 ) : (
                   <div className="grid h-full w-full place-items-center gap-1 text-muted-foreground">
                     <ImagePlus className="h-6 w-6" />
-                    <span className="text-[11px]">No OG image set</span>
+                    <span className="text-[11px]">
+                      {ogImgError ? "Image failed to load" : "No OG image set"}
+                    </span>
                   </div>
                 )}
                 {seoOgImage && (
