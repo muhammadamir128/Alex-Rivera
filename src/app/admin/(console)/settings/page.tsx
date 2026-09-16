@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Settings,
   Lock,
@@ -16,6 +16,8 @@ import {
   EyeOff,
   Download,
   Database,
+  X,
+  ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import { api, uploadFile, useAsync } from "@/components/admin/use-async";
@@ -53,7 +55,7 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     api<AdminInfo>("/api/auth/me")
       .then((d) => setAdmin(d.admin))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // ---- password form ----
@@ -79,6 +81,7 @@ export default function AdminSettingsPage() {
   const [seoOgImage, setSeoOgImage] = useState("");
   const [ogImgError, setOgImgError] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   useEffect(() => {
     setOgImgError(false);
@@ -446,12 +449,22 @@ export default function AdminSettingsPage() {
                 <div className="absolute bottom-2 left-2 rounded-md bg-black/60 px-2 py-0.5 text-[10px] text-white/70">
                   1200 × 630 recommended
                 </div>
+                {seoOgImage && !ogImgError && (
+                  <button
+                    type="button"
+                    onClick={() => setShowPreviewModal(true)}
+                    className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-md bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] font-medium text-white hover:bg-black/90 hover:text-blue-300 transition-all shadow-md cursor-pointer border border-white/10"
+                    title="Preview full image">
+                    <Eye className="h-3.5 w-3.5 text-blue-400" />
+                    <span>Preview</span>
+                  </button>
+                )}
               </div>
 
-              {/* File picker */}
-              <div className="flex items-center gap-2">
-                <label className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-muted-foreground hover:bg-white/[0.08] transition-colors">
+              {/* Upload file button + URL input in 1 row */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <label className="cursor-pointer shrink-0">
+                  <div className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-medium text-muted-foreground hover:bg-white/[0.08] hover:text-foreground transition-colors whitespace-nowrap">
                     <ImagePlus className="h-3.5 w-3.5 shrink-0" />
                     {uploading ? (
                       <span className="text-blue-400">Uploading…</span>
@@ -464,18 +477,16 @@ export default function AdminSettingsPage() {
                     accept="image/*"
                     className="hidden"
                     onChange={(e) => handleUpload(e.target.files?.[0])}
-                    disabled={uploading}
-                  />
+                    disabled={uploading} />
                 </label>
-              </div>
 
-              {/* URL input */}
-              <Input
-                value={seoOgImage}
-                onChange={(e) => setSeoOgImage(e.target.value)}
-                placeholder="or paste image URL (e.g. /uploads/og-cover.jpg)"
-                className="font-mono text-xs"
-              />
+                {/* URL input */}
+                <Input
+                  value={seoOgImage}
+                  onChange={(e) => setSeoOgImage(e.target.value)}
+                  placeholder="or paste image URL (e.g. /uploads/og-cover.jpg)"
+                  className="flex-1 font-mono text-xs" />
+              </div>
             </div>
           </div>
 
@@ -492,8 +503,7 @@ export default function AdminSettingsPage() {
               </p>
             )}
             <Button
-              onClick={submitSeo}
-              disabled={!seoDirty || savingSeo || uploading}
+              onClick={submitSeo} disabled={!seoDirty || savingSeo || uploading}
               className="gap-2 bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-90"
             >
               {savingSeo ? (
@@ -511,6 +521,126 @@ export default function AdminSettingsPage() {
           </div>
         </div>
       </Section>
+
+      {/* Full Image Preview Modal */}
+      <AnimatePresence>
+        {showPreviewModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPreviewModal(false)}
+              className="absolute inset-0 bg-black/85 backdrop-blur-md" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="relative max-w-md w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0c101c] shadow-2xl flex flex-col z-10"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-white">Image Preview</span>
+                  <span className="rounded bg-blue-500/15 px-2 py-0.5 text-[10px] font-medium text-blue-300">
+                    OG Cover
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowPreviewModal(false)}
+                  className="grid h-6 w-6 place-items-center rounded-lg text-muted-foreground hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+                  aria-label="Close"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Image Container - Compact & Proper Fit */}
+              <div className="p-3 bg-black/50 flex items-center justify-center min-h-[220px] max-h-[320px] overflow-hidden">
+                <img
+                  src={seoOgImage}
+                  alt="OG Preview"
+                  className="max-h-[300px] max-w-full w-auto h-auto object-contain rounded-lg shadow-md"
+                />
+              </div>
+
+              {/* Modal Footer Actions: Download, Replace Image & Save */}
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/10 px-4 py-2.5 bg-white/[0.02]">
+                <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                  {seoDirty ? (
+                    <span className="flex items-center gap-1 text-amber-400 font-medium">
+                      <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+                      Unsaved changes
+                    </span>
+                  ) : (
+                    <span>1200 × 630 px</span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {/* Download Button */}
+                  <a
+                    href={seoOgImage}
+                    download="og-image.jpg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-white/10 hover:text-white transition-all cursor-pointer"
+                    title="Download this image"
+                  >
+                    <Download className="h-3.5 w-3.5 text-blue-400" />
+                    <span>Download</span>
+                  </a>
+
+                  {/* Replace Image Button */}
+                  <label className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 hover:text-white px-2.5 py-1.5 text-xs font-medium text-foreground transition-all cursor-pointer">
+                    <ImagePlus className="h-3.5 w-3.5 text-violet-400" />
+                    <span>{uploading ? "Uploading…" : "Replace image"}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        handleUpload(e.target.files?.[0]);
+                      }}
+                      disabled={uploading}
+                    />
+                  </label>
+
+                  {/* Save Button */}
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await submitSeo();
+                    }}
+                    disabled={savingSeo || !seoDirty}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-white shadow-md transition-all cursor-pointer active:scale-95",
+                      seoDirty
+                        ? "bg-gradient-to-r from-emerald-500 to-teal-600 shadow-emerald-600/30 hover:brightness-110 animate-pulse"
+                        : "bg-white/10 text-white/40 cursor-not-allowed"
+                    )}
+                    title={seoDirty ? "Save replaced image" : "No changes to save"}
+                  >
+                    {savingSeo ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        <span>Saving…</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-3.5 w-3.5" />
+                        <span>Save</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

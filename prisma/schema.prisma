@@ -64,6 +64,22 @@ model Experience {
   updatedAt   DateTime @updatedAt
 }
 
+model Education {
+  id          String   @id @default(cuid())
+  degree      String
+  institution String
+  field       String?
+  location    String?
+  startDate   String
+  endDate     String?
+  current     Boolean  @default(false)
+  grade       String?
+  description String   @default("")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Project {
   id          String   @id @default(cuid())
   title       String

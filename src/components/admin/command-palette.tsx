@@ -18,6 +18,7 @@ import {
   BarChart3,
   Hash,
   Loader2,
+  GraduationCap,
 } from "lucide-react";
 import {
   Dialog,
@@ -40,6 +41,7 @@ const COMMANDS: Cmd[] = [
   { id: "projects", label: "Projects", hint: "Manage projects", href: "/admin/projects", icon: FolderGit2, group: "Admin" },
   { id: "skills", label: "Skills", hint: "Manage skills", href: "/admin/skills", icon: Boxes, group: "Admin" },
   { id: "experience", label: "Experience", hint: "Manage experience", href: "/admin/experience", icon: Briefcase, group: "Admin" },
+  { id: "education", label: "Education", hint: "Manage degrees & study", href: "/admin/education", icon: GraduationCap, group: "Admin" },
   { id: "testimonials", label: "Testimonials", hint: "Manage testimonials", href: "/admin/testimonials", icon: MessageSquareQuote, group: "Admin" },
   { id: "messages", label: "Messages", hint: "Inbox", href: "/admin/messages", icon: Inbox, group: "Admin" },
   { id: "media", label: "Media", hint: "Library & uploads", href: "/admin/media", icon: ImageIcon, group: "Admin" },

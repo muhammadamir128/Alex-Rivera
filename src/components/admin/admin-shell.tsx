@@ -21,6 +21,7 @@ import {
   BarChart3,
   Home,
   ArrowLeft,
+  GraduationCap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -33,6 +34,7 @@ const NAV = [
   { href: "/admin/projects", label: "Projects", icon: FolderGit2 },
   { href: "/admin/skills", label: "Skills", icon: Boxes },
   { href: "/admin/experience", label: "Experience", icon: Briefcase },
+  { href: "/admin/education", label: "Education", icon: GraduationCap },
   { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { href: "/admin/messages", label: "Messages", icon: Inbox },
   { href: "/admin/media", label: "Media", icon: ImageIcon },

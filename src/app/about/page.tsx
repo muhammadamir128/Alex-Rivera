@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { getProfile } from "@/lib/data";
+import { getProfile, getEducation } from "@/lib/data";
 import { SiteHeader } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { BackToTop } from "@/components/site/back-to-top";
 import { WhatsAppButton } from "@/components/site/whatsapp-button";
+import { EducationSection } from "@/components/site/education";
 import { CountUp } from "@/components/site/count-up";
 import { Reveal, RevealStagger, RevealItem } from "@/components/site/reveal";
 import {
@@ -20,6 +21,7 @@ import {
   MapPin,
   Clock,
   Laptop,
+  GraduationCap,
 } from "lucide-react";
 
 export const revalidate = 0;
@@ -33,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const profile = await getProfile();
+  const [profile, education] = await Promise.all([getProfile(), getEducation()]);
 
   const stats = [
     { label: "Years Experience", value: profile.stats.yearsExperience ?? 3, suffix: "+" },
@@ -255,6 +257,28 @@ export default async function AboutPage() {
               </div>
             </div>
           </div>
+
+          {/* Academic & Education Section */}
+          {education.length > 0 && (
+            <div className="mt-28">
+              <div className="max-w-2xl">
+                <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-blue-400">
+                  <span className="h-px w-8 bg-blue-400/60" />
+                  Academic Foundation
+                </p>
+                <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+                  Education & Qualifications
+                </h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Formal background in computer science, software engineering principles, and systems architecture.
+                </p>
+              </div>
+
+              <div className="mt-10">
+                <EducationSection items={education} />
+              </div>
+            </div>
+          )}
 
           {/* Engineering Principles */}
           <div className="mt-28">

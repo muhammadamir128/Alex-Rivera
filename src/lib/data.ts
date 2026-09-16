@@ -36,6 +36,22 @@ export type ExperienceData = {
   order: number;
 };
 
+export type EducationData = {
+  id: string;
+  degree: string;
+  institution: string;
+  field: string | null;
+  location: string | null;
+  startDate: string;
+  endDate: string | null;
+  current: boolean;
+  grade: string | null;
+  description: string;
+  order: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type ProjectData = {
   id: string;
   title: string;
@@ -119,6 +135,17 @@ export async function getExperience(): Promise<ExperienceData[]> {
     return items.map((e) => ({ ...e, techUsed: parseJsonArray(e.techUsed) }));
   } catch (err) {
     console.error("db.experience query failed:", (err as Error).message);
+    return [];
+  }
+}
+
+export async function getEducation(): Promise<EducationData[]> {
+  try {
+    return await db.education.findMany({
+      orderBy: [{ order: "asc" }, { startDate: "desc" }],
+    });
+  } catch (err) {
+    console.error("db.education query failed:", (err as Error).message);
     return [];
   }
 }

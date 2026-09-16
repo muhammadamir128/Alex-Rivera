@@ -7,6 +7,7 @@ const PUBLIC_GET_PREFIXES = [
   "/api/projects",
   "/api/skills",
   "/api/experience",
+  "/api/education",
   "/api/testimonials",
 ];
 

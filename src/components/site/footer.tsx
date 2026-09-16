@@ -63,6 +63,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
     { label: "Skills", href: "/skills" },
     { label: "Projects & Work", href: "/work" },
     { label: "Experience", href: "/experience" },
+    { label: "Education", href: "/education" },
     { label: "Testimonials", href: "/testimonials" },
     { label: "Contact", href: "/contact" },
   ];
