@@ -61,7 +61,7 @@ export function About({ profile }: { profile: ProfileData }) {
                   <div className="group relative overflow-hidden rounded-2xl glass p-4 transition-all duration-300 hover:bg-white/[0.06] hover:-translate-y-0.5">
                     <div className="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-blue-500/10 blur-2xl transition-opacity group-hover:opacity-100 opacity-60" />
                     <div className="font-display text-3xl font-bold tracking-tight text-foreground tabular-nums sm:text-4xl">
-                      <CountUp value={stat.value} />
+                      <CountUp value={Number(stat.value) || 0} />
                       <span className="gradient-text">{stat.suffix}</span>
                     </div>
                     <div className="mt-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">

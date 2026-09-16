@@ -128,8 +128,8 @@ export default async function AboutPage() {
                       style={{
                         objectPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
                         transform:
-                          profile.stats?.avatarZoom && profile.stats.avatarZoom !== 100
-                            ? `scale(${profile.stats.avatarZoom / 100})`
+                          profile.stats?.avatarZoom && Number(profile.stats.avatarZoom) !== 100
+                            ? `scale(${Number(profile.stats.avatarZoom) / 100})`
                             : undefined,
                       }}
                     />
@@ -164,7 +164,7 @@ export default async function AboutPage() {
               >
                 <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-blue-500/10 blur-xl group-hover:bg-blue-500/20 transition-all" />
                 <div className="font-display text-4xl font-bold tracking-tight text-foreground tabular-nums sm:text-5xl">
-                  <CountUp value={s.value} />
+                  <CountUp value={Number(s.value) || 0} />
                   <span className="gradient-text">{s.suffix}</span>
                 </div>
                 <div className="mt-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">

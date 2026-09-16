@@ -75,45 +75,39 @@ export function Footer({ profile }: { profile: ProfileData }) {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-12">
         {/* Pre-footer Callout Banner */}
-        <div className="relative mb-16 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.05] via-white/[0.02] to-transparent p-8 sm:p-10 shadow-2xl backdrop-blur-xl">
+        <div className="relative mb-12 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.05] via-white/[0.02] to-transparent p-5 sm:p-6 shadow-xl backdrop-blur-xl">
           <div
             aria-hidden
-            className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/15 blur-3xl"
+            className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-blue-500/15 blur-3xl"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-violet-500/15 blur-3xl"
+            className="pointer-events-none absolute -left-12 -bottom-12 h-40 w-40 rounded-full bg-violet-500/15 blur-3xl"
           />
 
-          <div className="relative z-10 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
-            <div className="max-w-2xl space-y-2">
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                </span>
-                Available for new opportunities & collaborations
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <div className="relative z-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <div className="space-y-1.5">
+
+              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
                 Have a project or vision in mind?
               </h3>
-              <p className="text-sm sm:text-base text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Let&apos;s engineer high-performance, scalable, and delightful web products together.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:brightness-110 active:scale-95"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition-all hover:brightness-110 active:scale-95"
               >
                 Start a Conversation
-                <ArrowUpRight className="h-4 w-4" />
+                <ArrowUpRight className="h-3.5 w-3.5" />
               </Link>
               <button
                 type="button"
                 onClick={handleCopyEmail}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-foreground transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 text-sm font-medium text-foreground transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 cursor-pointer"
               >
                 {copied ? (
                   <>

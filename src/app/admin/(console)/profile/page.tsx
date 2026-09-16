@@ -55,6 +55,7 @@ const SOCIAL_FIELDS = [
   { key: "dribbble", label: "Dribbble", placeholder: "https://dribbble.com/you" },
   { key: "email", label: "Email", placeholder: "you@example.com" },
   { key: "website", label: "Website", placeholder: "https://yoursite.dev" },
+  { key: "cv", label: "CV / Resume URL", placeholder: "/cv.pdf or https://drive.google.com/..." },
 ];
 
 export default function AdminProfilePage() {

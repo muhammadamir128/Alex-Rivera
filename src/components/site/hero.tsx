@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight, Github, Linkedin, Twitter, Mail, Sparkles } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Github, Linkedin, Twitter, Mail, Sparkles, Download } from "lucide-react";
 import type { ProfileData } from "@/lib/data";
 import { Magnetic } from "@/components/site/magnetic";
 
@@ -45,18 +45,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
       <div className="mx-auto grid w-full max-w-6xl gap-8 sm:gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center lg:gap-10 xl:gap-14 px-4 sm:px-6">
         {/* Left: text */}
         <div className="flex flex-col items-start text-left">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 rounded-full glass px-3 py-1.5 text-xs font-medium text-foreground/80 shadow-sm"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-            </span>
-            <span>Available for select projects</span>
-          </motion.div>
+
 
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
@@ -118,6 +107,18 @@ export function Hero({ profile }: { profile: ProfileData }) {
                 <ArrowUpRight className="h-4 w-4" />
               </Link>
             </Magnetic>
+            <Magnetic strength={0.2}>
+              <a
+                href={s.cv || s.resume || "/cv.pdf"}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                className="inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all hover:bg-white/[0.08] hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Download className="h-4 w-4 text-blue-400" />
+                <span>Download CV</span>
+              </a>
+            </Magnetic>
           </motion.div>
 
           {/* socials */}
@@ -156,10 +157,8 @@ export function Hero({ profile }: { profile: ProfileData }) {
                 className="h-full w-full object-cover transition-transform duration-300"
                 style={{
                   objectPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
-                  transform:
-                    profile.stats?.avatarZoom && profile.stats.avatarZoom !== 100
-                      ? `scale(${profile.stats.avatarZoom / 100})`
-                      : undefined,
+                  transform: profile.stats?.avatarZoom && Number(profile.stats.avatarZoom) !== 100 ? `scale(${Number(profile.stats.avatarZoom) / 100})`
+                    : undefined,
                 }}
               />
             ) : (
