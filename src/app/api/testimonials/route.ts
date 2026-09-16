@@ -2,17 +2,13 @@ import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { ok, badRequest, serverError } from "@/lib/api";
 
-import { getTestimonials, FALLBACK_TESTIMONIALS } from "@/lib/data";
+import { getTestimonials } from "@/lib/data";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const approvedOnly = searchParams.get("approved") !== "false";
-  try {
-    const items = await getTestimonials(approvedOnly);
-    return ok(items);
-  } catch {
-    return ok(approvedOnly ? FALLBACK_TESTIMONIALS.filter((t) => t.approved) : FALLBACK_TESTIMONIALS);
-  }
+  const items = await getTestimonials(approvedOnly);
+  return ok(items);
 }
 
 export async function POST(request: NextRequest) {

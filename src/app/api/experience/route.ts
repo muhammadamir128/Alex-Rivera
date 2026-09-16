@@ -2,15 +2,11 @@ import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { ok, badRequest, serverError, stringifyJson } from "@/lib/api";
 
-import { getExperience, FALLBACK_EXPERIENCE } from "@/lib/data";
+import { getExperience } from "@/lib/data";
 
 export async function GET() {
-  try {
-    const items = await getExperience();
-    return ok(items);
-  } catch {
-    return ok(FALLBACK_EXPERIENCE);
-  }
+  const items = await getExperience();
+  return ok(items);
 }
 
 export async function POST(request: NextRequest) {

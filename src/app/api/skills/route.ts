@@ -2,15 +2,11 @@ import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { ok, badRequest, serverError } from "@/lib/api";
 
-import { getSkills, FALLBACK_SKILLS } from "@/lib/data";
+import { getSkills } from "@/lib/data";
 
 export async function GET() {
-  try {
-    const skills = await getSkills();
-    return ok(skills);
-  } catch {
-    return ok(FALLBACK_SKILLS);
-  }
+  const skills = await getSkills();
+  return ok(skills);
 }
 
 export async function POST(request: NextRequest) {

@@ -22,15 +22,11 @@ function normalize(profile: {
   };
 }
 
-import { getProfile, FALLBACK_PROFILE } from "@/lib/data";
+import { getProfile } from "@/lib/data";
 
 export async function GET() {
-  try {
-    const profile = await getProfile();
-    return ok(profile);
-  } catch {
-    return ok(FALLBACK_PROFILE);
-  }
+  const profile = await getProfile();
+  return ok(profile);
 }
 
 export async function PATCH(request: NextRequest) {

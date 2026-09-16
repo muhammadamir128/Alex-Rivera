@@ -5,7 +5,7 @@ import { parseJsonArray, stringifyJson } from "@/lib/api";
 import { slugify, uniqueSlug } from "@/lib/upload";
 import { getAdminWithRefresh } from "@/lib/session";
 
-import { getProjects, getProjectBySlug, FALLBACK_PROJECTS } from "@/lib/data";
+import { getProjectBySlug } from "@/lib/data";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -15,13 +15,8 @@ export async function GET(request: NextRequest) {
   const all = searchParams.get("all") === "true";
 
   if (slug) {
-    try {
-      const project = await getProjectBySlug(slug);
-      return ok(project);
-    } catch {
-      const fallback = FALLBACK_PROJECTS.find((p) => p.slug === slug);
-      return ok(fallback || null);
-    }
+    const project = await getProjectBySlug(slug);
+    return ok(project);
   }
 
   try {
@@ -39,23 +34,17 @@ export async function GET(request: NextRequest) {
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     });
 
-    if (projects && projects.length > 0) {
-      return ok(
-        projects.map((p) => ({
-          ...p,
-          techTags: parseJsonArray(p.techTags),
-          images: parseJsonArray(p.images),
-        }))
-      );
-    }
+    return ok(
+      projects.map((p) => ({
+        ...p,
+        techTags: parseJsonArray(p.techTags),
+        images: parseJsonArray(p.images),
+      }))
+    );
   } catch (e) {
-    console.warn("API GET /api/projects DB query failed, returning fallback:", (e as Error).message);
+    console.error("API GET /api/projects DB query failed:", (e as Error).message);
+    return ok([]);
   }
-
-  let result = FALLBACK_PROJECTS;
-  if (featured === "true") result = result.filter((p) => p.isFeatured);
-  if (tag) result = result.filter((p) => p.techTags.includes(tag));
-  return ok(result);
 }
 
 export async function POST(request: NextRequest) {
