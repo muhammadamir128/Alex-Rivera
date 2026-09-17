@@ -4,16 +4,15 @@ const prisma = new PrismaClient();
 
 async function check() {
   const profile = await prisma.profile.findFirst();
-  const skills = await prisma.skill.count();
-  const exp = await prisma.experience.count();
-  const projects = await prisma.project.count();
+  const skills = await prisma.skill.findMany();
+  const exp = await prisma.experience.findMany();
+  const edu = await prisma.education.findMany();
+  const projects = await prisma.project.findMany();
+  const testimonials = await prisma.testimonial.findMany();
 
-  console.log("=== NEON DB LIVE DATA ===");
-  console.log("Profile Name :", profile?.name);
-  console.log("Profile Title:", profile?.title);
-  console.log("Skills       :", skills);
-  console.log("Experience   :", exp);
-  console.log("Projects     :", projects);
+  console.log("=== DB DATA ===");
+  console.log("Profile:", JSON.stringify(profile, null, 2));
+  console.log("Education count:", edu.length, JSON.stringify(edu, null, 2));
   console.log("=========================");
 
   await prisma.$disconnect();

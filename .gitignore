@@ -27,6 +27,7 @@ _update-notifier-last-checked
 
 # databases & local data
 *.db
+!prisma/dev.db
 *.db-journal
 *.sqlite
 *.sqlite3
