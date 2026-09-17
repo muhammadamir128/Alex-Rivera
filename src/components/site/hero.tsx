@@ -45,14 +45,11 @@ export function Hero({ profile }: { profile: ProfileData }) {
       <div className="mx-auto grid w-full max-w-6xl gap-8 sm:gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center lg:gap-10 xl:gap-14 px-4 sm:px-6">
         {/* Left: text */}
         <div className="flex flex-col items-start text-left">
-
-
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.05 }}
-            className="mt-4 sm:mt-6 font-display text-[clamp(2.15rem,5.5vw+0.5rem,4.75rem)] font-bold leading-[1.05] tracking-tight text-balance"
-          >
+            className="mt-4 sm:mt-6 font-display text-[clamp(2.15rem,5.5vw+0.5rem,4.75rem)] font-bold leading-[1.05] tracking-tight text-balance">
             <span className="block text-foreground">{firstName}</span>
             {lastName && (
               <span className="block gradient-text animate-gradient-pan">
@@ -65,21 +62,18 @@ export function Hero({ profile }: { profile: ProfileData }) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-display text-base sm:text-lg font-medium text-foreground/90"
-          >
+            className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-display text-base sm:text-lg font-medium text-foreground/90" >
             <span className="text-foreground">{profile.title}</span>
             <span className="text-muted-foreground/40 hidden sm:inline">•</span>
             <RoleRotator
-              roles={["React Specialist", "Next.js & TypeScript", "API Architect", "UI/UX Craftsman"]}
-            />
+              roles={["React Specialist", "Next.js & TypeScript", "API Architect", "UI/UX Craftsman"]} />
           </motion.div>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.25 }}
-            className="mt-4 sm:mt-5 max-w-xl text-sm sm:text-base md:text-lg leading-relaxed text-muted-foreground text-balance"
-          >
+            className="mt-4 sm:mt-5 max-w-xl text-sm sm:text-base md:text-lg leading-relaxed text-muted-foreground text-balance" >
             {profile.tagline}
           </motion.p>
 
@@ -87,11 +81,9 @@ export function Hero({ profile }: { profile: ProfileData }) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.35 }}
-            className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3"
-          >
+            className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3" >
             <Magnetic strength={0.2}>
-              <Link
-                href="#work"
+              <Link href="#work"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-violet-600 px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-all hover:shadow-violet-600/50 hover:scale-[1.02] active:scale-[0.98]"
               >
                 <span>View work</span>
@@ -99,8 +91,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
               </Link>
             </Magnetic>
             <Magnetic strength={0.2}>
-              <Link
-                href="/contact"
+              <Link href="/contact"
                 className="inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all hover:bg-white/[0.08] hover:scale-[1.02] active:scale-[0.98]"
               >
                 <span>Get in touch</span>
@@ -121,7 +112,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
             </Magnetic>
           </motion.div>
 
-          {/* socials */}
+          {/* Socials */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -141,7 +132,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
           </motion.div>
         </div>
 
-        {/* Right: portrait card */}
+        {/* Right: portrait card with proper image display */}
         <motion.div
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -150,22 +141,18 @@ export function Hero({ profile }: { profile: ProfileData }) {
           className="relative mx-auto w-full max-w-[290px] xs:max-w-[320px] sm:max-w-[340px] lg:max-w-[330px] xl:max-w-[360px]"
         >
           <div className="relative aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl glass neon-border neon-glow">
-            {profile.avatarUrl ? (
-              <img
-                src={profile.avatarUrl}
-                alt={`Portrait of ${profile.name}`}
-                className="h-full w-full object-cover transition-transform duration-300"
-                style={{
-                  objectPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
-                  transform: profile.stats?.avatarZoom && Number(profile.stats.avatarZoom) !== 100 ? `scale(${Number(profile.stats.avatarZoom) / 100})`
+            <img
+              src={profile.avatarUrl || "/uploads/avatar-cropped-1789590640132-1789590640173.jpg"}
+              alt={`Portrait of ${profile.name}`}
+              className="h-full w-full object-cover transition-transform duration-300"
+              style={{
+                objectPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
+                transform:
+                  profile.stats?.avatarZoom && Number(profile.stats.avatarZoom) !== 100
+                    ? `scale(${Number(profile.stats.avatarZoom) / 100})`
                     : undefined,
-                }}
-              />
-            ) : (
-              <div className="grid h-full w-full place-items-center bg-gradient-to-br from-blue-600/30 to-violet-600/30">
-                <Sparkles className="h-12 w-12 text-white/40" />
-              </div>
-            )}
+              }}
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90" />
             <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex items-end justify-between">
               <div>
@@ -173,7 +160,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
                 <p className="text-xs text-white/70">{profile.title}</p>
               </div>
               <div className="rounded-full glass-strong px-2.5 py-1 text-[10px] font-medium text-white/90">
-                {profile.stats.yearsExperience ?? 3} yrs
+                {profile.stats?.yearsExperience ?? 2} yrs
               </div>
             </div>
           </div>
@@ -187,7 +174,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
           >
             <div className="glass-strong rounded-2xl px-3 py-2 text-center shadow-xl border border-white/10">
               <div className="font-display text-lg sm:text-xl font-bold gradient-text">
-                {profile.stats.projectsDelivered ?? 24}
+                {profile.stats?.projectsDelivered ?? 4}
               </div>
               <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
                 shipped
@@ -203,7 +190,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
           >
             <div className="glass-strong rounded-2xl px-3 py-2 text-center shadow-xl border border-white/10">
               <div className="font-display text-lg sm:text-xl font-bold gradient-text">
-                {profile.stats.technologies ?? 18}+
+                {profile.stats?.technologies ?? 14}+
               </div>
               <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
                 stack
@@ -211,11 +198,11 @@ export function Hero({ profile }: { profile: ProfileData }) {
             </div>
           </motion.div>
 
-          {/* Mobile compact stat pills (under the card on small mobile) */}
+          {/* Mobile compact stat pills */}
           <div className="mt-3 flex sm:hidden items-center justify-center gap-2">
             <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1">
               <div className="font-display text-sm font-bold gradient-text">
-                {profile.stats.projectsDelivered ?? 24}
+                {profile.stats?.projectsDelivered ?? 4}
               </div>
               <div className="text-[8px] uppercase tracking-wider text-muted-foreground">
                 shipped
@@ -223,7 +210,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
             </div>
             <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1">
               <div className="font-display text-sm font-bold gradient-text">
-                {profile.stats.technologies ?? 18}+
+                {profile.stats?.technologies ?? 14}+
               </div>
               <div className="text-[8px] uppercase tracking-wider text-muted-foreground">
                 stack
@@ -231,7 +218,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
             </div>
             <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1">
               <div className="font-display text-sm font-bold gradient-text">
-                {profile.stats.yearsExperience ?? 3} yrs
+                {profile.stats?.yearsExperience ?? 2} yrs
               </div>
               <div className="text-[8px] uppercase tracking-wider text-muted-foreground">
                 experience
