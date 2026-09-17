@@ -22,7 +22,6 @@ const ALLOWED_EXTS = new Set([
 export async function POST(request: NextRequest) {
   try {
     await requireAdmin();
-    await ensureUploadDir();
 
     const formData = await request.formData();
     const file = formData.get("file") ?? formData.get("image");
@@ -52,24 +51,58 @@ export async function POST(request: NextRequest) {
       return badRequest("Only image files are allowed");
     }
 
-    // Sanitize filename to avoid directory traversal or weird symbols
-    const originalBase = path.parse(blob.name || "upload").name;
-    const safeBase = slugify(originalBase) || "image";
-    const filename = `${safeBase}-${Date.now()}.${resolvedExt}`;
-    const destination = path.join(UPLOAD_DIR, filename);
-
-    // Save buffer
+    // Read buffer
     const arrayBuffer = await blob.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    await fs.writeFile(destination, buffer);
 
-    const publicUrl = `/uploads/${filename}`;
+    let finalBuffer: Buffer = buffer;
+    let finalMime = mime;
+    let finalExt = resolvedExt;
+
+    // Optimize image with sharp if not an SVG
+    if (mime !== "image/svg+xml" && !resolvedExt.includes("svg")) {
+      try {
+        const sharp = (await import("sharp")).default;
+        finalBuffer = await sharp(buffer)
+          .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
+          .webp({ quality: 82 })
+          .toBuffer();
+        finalMime = "image/webp";
+        finalExt = "webp";
+      } catch (sharpErr) {
+        console.warn("Image optimization with sharp skipped:", sharpErr);
+      }
+    }
+
+    // Sanitize filename
+    const originalBase = path.parse(blob.name || "upload").name;
+    const safeBase = slugify(originalBase) || "image";
+    const filename = `${safeBase}-${Date.now()}.${finalExt}`;
+
+    let publicUrl = "";
+
+    // If not in a serverless read-only environment like Vercel, try local filesystem write
+    if (!process.env.VERCEL) {
+      try {
+        await ensureUploadDir();
+        const destination = path.join(UPLOAD_DIR, filename);
+        await fs.writeFile(destination, finalBuffer);
+        publicUrl = `/uploads/${filename}`;
+      } catch (diskErr) {
+        console.warn("Disk write failed, using data URL fallback:", diskErr);
+      }
+    }
+
+    // If disk write failed or running in Vercel serverless (read-only filesystem), use optimized base64 data URL
+    if (!publicUrl) {
+      publicUrl = `data:${finalMime};base64,${finalBuffer.toString("base64")}`;
+    }
 
     return ok({
       url: publicUrl,
       name: filename,
-      size: blob.size,
-      mime,
+      size: finalBuffer.length,
+      mime: finalMime,
     });
   } catch (err) {
     console.error("Upload error:", err);

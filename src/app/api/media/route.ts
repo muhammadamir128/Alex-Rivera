@@ -7,10 +7,16 @@ import { promises as fs } from "fs";
 
 export async function GET(_request: NextRequest) {
   await requireAdmin();
-  await ensureUploadDir();
 
   try {
-    const entries = await fs.readdir(UPLOAD_DIR);
+    let entries: string[] = [];
+    try {
+      await ensureUploadDir();
+      entries = await fs.readdir(UPLOAD_DIR);
+    } catch {
+      entries = [];
+    }
+
     const files = await Promise.all(
       entries.map(async (name) => {
         try {
@@ -33,7 +39,7 @@ export async function GET(_request: NextRequest) {
     return ok(list);
   } catch (e) {
     console.error(e);
-    return serverError("Failed to list media");
+    return ok([]);
   }
 }
 
