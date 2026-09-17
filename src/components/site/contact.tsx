@@ -111,7 +111,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
                   </span>
                   <div>
                     <div className="text-xs uppercase tracking-wider text-muted-foreground">Based</div>
-                    <div className="text-sm font-medium text-foreground">Remote · UTC+1</div>
+                    <div className="text-sm font-medium text-foreground">Faisalabad, Punjab, Pakistan</div>
                   </div>
                 </div>
               </div>

@@ -76,7 +76,7 @@ export function About({ profile }: { profile: ProfileData }) {
               <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
                 <span className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                  Based remote · UTC+1
+                  Faisalabad, Pakistan · UTC+5
                 </span>
                 <span className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />

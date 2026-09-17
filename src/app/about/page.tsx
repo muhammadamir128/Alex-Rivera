@@ -146,7 +146,7 @@ export default async function AboutPage() {
                   <div className="absolute bottom-4 inset-x-4 flex items-center justify-between rounded-xl glass-strong p-3 text-xs">
                     <div className="flex items-center gap-2">
                       <MapPin className="h-3.5 w-3.5 text-blue-400" />
-                      <span>Remote · UTC+1</span>
+                      <span>Faisalabad, Pakistan (UTC+5)</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="h-3.5 w-3.5 text-violet-400" />

@@ -350,7 +350,7 @@ const htmlContent = `<!DOCTYPE html>
         <span class="icon">📱</span>
       </div>
       <div class="contact-item">
-        <span>Pakistan (Remote Worldwide)</span>
+        <span>Faisalabad, Punjab, Pakistan</span>
         <span class="icon">📍</span>
       </div>
       <div class="contact-item">

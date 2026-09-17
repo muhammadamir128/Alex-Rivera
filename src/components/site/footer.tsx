@@ -252,7 +252,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
                 <MapPin className="h-4 w-4 text-blue-400 shrink-0 mt-0.5" />
                 <div>
                   <div className="font-medium text-foreground">Location</div>
-                  <div className="text-xs">Pakistan (UTC+5) · Remote worldwide</div>
+                  <div className="text-xs">Faisalabad, Punjab, Pakistan (UTC+5)</div>
                 </div>
               </div>
 
