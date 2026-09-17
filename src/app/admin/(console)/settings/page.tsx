@@ -15,6 +15,10 @@ import {
   Eye,
   EyeOff,
   Download,
+  Upload,
+  FileUp,
+  AlertTriangle,
+  RefreshCw,
   Database,
   X,
   ExternalLink,
@@ -116,6 +120,56 @@ export default function AdminSettingsPage() {
       toast.error("Failed to export", { description: (e as Error).message });
     } finally {
       setExporting(false);
+    }
+  };
+
+  // ---- import / restore state ----
+  const [importing, setImporting] = useState(false);
+  const [importPreview, setImportPreview] = useState<any>(null);
+  const [importMode, setImportMode] = useState<"merge" | "overwrite">("merge");
+  const [showImportModal, setShowImportModal] = useState(false);
+
+  const handleFileSelect = (file: File | undefined) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target?.result as string;
+        const parsed = JSON.parse(text);
+        if (!parsed || typeof parsed !== "object") {
+          throw new Error("Invalid backup file format");
+        }
+        setImportPreview(parsed);
+        setShowImportModal(true);
+      } catch (err) {
+        toast.error("Failed to parse JSON backup", { description: (err as Error).message });
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleRestore = async () => {
+    if (!importPreview) return;
+    setImporting(true);
+    try {
+      const res = await api<{ ok: boolean; imported: any }>("/api/import", {
+        method: "POST",
+        body: JSON.stringify({
+          mode: importMode,
+          data: importPreview,
+        }),
+      });
+      toast.success("Backup restored successfully!", {
+        description: `Imported ${res.imported?.projects ?? 0} projects, ${res.imported?.skills ?? 0} skills, ${res.imported?.experience ?? 0} experiences, ${res.imported?.education ?? 0} education, ${res.imported?.testimonials ?? 0} testimonials.`,
+      });
+      setShowImportModal(false);
+      setImportPreview(null);
+      const updatedProfile = await api<Profile>("/api/profile");
+      setProfileData(updatedProfile);
+    } catch (e) {
+      toast.error("Failed to restore backup", { description: (e as Error).message });
+    } finally {
+      setImporting(false);
     }
   };
 
@@ -256,36 +310,77 @@ export default function AdminSettingsPage() {
         </div>
       </Section>
 
-      {/* Export data */}
+      {/* Backup & Restore data */}
       <Section
-        title="Export data"
+        title="Backup & Restore"
         icon={Database}
-        description="Download a full JSON snapshot of all your portfolio content — projects, skills, experience, testimonials, messages, and profile."
+        description="Safeguard or migrate your portfolio data. Export a full JSON backup snapshot or restore previously saved data."
       >
-        <div className="flex flex-col gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0">
-            <div className="text-sm font-medium text-foreground">portfolio-export.json</div>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              Includes all entities with their relationships. Safe to keep as a backup.
-            </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* Export card */}
+          <div className="flex flex-col justify-between rounded-xl border border-white/5 bg-white/[0.02] p-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <Download className="h-4 w-4 text-blue-400" />
+                <span className="text-sm font-semibold text-foreground">Export Data</span>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                Download a JSON snapshot of all projects, skills, experience, education, testimonials, messages, and profile data.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
+              <span className="text-[11px] text-muted-foreground font-mono">portfolio-export.json</span>
+              <Button
+                onClick={handleExport}
+                disabled={exporting}
+                size="sm"
+                className="gap-1.5 bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-90 h-8 text-xs"
+              >
+                {exporting ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Exporting…
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-3.5 w-3.5" />
+                    Download JSON
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-          <Button
-            onClick={handleExport}
-            disabled={exporting}
-            className="gap-2 bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-90"
-          >
-            {exporting ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Preparing…
-              </>
-            ) : (
-              <>
-                <Download className="h-4 w-4" />
-                Download JSON
-              </>
-            )}
-          </Button>
+
+          {/* Import / Restore card */}
+          <div className="flex flex-col justify-between rounded-xl border border-white/5 bg-white/[0.02] p-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <FileUp className="h-4 w-4 text-emerald-400" />
+                <span className="text-sm font-semibold text-foreground">Import & Restore</span>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                Restore or merge content from a JSON backup file. Preview and select merge or overwrite modes before restoring.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
+              <label className="cursor-pointer">
+                <div className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-white/10 transition-colors">
+                  <Upload className="h-3.5 w-3.5 text-emerald-400" />
+                  <span>Choose JSON file…</span>
+                </div>
+                <input
+                  type="file"
+                  accept=".json,application/json"
+                  className="hidden"
+                  onChange={(e) => {
+                    handleFileSelect(e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+              <span className="text-[10px] text-muted-foreground">.json format</span>
+            </div>
+          </div>
         </div>
       </Section>
 
@@ -636,6 +731,167 @@ export default function AdminSettingsPage() {
                     )}
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Restore Preview Modal */}
+      <AnimatePresence>
+        {showImportModal && importPreview && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => !importing && setShowImportModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="relative max-w-lg w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0c101c] shadow-2xl p-6 z-10 space-y-4"
+            >
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500/15 text-emerald-400">
+                    <FileUp className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-white">Restore Backup</h3>
+                    <p className="text-[11px] text-muted-foreground">Verify backup contents before applying</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowImportModal(false)}
+                  disabled={importing}
+                  className="grid h-7 w-7 place-items-center rounded-lg text-muted-foreground hover:bg-white/10 hover:text-white"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Items breakdown */}
+              <div className="grid grid-cols-3 gap-2 py-1">
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-2.5 text-center">
+                  <div className="text-base font-bold text-blue-400 font-mono">
+                    {Array.isArray(importPreview.projects) ? importPreview.projects.length : 0}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Projects</div>
+                </div>
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-2.5 text-center">
+                  <div className="text-base font-bold text-emerald-400 font-mono">
+                    {Array.isArray(importPreview.skills) ? importPreview.skills.length : 0}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Skills</div>
+                </div>
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-2.5 text-center">
+                  <div className="text-base font-bold text-violet-400 font-mono">
+                    {Array.isArray(importPreview.experience) ? importPreview.experience.length : 0}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Experience</div>
+                </div>
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-2.5 text-center">
+                  <div className="text-base font-bold text-cyan-400 font-mono">
+                    {Array.isArray(importPreview.education) ? importPreview.education.length : 0}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Education</div>
+                </div>
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-2.5 text-center">
+                  <div className="text-base font-bold text-amber-400 font-mono">
+                    {Array.isArray(importPreview.testimonials) ? importPreview.testimonials.length : 0}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Testimonials</div>
+                </div>
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-2.5 text-center">
+                  <div className="text-base font-bold text-rose-400 font-mono">
+                    {importPreview.profile ? "Yes" : "No"}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Profile Info</div>
+                </div>
+              </div>
+
+              {/* Mode Selection */}
+              <div className="space-y-2 border-t border-white/5 pt-3">
+                <Label className="text-xs">Import Mode</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setImportMode("merge")}
+                    className={cn(
+                      "flex flex-col items-start p-3 rounded-xl border text-left transition-all",
+                      importMode === "merge"
+                        ? "border-blue-500/50 bg-blue-500/10 text-white"
+                        : "border-white/5 bg-white/[0.02] text-muted-foreground hover:bg-white/5"
+                    )}
+                  >
+                    <div className="text-xs font-semibold text-foreground">Merge Data</div>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                      Adds new items & updates matches. Keeps existing records intact.
+                    </p>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImportMode("overwrite")}
+                    className={cn(
+                      "flex flex-col items-start p-3 rounded-xl border text-left transition-all",
+                      importMode === "overwrite"
+                        ? "border-red-500/50 bg-red-500/10 text-white"
+                        : "border-white/5 bg-white/[0.02] text-muted-foreground hover:bg-white/5"
+                    )}
+                  >
+                    <div className="text-xs font-semibold text-rose-300">Clean Overwrite</div>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                      Replaces existing collections completely with backup contents.
+                    </p>
+                  </button>
+                </div>
+              </div>
+
+              {importMode === "overwrite" && (
+                <div className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-200">
+                  <AlertTriangle className="h-4 w-4 shrink-0 text-red-400" />
+                  <span>Warning: Clean overwrite will replace your existing items with the backup records.</span>
+                </div>
+              )}
+
+              {/* Modal footer actions */}
+              <div className="flex items-center justify-end gap-2 border-t border-white/10 pt-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowImportModal(false)}
+                  disabled={importing}
+                  className="glass text-xs hover:bg-white/10"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleRestore}
+                  disabled={importing}
+                  size="sm"
+                  className={cn(
+                    "gap-1.5 text-xs text-white",
+                    importMode === "overwrite"
+                      ? "bg-red-600 hover:bg-red-700"
+                      : "bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90"
+                  )}
+                >
+                  {importing ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      Restoring…
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-3.5 w-3.5" />
+                      Apply Restore
+                    </>
+                  )}
+                </Button>
               </div>
             </motion.div>
           </div>

@@ -24,6 +24,10 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  SortableEducationList,
+  type SortableEducation,
+} from "@/components/admin/sortable-education-list";
+import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -194,12 +198,28 @@ export default function AdminEducationPage() {
     }
   };
 
+  const handleReorder = async (reordered: SortableEducation[]) => {
+    setData(reordered);
+    try {
+      await api("/api/education/reorder", {
+        method: "PATCH",
+        body: JSON.stringify({
+          items: reordered.map((s) => ({ id: s.id, order: s.order })),
+        }),
+      });
+      toast.success("Order saved", { description: "Education order updated" });
+    } catch (e) {
+      toast.error("Failed to save order", { description: (e as Error).message });
+      refetch();
+    }
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader
         eyebrow="Academic Background"
         title="Manage Education"
-        description="Add and organize your degrees, university qualifications, academic honors, and achievements."
+        description="Add and organize your degrees, university qualifications, academic honors, and achievements. Drag to reorder."
         icon={GraduationCap}
         action={
           <Button
@@ -227,91 +247,12 @@ export default function AdminEducationPage() {
           />
         </div>
       ) : (
-        <div className="grid gap-4">
-          {sorted.map((item) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="group relative overflow-hidden rounded-2xl glass p-6 transition-all hover:border-white/20 hover:bg-white/[0.04]"
-            >
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500/10 to-violet-500/20 text-blue-400 ring-1 ring-white/10 shadow-sm">
-                    <GraduationCap className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-display text-lg font-bold text-foreground">
-                        {item.degree}
-                      </h3>
-                      {item.current && (
-                        <Badge variant="outline" className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs">
-                          In Progress
-                        </Badge>
-                      )}
-                      {item.grade && (
-                        <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs">
-                          <Award className="mr-1 h-3 w-3" />
-                          {item.grade}
-                        </Badge>
-                      )}
-                    </div>
-
-                    <p className="mt-1 font-medium text-blue-400">
-                      {item.institution}
-                      {item.field && (
-                        <span className="text-muted-foreground font-normal"> · {item.field}</span>
-                      )}
-                    </p>
-
-                    <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1.5">
-                        <CalendarDays className="h-3.5 w-3.5 text-blue-400/80" />
-                        {formatDate(item.startDate)} — {item.current ? "Present" : formatDate(item.endDate || "")}
-                      </span>
-                      {item.location && (
-                        <span className="flex items-center gap-1.5">
-                          <MapPin className="h-3.5 w-3.5 text-muted-foreground/80" />
-                          {item.location}
-                        </span>
-                      )}
-                      <span className="text-muted-foreground/60 font-mono">
-                        Order #{item.order}
-                      </span>
-                    </div>
-
-                    {item.description && (
-                      <p className="mt-3 text-sm leading-relaxed text-muted-foreground max-w-3xl">
-                        {item.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 self-end sm:self-start">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openEdit(item)}
-                    className="h-8 gap-1.5 glass text-xs hover:bg-white/10"
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                    Edit
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setDeleteId(item.id)}
-                    className="h-8 w-8 p-0 text-muted-foreground hover:bg-red-500/10 hover:text-red-400"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        <SortableEducationList
+          items={sorted}
+          onReorder={handleReorder}
+          onEdit={openEdit}
+          onDelete={(id) => setDeleteId(id)}
+        />
       )}
 
       {/* Edit / Create Sheet */}

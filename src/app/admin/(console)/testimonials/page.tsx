@@ -13,9 +13,15 @@ import {
   Clock3,
   ImagePlus,
   CircleSlash,
+  LayoutGrid,
+  ArrowUpDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { api, uploadFile, useAsync } from "@/components/admin/use-async";
+import {
+  SortableTestimonialsList,
+  type SortableTestimonial,
+} from "@/components/admin/sortable-testimonials-list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -100,6 +106,24 @@ export default function AdminTestimonialsPage() {
   const [uploading, setUploading] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [viewMode, setViewMode] = useState<"cards" | "reorder">("cards");
+
+  const handleReorder = async (reordered: SortableTestimonial[]) => {
+    const reorderedMap = new Map(reordered.map((r) => [r.id, r]));
+    const nextAll = (data || []).map((t) => reorderedMap.get(t.id) || t);
+    setData(nextAll);
+    try {
+      await api("/api/testimonials/reorder", {
+        method: "PATCH",
+        body: JSON.stringify({
+          items: reordered.map((s) => ({ id: s.id, order: s.order })),
+        }),
+      });
+      toast.success("Order saved", { description: "Testimonials reordered" });
+    } catch (e) {
+      toast.error("Failed to save order", { description: (e as Error).message });
+    }
+  };
 
   const filtered = useMemo(() => {
     const list = data || [];
@@ -244,38 +268,65 @@ export default function AdminTestimonialsPage() {
         }
       />
 
-      <div className="flex flex-wrap items-center gap-2">
-        {([
-          { key: "all", label: "All", count: counts.all, icon: MessageSquareQuote },
-          { key: "approved", label: "Approved", count: counts.approved, icon: CheckCircle2 },
-          { key: "pending", label: "Pending", count: counts.pending, icon: Clock3 },
-        ] as const).map((f) => {
-          const active = filter === f.key;
-          const Icon = f.icon;
-          return (
-            <button
-              key={f.key}
-              onClick={() => setFilter(f.key)}
-              className={cn(
-                "flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition-all",
-                active
-                  ? "bg-gradient-to-r from-blue-500/20 to-violet-600/20 text-foreground ring-1 ring-white/15"
-                  : "bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground"
-              )}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {f.label}
-              <span
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {([
+            { key: "all", label: "All", count: counts.all, icon: MessageSquareQuote },
+            { key: "approved", label: "Approved", count: counts.approved, icon: CheckCircle2 },
+            { key: "pending", label: "Pending", count: counts.pending, icon: Clock3 },
+          ] as const).map((f) => {
+            const active = filter === f.key;
+            const Icon = f.icon;
+            return (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
                 className={cn(
-                  "ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold",
-                  active ? "bg-white/15" : "bg-white/5"
+                  "flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition-all",
+                  active
+                    ? "bg-gradient-to-r from-blue-500/20 to-violet-600/20 text-foreground ring-1 ring-white/15"
+                    : "bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground"
                 )}
               >
-                {f.count}
-              </span>
-            </button>
-          );
-        })}
+                <Icon className="h-3.5 w-3.5" />
+                {f.label}
+                <span
+                  className={cn(
+                    "ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold",
+                    active ? "bg-white/15" : "bg-white/5"
+                  )}
+                >
+                  {f.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
+          <button
+            onClick={() => setViewMode("cards")}
+            className={cn(
+              "flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors",
+              viewMode === "cards" ? "bg-white/10 text-white shadow-sm" : "text-muted-foreground hover:text-white"
+            )}
+            title="Card Grid View"
+          >
+            <LayoutGrid className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Cards</span>
+          </button>
+          <button
+            onClick={() => setViewMode("reorder")}
+            className={cn(
+              "flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors",
+              viewMode === "reorder" ? "bg-white/10 text-white shadow-sm" : "text-muted-foreground hover:text-white"
+            )}
+            title="Drag to Reorder"
+          >
+            <ArrowUpDown className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Reorder</span>
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -292,6 +343,14 @@ export default function AdminTestimonialsPage() {
             hint={filter === "pending" ? "No testimonials waiting for approval." : "Add a testimonial to get started."}
           />
         </div>
+      ) : viewMode === "reorder" ? (
+        <SortableTestimonialsList
+          items={filtered}
+          onReorder={handleReorder}
+          onEdit={openEdit}
+          onDelete={(id) => setDeleteId(id)}
+          onToggleApproved={toggleApproved}
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((t, i) => (

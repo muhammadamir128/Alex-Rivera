@@ -296,12 +296,13 @@ export async function getTestimonials(approvedOnly = true): Promise<TestimonialD
 }
 
 export async function getAllPortfolioData() {
-  const [profile, skills, experience, projects, testimonials] = await Promise.all([
+  const [profile, skills, experience, education, projects, testimonials] = await Promise.all([
     getProfile(),
     getSkills(),
     getExperience(),
+    getEducation(),
     getProjects(),
     getTestimonials(),
   ]);
-  return { profile, skills, experience, projects, testimonials };
+  return { profile, skills, experience, education, projects, testimonials };
 }

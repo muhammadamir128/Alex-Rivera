@@ -8,6 +8,9 @@ import {
   Inbox,
   MessageSquareQuote,
   Boxes,
+  Briefcase,
+  GraduationCap,
+  Plus,
   ArrowUpRight,
   Clock,
   ShieldCheck,
@@ -54,7 +57,10 @@ export default function AdminDashboardPage() {
     projects: 0,
     featured: 0,
     skills: 0,
+    experience: 0,
+    education: 0,
     testimonials: 0,
+    testimonialsPending: 0,
     unread: 0,
   });
   const [recentMessages, setRecentMessages] = useState<
@@ -76,9 +82,11 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     (async () => {
       try {
-        const [projects, skills, testimonials, messagesResp, me, profile] = await Promise.all([
+        const [projects, skills, experience, education, testimonials, messagesResp, me, profile] = await Promise.all([
           api<{ length: number } & unknown[]>("/api/projects"),
           api<unknown[]>("/api/skills"),
+          api<unknown[]>("/api/experience"),
+          api<unknown[]>("/api/education"),
           api<unknown[]>("/api/testimonials?approved=false"),
           api<{ items: any[] } | any[]>("/api/messages?filter=all"),
           api<AdminInfo>("/api/auth/me"),
@@ -94,11 +102,15 @@ export default function AdminDashboardPage() {
         const messages: any[] = Array.isArray(messagesResp)
           ? messagesResp
           : (messagesResp?.items || []);
+        const testimonialsList = Array.isArray(testimonials) ? testimonials : [];
         setStats({
           projects: Array.isArray(projects) ? projects.length : 0,
           featured: Array.isArray(projects) ? projects.filter((p: any) => p.isFeatured).length : 0,
           skills: Array.isArray(skills) ? skills.length : 0,
-          testimonials: Array.isArray(testimonials) ? testimonials.length : 0,
+          experience: Array.isArray(experience) ? experience.length : 0,
+          education: Array.isArray(education) ? education.length : 0,
+          testimonials: testimonialsList.length,
+          testimonialsPending: testimonialsList.filter((t: any) => !t.approved).length,
           unread: messages.filter((m: any) => !m.isRead).length,
         });
         setRecentMessages(
@@ -174,14 +186,6 @@ export default function AdminDashboardPage() {
       hint: `${stats.featured} featured`,
     },
     {
-      label: "Unread messages",
-      value: stats.unread,
-      icon: Inbox,
-      href: "/admin/messages",
-      color: "from-violet-500 to-fuchsia-500",
-      hint: "needs attention",
-    },
-    {
       label: "Skills tracked",
       value: stats.skills,
       icon: Boxes,
@@ -190,18 +194,42 @@ export default function AdminDashboardPage() {
       hint: "across categories",
     },
     {
+      label: "Experience roles",
+      value: stats.experience,
+      icon: Briefcase,
+      href: "/admin/experience",
+      color: "from-indigo-500 to-blue-400",
+      hint: "career milestones",
+    },
+    {
+      label: "Education",
+      value: stats.education,
+      icon: GraduationCap,
+      href: "/admin/education",
+      color: "from-teal-500 to-emerald-400",
+      hint: "academic degrees",
+    },
+    {
       label: "Testimonials",
       value: stats.testimonials,
       icon: MessageSquareQuote,
       href: "/admin/testimonials",
       color: "from-amber-500 to-orange-400",
-      hint: "in collection",
+      hint: `${stats.testimonialsPending} pending approval`,
+    },
+    {
+      label: "Unread messages",
+      value: stats.unread,
+      icon: Inbox,
+      href: "/admin/messages",
+      color: "from-violet-500 to-fuchsia-500",
+      hint: stats.unread > 0 ? "needs attention" : "all caught up",
     },
   ];
 
   return (
     <div className="space-y-6">
-      <header>
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -218,10 +246,42 @@ export default function AdminDashboardPage() {
             Here&apos;s what&apos;s happening with your portfolio today.
           </p>
         </motion.div>
+
+        {/* Quick Actions Buttons */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/projects"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:border-blue-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
+          >
+            <Plus className="h-3.5 w-3.5 text-blue-400" />
+            <span>Project</span>
+          </Link>
+          <Link
+            href="/admin/skills"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:border-emerald-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
+          >
+            <Plus className="h-3.5 w-3.5 text-emerald-400" />
+            <span>Skill</span>
+          </Link>
+          <Link
+            href="/admin/experience"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:border-violet-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
+          >
+            <Plus className="h-3.5 w-3.5 text-violet-400" />
+            <span>Experience</span>
+          </Link>
+          <Link
+            href="/admin/education"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:border-cyan-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
+          >
+            <Plus className="h-3.5 w-3.5 text-cyan-400" />
+            <span>Education</span>
+          </Link>
+        </div>
       </header>
 
       {/* stat cards */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((card, i) => {
           const Icon = card.icon;
           return (

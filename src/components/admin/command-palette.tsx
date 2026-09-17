@@ -51,7 +51,7 @@ const COMMANDS: Cmd[] = [
   { id: "public", label: "View public site", hint: "Open /", href: "/", icon: Home, group: "Public" },
 ];
 
-type ContentType = "project" | "skill" | "experience" | "testimonial" | "message";
+type ContentType = "project" | "skill" | "experience" | "education" | "testimonial" | "message";
 
 type ContentResult = {
   type: ContentType;
@@ -70,6 +70,7 @@ const CONTENT_ICON: Record<ContentType, React.ComponentType<{ className?: string
   project: FolderGit2,
   skill: Boxes,
   experience: Briefcase,
+  education: GraduationCap,
   testimonial: MessageSquareQuote,
   message: Inbox,
 };

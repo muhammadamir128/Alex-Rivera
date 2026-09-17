@@ -10,11 +10,12 @@ import { requireAdmin } from "@/lib/session";
 export async function GET(_request: NextRequest) {
   await requireAdmin();
 
-  const [projects, skills, experience, testimonials, messages, profile, admin] =
+  const [projects, skills, experience, education, testimonials, messages, profile, admin] =
     await Promise.all([
       db.project.findMany({ orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
       db.skill.findMany({ orderBy: [{ order: "asc" }, { name: "asc" }] }),
       db.experience.findMany({ orderBy: [{ order: "asc" }, { startDate: "desc" }] }),
+      db.education.findMany({ orderBy: [{ order: "asc" }, { startDate: "desc" }] }),
       db.testimonial.findMany({
         orderBy: [{ order: "asc" }, { createdAt: "desc" }],
       }),
@@ -45,6 +46,7 @@ export async function GET(_request: NextRequest) {
       ...e,
       techUsed: parseJsonArray(e.techUsed),
     })),
+    education,
     testimonials,
     // Omit message bodies from the export? No — admin owns the data, include
     // them so the export is a complete backup. (They're already

@@ -4,7 +4,7 @@ import { ok, parseJsonArray } from "@/lib/api";
 import { requireAdmin } from "@/lib/session";
 
 type SearchResult = {
-  type: "project" | "skill" | "experience" | "testimonial" | "message";
+  type: "project" | "skill" | "experience" | "education" | "testimonial" | "message";
   id: string;
   title: string;
   subtitle: string | null;
@@ -18,6 +18,7 @@ const MAX_PER_GROUP = 3;
  *   - projects: title + description
  *   - skills:   name
  *   - experience: role + company
+ *   - education: degree + institution + field
  *   - testimonials: name + message
  *   - messages: name + email + body
  *
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
     return terms.every((t) => lower.includes(t));
   };
 
-  const [projects, skills, experience, testimonials, messages] = await Promise.all([
+  const [projects, skills, experience, education, testimonials, messages] = await Promise.all([
     db.project.findMany({
       where: { OR: [{ title: { contains: raw } }, { description: { contains: raw } }] },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
@@ -67,6 +68,18 @@ export async function GET(request: NextRequest) {
       orderBy: [{ order: "asc" }, { startDate: "desc" }],
       take: MAX_PER_GROUP,
       select: { id: true, role: true, company: true, startDate: true, endDate: true, current: true },
+    }),
+    db.education.findMany({
+      where: {
+        OR: [
+          { degree: { contains: raw } },
+          { institution: { contains: raw } },
+          { field: { contains: raw } },
+        ],
+      },
+      orderBy: [{ order: "asc" }, { startDate: "desc" }],
+      take: MAX_PER_GROUP,
+      select: { id: true, degree: true, institution: true, field: true, startDate: true, endDate: true },
     }),
     db.testimonial.findMany({
       where: {
@@ -125,6 +138,16 @@ export async function GET(request: NextRequest) {
       href: "/admin/experience",
     }));
 
+  const educationResults: SearchResult[] = education
+    .filter((e) => matchesAll(`${e.degree} ${e.institution} ${e.field || ""}`))
+    .map((e) => ({
+      type: "education" as const,
+      id: e.id,
+      title: e.degree,
+      subtitle: `${e.institution}${e.field ? ` · ${e.field}` : ""}`,
+      href: "/admin/education",
+    }));
+
   const testimonialResults: SearchResult[] = testimonials
     .filter((t) => matchesAll(`${t.name} ${t.message}`))
     .map((t) => ({
@@ -149,6 +172,7 @@ export async function GET(request: NextRequest) {
     { type: "project" as const, label: "Projects", results: projectResults },
     { type: "skill" as const, label: "Skills", results: skillResults },
     { type: "experience" as const, label: "Experience", results: experienceResults },
+    { type: "education" as const, label: "Education", results: educationResults },
     { type: "testimonial" as const, label: "Testimonials", results: testimonialResults },
     { type: "message" as const, label: "Messages", results: messageResults },
   ].filter((g) => g.results.length > 0);
