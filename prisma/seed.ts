@@ -293,34 +293,82 @@ async function main() {
   }
   console.log(`✓ ${testimonials.length} testimonials seeded`);
 
-  // --- Sample messages ---
+  // --- Sample messages with distributed recent dates ---
   await prisma.message.deleteMany({});
-  await prisma.message.createMany({
-    data: [
-      {
-        name: "Dana Foster",
-        email: "dana@northwind.io",
-        message:
-          "Hi Alex — we're putting together a small team for a 6-month build and your portfolio stood out. Could we set up a 30-min intro call next week?",
-        isRead: false,
-      },
-      {
-        name: "Chris Mehta",
-        email: "chris@studio-nine.com",
-        message:
-          "Loved the Aurora Analytics writeup. Curious whether the event pipeline approach would fit a smaller dataset (~50M rows/month).",
-        isRead: true,
-      },
-      {
-        name: "Lena Park",
-        email: "lena@designhouse.co",
-        message:
-          "Your design system work is exactly what our team needs help with right now. Are you available for a contract engagement in Q2?",
-        isRead: false,
-      },
-    ],
-  });
-  console.log("✓ Messages seeded");
+  const now = new Date();
+  const sampleMessages = [
+    {
+      name: "Dana Foster",
+      email: "dana@northwind.io",
+      message:
+        "Hi Alex — we're putting together a small team for a 6-month build and your portfolio stood out. Could we set up a 30-min intro call next week?",
+      isRead: false,
+      createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 5), // 5 hours ago
+    },
+    {
+      name: "Chris Mehta",
+      email: "chris@studio-nine.com",
+      message:
+        "Loved the Aurora Analytics writeup. Curious whether the event pipeline approach would fit a smaller dataset (~50M rows/month).",
+      isRead: true,
+      createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
+    },
+    {
+      name: "Lena Park",
+      email: "lena@designhouse.co",
+      message:
+        "Your design system work is exactly what our team needs help with right now. Are you available for a contract engagement in Q2?",
+      isRead: false,
+      createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 5), // 5 days ago
+    },
+    {
+      name: "Marcus Vance",
+      email: "marcus@finscale.tech",
+      message:
+        "Incredible portfolio! We are scaling our Next.js frontend architecture and would love your consulting guidance.",
+      isRead: true,
+      createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 8), // 8 days ago
+    },
+    {
+      name: "Elena Rostova",
+      email: "elena@craftdigital.com",
+      message:
+        "Hey! Are you currently taking on freelance projects for Q4? Let's connect.",
+      isRead: true,
+      createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 11), // 11 days ago
+    },
+  ];
+
+  for (const m of sampleMessages) {
+    await prisma.message.create({ data: m });
+  }
+  console.log(`✓ ${sampleMessages.length} messages seeded with distributed dates`);
+
+  // --- Page Views ---
+  await prisma.pageView.deleteMany({});
+  const pageViewsData: { path: string; slug: string | null; day: string; createdAt: Date }[] = [];
+  const projectSlugs = ["aurora-analytics", "lumen-commerce", "pulse-chat", "trailhead-cms", "fern-finance", "atlas-docs"];
+
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const ymd = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const dailyCount = Math.round(8 + Math.sin(i * 0.7) * 5 + (i % 3 === 0 ? 3 : 0));
+
+    for (let c = 0; c < dailyCount; c++) {
+      const isProject = Math.random() > 0.4;
+      const slug = isProject ? projectSlugs[Math.floor(Math.random() * projectSlugs.length)] : null;
+      const path = slug ? `/projects/${slug}` : (Math.random() > 0.5 ? "/" : "/about");
+      pageViewsData.push({
+        path,
+        slug,
+        day: ymd,
+        createdAt: new Date(d.getTime() + c * 1000 * 60 * 45),
+      });
+    }
+  }
+  await prisma.pageView.createMany({ data: pageViewsData });
+  console.log(`✓ ${pageViewsData.length} page views seeded across 30 days`);
 
   console.log("\n--- Seed complete ---");
   console.log(`Admin login: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);

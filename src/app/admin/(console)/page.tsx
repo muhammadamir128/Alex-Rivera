@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import { AnalyticsWidget } from "@/components/admin/analytics-widget";
 
-// Lazy-load the chart (recharts is heavy) to keep the dashboard compile light.
+// Lazy-load charts (recharts is heavy) to keep the dashboard compile light.
 const MessagesActivityChart = dynamic(
   () => import("@/components/admin/messages-activity-chart").then((m) => m.MessagesActivityChart),
   {
@@ -35,6 +35,45 @@ const MessagesActivityChart = dynamic(
       <div className="rounded-2xl glass p-5">
         <div className="h-4 w-32 animate-pulse rounded bg-white/5" />
         <div className="mt-4 h-32 animate-pulse rounded bg-white/[0.02]" />
+      </div>
+    ),
+  }
+);
+
+const SkillsBreakdownChart = dynamic(
+  () => import("@/components/admin/skills-breakdown-chart").then((m) => m.SkillsBreakdownChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-2xl glass p-5">
+        <div className="h-4 w-32 animate-pulse rounded bg-white/5" />
+        <div className="mt-4 h-52 animate-pulse rounded bg-white/[0.02]" />
+      </div>
+    ),
+  }
+);
+
+const ProjectTechChart = dynamic(
+  () => import("@/components/admin/project-tech-chart").then((m) => m.ProjectTechChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-2xl glass p-5">
+        <div className="h-4 w-32 animate-pulse rounded bg-white/5" />
+        <div className="mt-4 h-52 animate-pulse rounded bg-white/[0.02]" />
+      </div>
+    ),
+  }
+);
+
+const ContentDistributionChart = dynamic(
+  () => import("@/components/admin/content-distribution-chart").then((m) => m.ContentDistributionChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-2xl glass p-5">
+        <div className="h-4 w-32 animate-pulse rounded bg-white/5" />
+        <div className="mt-4 h-52 animate-pulse rounded bg-white/[0.02]" />
       </div>
     ),
   }
@@ -63,11 +102,14 @@ export default function AdminDashboardPage() {
     testimonialsPending: 0,
     unread: 0,
   });
+  const [rawProjects, setRawProjects] = useState<any[]>([]);
+  const [rawSkills, setRawSkills] = useState<any[]>([]);
+  const [analyticsSummary, setAnalyticsSummary] = useState<any | null>(null);
   const [recentMessages, setRecentMessages] = useState<
     { id: string; name: string; email: string; message: string; createdAt: string; isRead: boolean }[]
   >([]);
   const [allMessages, setAllMessages] = useState<
-    { id: string; createdAt: string; isRead: boolean }[]
+    { id: string; createdAt: string; isRead: boolean; name?: string }[]
   >([]);
   const [admin, setAdmin] = useState<AdminInfo["admin"] | null>(null);
   const [completeness, setCompleteness] = useState<{
@@ -82,7 +124,7 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     (async () => {
       try {
-        const [projects, skills, experience, education, testimonials, messagesResp, me, profile] = await Promise.all([
+        const [projects, skills, experience, education, testimonials, messagesResp, me, profile, analyticsData] = await Promise.all([
           api<{ length: number } & unknown[]>("/api/projects"),
           api<unknown[]>("/api/skills"),
           api<unknown[]>("/api/experience"),
@@ -97,16 +139,28 @@ export default function AdminDashboardPage() {
             seo: Record<string, string>;
             stats: Record<string, number>;
           }>("/api/profile"),
+          fetch("/api/analytics/summary", { cache: "no-store" })
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null),
         ]);
         // Messages API now returns a paginated envelope { items, total, ... }.
         const messages: any[] = Array.isArray(messagesResp)
           ? messagesResp
           : (messagesResp?.items || []);
         const testimonialsList = Array.isArray(testimonials) ? testimonials : [];
+        const projectsList = Array.isArray(projects) ? projects : [];
+        const skillsList = Array.isArray(skills) ? skills : [];
+
+        setRawProjects(projectsList);
+        setRawSkills(skillsList);
+        if (analyticsData) {
+          setAnalyticsSummary(analyticsData);
+        }
+
         setStats({
-          projects: Array.isArray(projects) ? projects.length : 0,
-          featured: Array.isArray(projects) ? projects.filter((p: any) => p.isFeatured).length : 0,
-          skills: Array.isArray(skills) ? skills.length : 0,
+          projects: projectsList.length,
+          featured: projectsList.filter((p: any) => p.isFeatured).length,
+          skills: skillsList.length,
           experience: Array.isArray(experience) ? experience.length : 0,
           education: Array.isArray(education) ? education.length : 0,
           testimonials: testimonialsList.length,
@@ -126,6 +180,7 @@ export default function AdminDashboardPage() {
         setAllMessages(
           messages.map((m: any) => ({
             id: m.id,
+            name: m.name,
             createdAt: m.createdAt,
             isRead: m.isRead,
           }))
@@ -319,12 +374,27 @@ export default function AdminDashboardPage() {
         })}
       </div>
 
-      {/* messages activity chart */}
-      <MessagesActivityChart messages={recentMessages.length > 0 ? allMessages : []} />
+      {/* Interactive Portfolio Activity & Inquiries Chart */}
+      <MessagesActivityChart
+        messages={allMessages}
+        viewsData={analyticsSummary?.daily30 || analyticsSummary?.daily || []}
+      />
+
+      {/* Row of dedicated domain & project charts */}
+      <div className="grid gap-5 lg:grid-cols-2">
+        <SkillsBreakdownChart skills={rawSkills} />
+        <ProjectTechChart
+          projects={rawProjects}
+          projectViews={analyticsSummary?.projectViews || []}
+        />
+      </div>
 
       <div className="grid gap-5 lg:grid-cols-3">
-        {/* recent messages */}
-        <div className="lg:col-span-2">
+        {/* Left: Content Distribution & Recent messages */}
+        <div className="lg:col-span-2 space-y-5">
+          <ContentDistributionChart stats={stats} />
+
+          {/* recent messages */}
           <div className="rounded-2xl glass p-5">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="font-display text-base font-semibold">Recent messages</h2>

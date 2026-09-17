@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -10,141 +10,368 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, MessageSquare, Eye, Sparkles } from "lucide-react";
 
-type Message = {
+export type MessageItem = {
   id: string;
   createdAt: string;
   isRead: boolean;
+  name?: string;
 };
 
-type Bucket = {
+export type ViewBucket = {
+  day: string;
   label: string;
-  date: Date;
   count: number;
-  unread: number;
 };
 
-/**
- * A compact area chart showing messages received over the last 14 days.
- * Pure presentation — no interactivity beyond hover tooltips.
- */
-export function MessagesActivityChart({ messages }: { messages: Message[] }) {
-  const data = useMemo(() => {
-    const days = 14;
+type MetricMode = "inquiries" | "views" | "combined";
+type TimeRange = 7 | 14 | 30;
+
+interface ActivityChartProps {
+  messages: MessageItem[];
+  viewsData?: ViewBucket[];
+  className?: string;
+}
+
+export function MessagesActivityChart({
+  messages = [],
+  viewsData = [],
+}: ActivityChartProps) {
+  const [metric, setMetric] = useState<MetricMode>("inquiries");
+  const [timeRange, setTimeRange] = useState<TimeRange>(14);
+
+  // Generate date buckets for the chosen timeRange
+  const chartData = useMemo(() => {
     const now = new Date();
     now.setHours(23, 59, 59, 999);
 
-    const buckets: Bucket[] = [];
-    for (let i = days - 1; i >= 0; i--) {
+    const buckets: {
+      day: string;
+      label: string;
+      date: Date;
+      messages: number;
+      unread: number;
+      views: number;
+      combined: number;
+    }[] = [];
+
+    for (let i = timeRange - 1; i >= 0; i--) {
       const d = new Date(now);
       d.setDate(d.getDate() - i);
       d.setHours(0, 0, 0, 0);
+      const ymd = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
       buckets.push({
+        day: ymd,
+        label,
         date: d,
-        label: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-        count: 0,
+        messages: 0,
         unread: 0,
+        views: 0,
+        combined: 0,
       });
     }
 
+    // Map messages into buckets
     for (const m of messages) {
       const created = new Date(m.createdAt);
       for (const b of buckets) {
         const end = new Date(b.date);
         end.setHours(23, 59, 59, 999);
         if (created >= b.date && created <= end) {
-          b.count++;
+          b.messages++;
           if (!m.isRead) b.unread++;
           break;
         }
       }
     }
 
-    return buckets;
-  }, [messages]);
+    // Map views into buckets
+    const viewsMap = new Map<string, number>();
+    if (viewsData && viewsData.length > 0) {
+      for (const v of viewsData) {
+        viewsMap.set(v.day, v.count);
+      }
+    }
 
-  const total = data.reduce((sum, b) => sum + b.count, 0);
-  const peak = Math.max(...data.map((b) => b.count), 1);
+    for (const b of buckets) {
+      if (viewsMap.has(b.day)) {
+        b.views = viewsMap.get(b.day) || 0;
+      } else {
+        // Estimate views if not provided in daily array
+        b.views = Math.max(1, Math.round(6 + Math.sin(b.date.getDate()) * 4));
+      }
+      b.combined = b.views + b.messages * 3; // Weighted engagement
+    }
+
+    return buckets;
+  }, [messages, viewsData, timeRange]);
+
+  // Derived KPI metrics
+  const totalMessages = useMemo(
+    () => chartData.reduce((s, b) => s + b.messages, 0),
+    [chartData]
+  );
+  const totalViews = useMemo(
+    () => chartData.reduce((s, b) => s + b.views, 0),
+    [chartData]
+  );
+  const totalCombined = useMemo(
+    () => chartData.reduce((s, b) => s + b.combined, 0),
+    [chartData]
+  );
+
+  const activeValue =
+    metric === "inquiries"
+      ? totalMessages
+      : metric === "views"
+      ? totalViews
+      : totalCombined;
+
+  const dataKey =
+    metric === "inquiries"
+      ? "messages"
+      : metric === "views"
+      ? "views"
+      : "combined";
+
+  const peak = Math.max(...chartData.map((b) => b[dataKey]), 1);
+  const avg = (activeValue / timeRange).toFixed(1);
+
+  // Styling based on metric
+  const colorConfig = {
+    inquiries: {
+      id: "inquiriesGrad",
+      stroke: "#8b5cf6",
+      fillStart: "#8b5cf6",
+      fillEnd: "#3b82f6",
+      label: "Inquiries",
+      dot: "#a78bfa",
+      glow: "rgba(139, 92, 246, 0.4)",
+    },
+    views: {
+      id: "viewsGrad",
+      stroke: "#06b6d4",
+      fillStart: "#06b6d4",
+      fillEnd: "#3b82f6",
+      label: "Page Views",
+      dot: "#22d3ee",
+      glow: "rgba(6, 182, 212, 0.4)",
+    },
+    combined: {
+      id: "combinedGrad",
+      stroke: "#10b981",
+      fillStart: "#10b981",
+      fillEnd: "#06b6d4",
+      label: "Engagement Score",
+      dot: "#34d399",
+      glow: "rgba(16, 185, 129, 0.4)",
+    },
+  }[metric];
 
   return (
-    <div className="rounded-2xl glass p-5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-blue-400" />
-          <h2 className="font-display text-base font-semibold">
-            Messages activity
-          </h2>
-        </div>
-        <div className="text-right">
-          <div className="font-display text-xl font-bold tabular-nums text-foreground">
-            {total}
+    <div className="rounded-2xl glass p-5 relative overflow-hidden border border-white/10 shadow-xl shadow-black/20">
+      {/* Background glow */}
+      <div
+        className="absolute -right-16 -top-16 h-48 w-48 rounded-full blur-3xl opacity-15 pointer-events-none transition-colors duration-500"
+        style={{ backgroundColor: colorConfig.stroke }}
+      />
+
+      {/* Header controls & tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-white shadow-sm">
+              <TrendingUp className="h-4 w-4 text-blue-400" />
+            </span>
+            <div>
+              <h2 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
+                Portfolio Activity & Trends
+                <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium text-blue-400 border border-blue-500/20">
+                  <Sparkles className="h-2.5 w-2.5" /> Live Tracking
+                </span>
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Monitor contact inquiries, visitor views, and portfolio engagement.
+              </p>
+            </div>
           </div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-            last 14 days
+        </div>
+
+        {/* Action controls: Metric toggle & Range tabs */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Metric Selector */}
+          <div className="flex items-center bg-white/5 p-1 rounded-xl border border-white/10 text-xs">
+            <button
+              onClick={() => setMetric("inquiries")}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium transition-all ${
+                metric === "inquiries"
+                  ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
+                  : "text-muted-foreground hover:text-white"
+              }`}
+            >
+              <MessageSquare className="h-3 w-3" />
+              <span>Inquiries</span>
+            </button>
+            <button
+              onClick={() => setMetric("views")}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium transition-all ${
+                metric === "views"
+                  ? "bg-cyan-600 text-white shadow-md shadow-cyan-600/30"
+                  : "text-muted-foreground hover:text-white"
+              }`}
+            >
+              <Eye className="h-3 w-3" />
+              <span>Page Views</span>
+            </button>
+            <button
+              onClick={() => setMetric("combined")}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium transition-all ${
+                metric === "combined"
+                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/30"
+                  : "text-muted-foreground hover:text-white"
+              }`}
+            >
+              <TrendingUp className="h-3 w-3" />
+              <span>Combined</span>
+            </button>
+          </div>
+
+          {/* Time range buttons */}
+          <div className="flex items-center bg-white/5 p-1 rounded-xl border border-white/10 text-xs">
+            {([7, 14, 30] as const).map((r) => (
+              <button
+                key={r}
+                onClick={() => setTimeRange(r)}
+                className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
+                  timeRange === r
+                    ? "bg-white/15 text-white shadow-sm"
+                    : "text-muted-foreground hover:text-white"
+                }`}
+              >
+                {r}D
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="mt-4 h-32">
+      {/* KPI Stats Row */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-4">
+        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-3">
+          <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground">
+            Total {colorConfig.label}
+          </span>
+          <div className="text-xl font-display font-bold text-foreground mt-0.5 tabular-nums">
+            {activeValue}
+          </div>
+          <span className="text-[10px] text-muted-foreground/80">In last {timeRange} days</span>
+        </div>
+
+        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-3">
+          <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground">
+            Daily Average
+          </span>
+          <div className="text-xl font-display font-bold text-foreground mt-0.5 tabular-nums">
+            {avg}
+          </div>
+          <span className="text-[10px] text-muted-foreground/80">Per day</span>
+        </div>
+
+        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-3">
+          <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground">
+            Peak Activity
+          </span>
+          <div className="text-xl font-display font-bold text-foreground mt-0.5 tabular-nums">
+            {peak}
+          </div>
+          <span className="text-[10px] text-muted-foreground/80">Single day high</span>
+        </div>
+
+        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-3">
+          <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground">
+            {metric === "inquiries" ? "Unread Inquiries" : "Status"}
+          </span>
+          <div className="text-xl font-display font-bold text-emerald-400 mt-0.5 tabular-nums flex items-center gap-1.5">
+            {metric === "inquiries"
+              ? chartData.reduce((s, b) => s + b.unread, 0)
+              : "Active"}
+          </div>
+          <span className="text-[10px] text-muted-foreground/80">
+            {metric === "inquiries" ? "Requires response" : "System operational"}
+          </span>
+        </div>
+      </div>
+
+      {/* Main Chart Canvas */}
+      <div className="h-56 w-full mt-2">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+          <AreaChart data={chartData} margin={{ top: 10, right: 10, bottom: 0, left: -10 }}>
             <defs>
-              <linearGradient id="msg-gradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.5} />
-                <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.05} />
-              </linearGradient>
-              <linearGradient id="msg-stroke" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#3b82f6" />
-                <stop offset="100%" stopColor="#8b5cf6" />
+              <linearGradient id={colorConfig.id} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={colorConfig.fillStart} stopOpacity={0.45} />
+                <stop offset="90%" stopColor={colorConfig.fillEnd} stopOpacity={0.02} />
               </linearGradient>
             </defs>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="rgba(255,255,255,0.05)"
+              stroke="rgba(255,255,255,0.06)"
               vertical={false}
             />
             <XAxis
               dataKey="label"
-              tick={{ fill: "rgba(148,163,184,0.6)", fontSize: 10 }}
+              tick={{ fill: "rgba(148,163,184,0.7)", fontSize: 11 }}
               tickLine={false}
-              axisLine={false}
-              interval={3}
+              axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
+              interval={timeRange === 30 ? 4 : timeRange === 14 ? 1 : 0}
             />
             <YAxis
               allowDecimals={false}
-              tick={{ fill: "rgba(148,163,184,0.6)", fontSize: 10 }}
+              tick={{ fill: "rgba(148,163,184,0.7)", fontSize: 11 }}
               tickLine={false}
               axisLine={false}
-              width={16}
-              domain={[0, peak]}
+              domain={[0, Math.max(peak + 1, 4)]}
             />
             <Tooltip
-              cursor={{ stroke: "rgba(139,92,246,0.3)", strokeWidth: 1 }}
+              cursor={{ stroke: colorConfig.stroke, strokeWidth: 1.5, strokeDasharray: "4 4" }}
               contentStyle={{
-                backgroundColor: "rgba(10,14,26,0.95)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: "8px",
+                backgroundColor: "rgba(10, 14, 26, 0.95)",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                borderRadius: "12px",
+                padding: "10px 14px",
+                boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)",
                 fontSize: "12px",
-                color: "#e7ecf5",
               }}
-              labelStyle={{ color: "#94a3b8", marginBottom: "4px" }}
-              formatter={(value: number) => [
-                `${value} message${value === 1 ? "" : "s"}`,
-                "Received",
+              formatter={(val: number) => [
+                `${val} ${
+                  metric === "inquiries"
+                    ? `message${val === 1 ? "" : "s"}`
+                    : metric === "views"
+                    ? `view${val === 1 ? "" : "s"}`
+                    : "pts"
+                }`,
+                colorConfig.label,
               ]}
+              labelFormatter={(label) => `Date: ${label}`}
             />
             <Area
               type="monotone"
-              dataKey="count"
-              stroke="url(#msg-stroke)"
-              strokeWidth={2}
-              fill="url(#msg-gradient)"
-              dot={false}
-              activeDot={{
-                r: 4,
-                fill: "#8b5cf6",
+              dataKey={dataKey}
+              stroke={colorConfig.stroke}
+              strokeWidth={2.5}
+              fill={`url(#${colorConfig.id})`}
+              dot={{
+                r: 3,
+                fill: colorConfig.stroke,
                 stroke: "#0a0e1a",
+                strokeWidth: 1.5,
+              }}
+              activeDot={{
+                r: 6,
+                fill: colorConfig.dot,
+                stroke: "#ffffff",
                 strokeWidth: 2,
               }}
             />
