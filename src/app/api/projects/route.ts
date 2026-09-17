@@ -5,7 +5,7 @@ import { parseJsonArray, stringifyJson } from "@/lib/api";
 import { slugify, uniqueSlug } from "@/lib/upload";
 import { getAdminWithRefresh } from "@/lib/session";
 
-import { getProjectBySlug } from "@/lib/data";
+import { getProjectBySlug, DEFAULT_PROJECTS } from "@/lib/data";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -29,21 +29,72 @@ export async function GET(request: NextRequest) {
     if (featured === "true") where.isFeatured = true;
     if (tag) where.techTags = { contains: tag };
 
-    const projects = await db.project.findMany({
-      where,
-      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-    });
+    let projects: any[] = [];
+    try {
+      projects = await db.project.findMany({
+        where,
+        orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+      });
+    } catch (dbErr) {
+      console.warn("db.project.findMany failed on Vercel:", dbErr);
+    }
 
-    return ok(
-      projects.map((p) => ({
-        ...p,
-        techTags: parseJsonArray(p.techTags),
-        images: parseJsonArray(p.images),
-      }))
-    );
+    if (projects && projects.length > 0) {
+      return ok(
+        projects.map((p) => ({
+          ...p,
+          techTags: parseJsonArray(p.techTags),
+          images: parseJsonArray(p.images),
+        }))
+      );
+    }
+
+    // If database was empty and writable, try to auto-seed
+    try {
+      for (const p of DEFAULT_PROJECTS) {
+        await db.project.upsert({
+          where: { slug: p.slug },
+          update: {},
+          create: {
+            id: p.id,
+            title: p.title,
+            slug: p.slug,
+            description: p.description,
+            caseStudy: p.caseStudy,
+            coverImage: p.coverImage,
+            images: stringifyJson(p.images),
+            techTags: stringifyJson(p.techTags),
+            liveUrl: p.liveUrl,
+            repoUrl: p.repoUrl,
+            isFeatured: p.isFeatured,
+            isPublished: p.isPublished,
+            order: p.order,
+          },
+        });
+      }
+    } catch {
+      // ignore if read-only on Vercel
+    }
+
+    // Return DEFAULT_PROJECTS as fallback
+    let fallback = DEFAULT_PROJECTS;
+    if (!includeUnpublished) {
+      fallback = fallback.filter((p) => p.isPublished);
+    }
+    if (featured === "true") {
+      fallback = fallback.filter((p) => p.isFeatured);
+    }
+    if (tag) {
+      const lowerTag = tag.toLowerCase();
+      fallback = fallback.filter((p) =>
+        p.techTags.some((t) => t.toLowerCase().includes(lowerTag))
+      );
+    }
+
+    return ok(fallback);
   } catch (e) {
-    console.error("API GET /api/projects DB query failed:", (e as Error).message);
-    return ok([]);
+    console.error("API GET /api/projects failed:", (e as Error).message);
+    return ok(DEFAULT_PROJECTS);
   }
 }
 

@@ -2,24 +2,41 @@ import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { ok, badRequest, notFound, serverError } from "@/lib/api";
 import { parseJsonArray, stringifyJson } from "@/lib/api";
+import { DEFAULT_PROJECTS } from "@/lib/data";
 
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(_request: NextRequest, { params }: Params) {
   const { id } = await params;
-  const project = await db.project.findUnique({ where: { id } });
-  if (!project) return notFound("Project not found");
-  return ok({
-    ...project,
-    techTags: parseJsonArray(project.techTags),
-    images: parseJsonArray(project.images),
-  });
+  try {
+    const project = await db.project.findUnique({ where: { id } });
+    if (project) {
+      return ok({
+        ...project,
+        techTags: parseJsonArray(project.techTags),
+        images: parseJsonArray(project.images),
+      });
+    }
+  } catch (err) {
+    console.warn("db.project.findUnique failed on Vercel:", err);
+  }
+
+  const fallback = DEFAULT_PROJECTS.find((p) => p.id === id || p.slug === id);
+  if (!fallback) return notFound("Project not found");
+  return ok(fallback);
 }
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   const { id } = await params;
-  const existing = await db.project.findUnique({ where: { id } });
-  if (!existing) return notFound("Project not found");
+  let existing: any = null;
+  try {
+    existing = await db.project.findUnique({ where: { id } });
+  } catch {}
+  if (!existing) {
+    const fallback = DEFAULT_PROJECTS.find((p) => p.id === id || p.slug === id);
+    if (!fallback) return notFound("Project not found");
+    existing = fallback;
+  }
 
   let body: Record<string, unknown>;
   try {
