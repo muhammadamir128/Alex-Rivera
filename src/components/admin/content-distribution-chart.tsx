@@ -44,35 +44,35 @@ export function ContentDistributionChart({ stats }: ContentDistributionProps) {
   );
 
   return (
-    <div className="rounded-2xl glass p-5 relative overflow-hidden border border-white/10 shadow-xl shadow-black/20">
-      <div className="flex items-center justify-between border-b border-white/5 pb-4">
-        <div className="flex items-center gap-2">
-          <span className="p-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-400 shadow-sm">
+    <div className="rounded-2xl glass p-3.5 sm:p-5 relative overflow-hidden border border-white/10 shadow-xl shadow-black/20">
+      <div className="flex items-start justify-between gap-2 border-b border-white/5 pb-3.5 sm:pb-4">
+        <div className="flex items-start gap-2.5">
+          <span className="p-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-400 shadow-sm shrink-0 mt-0.5">
             <Layers className="h-4 w-4" />
           </span>
-          <div>
-            <h2 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <h2 className="font-display text-sm sm:text-base font-semibold text-foreground truncate">
               Portfolio Content Breakdown
             </h2>
-            <p className="text-xs text-muted-foreground">
-              Total cataloged database entities across all portfolio sections.
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">
+              Total cataloged database entities across all sections.
             </p>
           </div>
         </div>
 
-        <div className="text-right">
-          <div className="font-display text-xl font-bold tabular-nums text-foreground">
+        <div className="text-right shrink-0">
+          <div className="font-display text-lg sm:text-xl font-bold tabular-nums text-foreground">
             {totalItems}
           </div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-            Total Nodes
+          <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground">
+            Nodes
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center mt-3">
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-center mt-3">
         {/* Donut Chart */}
-        <div className="sm:col-span-6 h-52 relative flex items-center justify-center">
+        <div className="sm:col-span-6 h-48 sm:h-52 relative flex items-center justify-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Tooltip
@@ -90,8 +90,8 @@ export function ContentDistributionChart({ stats }: ContentDistributionProps) {
               />
               <Pie
                 data={data}
-                innerRadius={55}
-                outerRadius={80}
+                innerRadius={46}
+                outerRadius={70}
                 paddingAngle={4}
                 dataKey="value"
                 stroke="rgba(0,0,0,0.3)"
@@ -106,10 +106,10 @@ export function ContentDistributionChart({ stats }: ContentDistributionProps) {
 
           {/* Centered Total Stat Badge */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-2xl font-display font-bold tabular-nums text-foreground">
+            <span className="text-xl sm:text-2xl font-display font-bold tabular-nums text-foreground">
               {totalItems}
             </span>
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+            <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
               Entries
             </span>
           </div>

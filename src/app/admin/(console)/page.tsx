@@ -303,31 +303,31 @@ export default function AdminDashboardPage() {
         </motion.div>
 
         {/* Quick Actions Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <Link
             href="/admin/projects"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:border-blue-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
+            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium text-foreground hover:border-blue-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
           >
             <Plus className="h-3.5 w-3.5 text-blue-400" />
             <span>Project</span>
           </Link>
           <Link
             href="/admin/skills"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:border-emerald-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
+            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium text-foreground hover:border-emerald-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
           >
             <Plus className="h-3.5 w-3.5 text-emerald-400" />
             <span>Skill</span>
           </Link>
           <Link
             href="/admin/experience"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:border-violet-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
+            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium text-foreground hover:border-violet-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
           >
             <Plus className="h-3.5 w-3.5 text-violet-400" />
             <span>Experience</span>
           </Link>
           <Link
             href="/admin/education"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:border-cyan-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
+            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium text-foreground hover:border-cyan-500/40 hover:bg-white/10 hover:text-white transition-all shadow-sm"
           >
             <Plus className="h-3.5 w-3.5 text-cyan-400" />
             <span>Education</span>
@@ -336,7 +336,7 @@ export default function AdminDashboardPage() {
       </header>
 
       {/* stat cards */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-2 sm:gap-3 grid-cols-2 lg:grid-cols-3">
         {cards.map((card, i) => {
           const Icon = card.icon;
           return (
@@ -348,23 +348,23 @@ export default function AdminDashboardPage() {
             >
               <Link
                 href={card.href}
-                className="group relative block overflow-hidden rounded-xl glass p-3.5 sm:p-4 transition-all hover:bg-white/[0.06] hover:shadow-lg hover:shadow-blue-500/5"
+                className="group relative block overflow-hidden rounded-xl glass p-3 sm:p-4 transition-all hover:bg-white/[0.06] hover:shadow-lg hover:shadow-blue-500/5"
               >
                 <div
                   className={`absolute -right-6 -top-6 h-16 w-16 rounded-full bg-gradient-to-br ${card.color} opacity-20 blur-xl transition-opacity group-hover:opacity-40`}
                 />
                 <div className="flex items-start justify-between">
                   <div
-                    className={`grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br ${card.color} text-white shadow-md`}
+                    className={`grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-lg bg-gradient-to-br ${card.color} text-white shadow-md`}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                   <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
                 </div>
-                <div className="mt-2.5 font-display text-2xl font-bold tracking-tight">
+                <div className="mt-2 sm:mt-2.5 font-display text-xl sm:text-2xl font-bold tracking-tight">
                   {card.value}
                 </div>
-                <div className="mt-0.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                <div className="mt-0.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider text-muted-foreground truncate">
                   {card.label}
                 </div>
                 <div className="mt-1 text-[10px] text-muted-foreground/75 truncate">{card.hint}</div>

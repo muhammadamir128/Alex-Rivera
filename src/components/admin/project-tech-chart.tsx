@@ -110,106 +110,112 @@ export function ProjectTechChart({
   );
 
   return (
-    <div className="rounded-2xl glass p-5 relative overflow-hidden border border-white/10 shadow-xl shadow-black/20">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-4">
-        <div className="flex items-center gap-2">
-          <span className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 shadow-sm">
+    <div className="rounded-2xl glass p-3.5 sm:p-5 relative overflow-hidden border border-white/10 shadow-xl shadow-black/20">
+      <div className="flex flex-col gap-3.5 border-b border-white/5 pb-3.5 sm:pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-2.5">
+          <span className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 shadow-sm shrink-0 mt-0.5">
             <FolderGit2 className="h-4 w-4" />
           </span>
-          <div>
-            <h2 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
-              Projects & Tech Stack Insights
-              <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium text-blue-400 border border-blue-500/20">
-                <Star className="h-2.5 w-2.5 fill-current" /> {featuredCount} Featured
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <h2 className="font-display text-sm sm:text-base font-semibold text-foreground truncate">
+                Projects & Tech Stack Insights
+              </h2>
+              <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-medium text-blue-400 border border-blue-500/20 shrink-0">
+                <Star className="h-2 w-2 sm:h-2.5 sm:w-2.5 fill-current" /> {featuredCount} Featured
               </span>
-            </h2>
-            <p className="text-xs text-muted-foreground">
+            </div>
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">
               Most implemented technologies and project popularity metrics.
             </p>
           </div>
         </div>
 
         {/* Tab Toggle */}
-        <div className="flex items-center bg-white/5 p-1 rounded-xl border border-white/10 text-xs">
+        <div className="flex items-center bg-white/[0.04] p-1 rounded-xl border border-white/10 text-xs shrink-0 self-start sm:self-center">
           <button
             onClick={() => setTab("tech")}
-            className={`flex items-center gap-1 px-3 py-1 rounded-lg font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap text-xs ${
               tab === "tech"
-                ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                ? "bg-blue-500/20 text-blue-300 border border-blue-500/30 shadow-sm"
                 : "text-muted-foreground hover:text-white"
             }`}
           >
-            <Cpu className="h-3 w-3" />
+            <Cpu className="h-3.5 w-3.5" />
             <span>Tech Stack</span>
           </button>
           <button
             onClick={() => setTab("views")}
-            className={`flex items-center gap-1 px-3 py-1 rounded-lg font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap text-xs ${
               tab === "views"
-                ? "bg-violet-600 text-white shadow-md shadow-violet-600/30"
+                ? "bg-violet-500/20 text-violet-300 border border-violet-500/30 shadow-sm"
                 : "text-muted-foreground hover:text-white"
             }`}
           >
-            <Eye className="h-3 w-3" />
-            <span>Project Views</span>
+            <Eye className="h-3.5 w-3.5" />
+            <span>Views</span>
           </button>
         </div>
       </div>
 
       {/* Highlights metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-4">
-        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-2.5">
-          <span className="text-[10px] uppercase font-semibold text-muted-foreground">
-            Total Projects
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 my-3 sm:my-4">
+        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-2.5 flex flex-col justify-between hover:bg-white/[0.04] transition-colors">
+          <span className="text-[11px] font-medium text-muted-foreground truncate">
+            Projects
           </span>
-          <div className="text-lg font-display font-bold text-foreground mt-0.5">
+          <div className="text-base sm:text-lg font-display font-bold text-foreground mt-1">
             {projects.length}
           </div>
-          <span className="text-[10px] text-muted-foreground/80">In portfolio</span>
+          <span className="text-[10px] text-muted-foreground/80 truncate mt-0.5">
+            {featuredCount} featured
+          </span>
         </div>
 
-        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-2.5">
-          <span className="text-[10px] uppercase font-semibold text-muted-foreground">
-            Top Technology
+        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-2.5 flex flex-col justify-between hover:bg-white/[0.04] transition-colors">
+          <span className="text-[11px] font-medium text-muted-foreground truncate">
+            Top Stack
           </span>
-          <div className="text-lg font-display font-bold text-blue-400 mt-0.5 truncate">
+          <div className="text-base sm:text-lg font-display font-bold text-blue-400 mt-1 truncate">
             {techData[0]?.name || "Next.js"}
           </div>
-          <span className="text-[10px] text-muted-foreground/80">
-            Used in {techData[0]?.count || projects.length} builds
+          <span className="text-[10px] text-muted-foreground/80 truncate mt-0.5">
+            {techData[0]?.count || projects.length} builds
           </span>
         </div>
 
-        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-2.5">
-          <span className="text-[10px] uppercase font-semibold text-muted-foreground">
+        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-2.5 flex flex-col justify-between hover:bg-white/[0.04] transition-colors">
+          <span className="text-[11px] font-medium text-muted-foreground truncate">
             Tech Diversity
           </span>
-          <div className="text-lg font-display font-bold text-foreground mt-0.5">
+          <div className="text-base sm:text-lg font-display font-bold text-foreground mt-1">
             {techData.length}+
           </div>
-          <span className="text-[10px] text-muted-foreground/80">Distinct tools</span>
+          <span className="text-[10px] text-muted-foreground/80 truncate mt-0.5">
+            Distinct tools
+          </span>
         </div>
 
-        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-2.5">
-          <span className="text-[10px] uppercase font-semibold text-muted-foreground">
-            Top Project
+        <div className="rounded-xl bg-white/[0.02] border border-white/5 p-2.5 flex flex-col justify-between hover:bg-white/[0.04] transition-colors">
+          <span className="text-[11px] font-medium text-muted-foreground truncate">
+            Most Viewed
           </span>
-          <div className="text-lg font-display font-bold text-emerald-400 mt-0.5 truncate">
+          <div className="text-base sm:text-lg font-display font-bold text-emerald-400 mt-1 truncate">
             {viewsData[0]?.name || "Featured"}
           </div>
-          <span className="text-[10px] text-muted-foreground/80">
-            {viewsData[0]?.views || 140} total views
+          <span className="text-[10px] text-muted-foreground/80 truncate mt-0.5">
+            {viewsData[0]?.views || 140} views
           </span>
         </div>
       </div>
 
       {/* Chart Canvas */}
-      <div className="h-52 w-full mt-2">
+      <div className="h-48 sm:h-52 w-full mt-2">
         <ResponsiveContainer width="100%" height="100%">
           {tab === "tech" ? (
             <BarChart
               data={techData}
-              margin={{ top: 10, right: 10, bottom: 0, left: -10 }}
+              margin={{ top: 10, right: 8, bottom: 0, left: -22 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"

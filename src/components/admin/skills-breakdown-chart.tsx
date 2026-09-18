@@ -94,74 +94,76 @@ export function SkillsBreakdownChart({ skills = [] }: SkillsBreakdownChartProps)
   }, [skills]);
 
   return (
-    <div className="rounded-2xl glass p-5 relative overflow-hidden border border-white/10 shadow-xl shadow-black/20">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-4">
-        <div className="flex items-center gap-2">
-          <span className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-sm">
+    <div className="rounded-2xl glass p-3.5 sm:p-5 relative overflow-hidden border border-white/10 shadow-xl shadow-black/20">
+      <div className="flex flex-col gap-3.5 border-b border-white/5 pb-3.5 sm:pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-2.5">
+          <span className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-sm shrink-0 mt-0.5">
             <Boxes className="h-4 w-4" />
           </span>
-          <div>
-            <h2 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
-              Skills Domain & Proficiency Matrix
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400 border border-emerald-500/20">
-                <CheckCircle2 className="h-2.5 w-2.5" /> {skills.length} Tracked
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <h2 className="font-display text-sm sm:text-base font-semibold text-foreground truncate">
+                Skills Domain & Proficiency
+              </h2>
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-medium text-emerald-400 border border-emerald-500/20 shrink-0">
+                <CheckCircle2 className="h-2 w-2 sm:h-2.5 sm:w-2.5" /> {skills.length} Tracked
               </span>
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              Categorized proficiency and competency across engineering disciplines.
+            </div>
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">
+              Categorized proficiency and competency across disciplines.
             </p>
           </div>
         </div>
 
         {/* View Toggle */}
-        <div className="flex items-center bg-white/5 p-1 rounded-xl border border-white/10 text-xs">
+        <div className="flex items-center bg-white/[0.04] p-1 rounded-xl border border-white/10 text-xs shrink-0 self-start sm:self-center">
           <button
             onClick={() => setViewMode("proficiency")}
-            className={`px-3 py-1 rounded-lg font-medium transition-all ${
+            className={`px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap text-xs ${
               viewMode === "proficiency"
-                ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/30"
+                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-sm"
                 : "text-muted-foreground hover:text-white"
             }`}
           >
-            Avg Proficiency (%)
+            Proficiency
           </button>
           <button
             onClick={() => setViewMode("count")}
-            className={`px-3 py-1 rounded-lg font-medium transition-all ${
+            className={`px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap text-xs ${
               viewMode === "count"
-                ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                ? "bg-blue-500/20 text-blue-300 border border-blue-500/30 shadow-sm"
                 : "text-muted-foreground hover:text-white"
             }`}
           >
-            Skill Count
+            Count
           </button>
         </div>
       </div>
 
       {/* Highlights Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 my-3 sm:my-4">
         {categoriesData.map((cat) => {
           const colors = CATEGORY_COLORS[cat.category] || { bar: "#3b82f6", border: "#60a5fa" };
           return (
             <div
               key={cat.category}
-              className="rounded-xl bg-white/[0.02] border border-white/5 p-2.5 flex flex-col justify-between"
+              className="rounded-xl bg-white/[0.02] border border-white/5 p-2.5 flex flex-col justify-between hover:bg-white/[0.04] transition-colors"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-semibold text-foreground">{cat.category}</span>
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-xs font-semibold text-foreground truncate">{cat.category}</span>
                 <span
-                  className="h-2 w-2 rounded-full"
+                  className="h-2 w-2 rounded-full shrink-0 shadow-sm"
                   style={{ backgroundColor: colors.bar }}
                 />
               </div>
-              <div className="flex items-baseline justify-between mt-2">
-                <span className="text-lg font-display font-bold tabular-nums text-foreground">
+              <div className="flex items-baseline justify-between gap-1 mt-1.5">
+                <span className="text-base sm:text-lg font-display font-bold tabular-nums text-foreground">
                   {cat.avgProficiency}%
                 </span>
-                <span className="text-[10px] text-muted-foreground">{cat.count} skills</span>
+                <span className="text-[10px] text-muted-foreground shrink-0">{cat.count} skills</span>
               </div>
-              <div className="mt-1 text-[9px] text-muted-foreground/80 truncate">
-                Top: {cat.topSkill}
+              <div className="mt-1 text-[10px] text-muted-foreground/80 truncate">
+                <span className="text-muted-foreground/50">Top:</span> {cat.topSkill}
               </div>
             </div>
           );
@@ -169,11 +171,11 @@ export function SkillsBreakdownChart({ skills = [] }: SkillsBreakdownChartProps)
       </div>
 
       {/* Bar Chart */}
-      <div className="h-52 w-full mt-2">
+      <div className="h-48 sm:h-52 w-full mt-2">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={categoriesData}
-            margin={{ top: 10, right: 10, bottom: 0, left: -10 }}
+            margin={{ top: 10, right: 8, bottom: 0, left: -22 }}
           >
             <CartesianGrid
               strokeDasharray="3 3"

@@ -138,28 +138,28 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* mobile top bar */}
-      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-white/5 bg-[#0a0e1a]/80 px-4 py-3 backdrop-blur-xl lg:hidden">
-        <Link href="/admin" className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 text-xs font-bold text-white">
+      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-white/5 bg-[#0a0e1a]/90 px-3 py-2.5 sm:px-4 sm:py-3 backdrop-blur-xl lg:hidden">
+        <Link href="/admin" className="flex items-center gap-2 shrink-0">
+          <span className="grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 text-xs font-bold text-white">
             MA
           </span>
           <span className="font-display text-sm font-semibold">Admin</span>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <Link
             href="/"
-            className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-foreground/80 hover:bg-white/10 hover:text-white transition-colors"
+            className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-xs font-medium text-foreground/80 hover:bg-white/10 hover:text-white transition-colors"
           >
-            <ArrowLeft className="h-3.5 w-3.5 text-blue-400" />
+            <ArrowLeft className="h-3 w-3 text-blue-400" />
             <span>Home</span>
           </Link>
           <CmdKButton onClick={() => setCmdOpen(true)} />
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="grid h-9 w-9 place-items-center rounded-lg glass"
+            className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-lg glass shrink-0"
             aria-label="Toggle menu"
           >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? <X className="h-4 w-4 sm:h-5 sm:w-5" /> : <Menu className="h-4 w-4 sm:h-5 sm:w-5" />}
           </button>
         </div>
       </div>
@@ -202,8 +202,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
 
-      <main className="lg:pl-64">
-        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">{children}</div>
+      <main className="lg:pl-64 min-w-0 overflow-x-hidden">
+        <div className="mx-auto max-w-6xl px-3 py-4 sm:px-6 sm:py-8 min-w-0">{children}</div>
       </main>
     </div>
   );
