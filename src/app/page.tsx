@@ -5,7 +5,6 @@ import { About } from "@/components/site/about";
 import { Skills } from "@/components/site/skills";
 import { Experience } from "@/components/site/experience";
 import { Projects } from "@/components/site/projects";
-import { Testimonials } from "@/components/site/testimonials";
 import { Contact } from "@/components/site/contact";
 import { Footer } from "@/components/site/footer";
 import { BackToTop } from "@/components/site/back-to-top";
@@ -15,7 +14,7 @@ import { SectionDivider } from "@/components/site/section-divider";
 export const revalidate = 0; // always fetch fresh admin-managed content
 
 export default async function HomePage() {
-  const { profile, skills, experience, projects, testimonials } = await getAllPortfolioData();
+  const { profile, skills, experience, projects } = await getAllPortfolioData();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -29,12 +28,6 @@ export default async function HomePage() {
         <Projects projects={projects} />
         <SectionDivider className="my-4" variant="gradient" />
         <Experience items={experience} />
-        {testimonials.length > 0 && (
-          <>
-            <SectionDivider className="my-4" variant="gradient" />
-            <Testimonials items={testimonials} />
-          </>
-        )}
         <SectionDivider className="my-4" variant="gradient" />
         <Contact profile={profile} />
       </main>

@@ -9,14 +9,10 @@ import {
   Linkedin,
   Twitter,
   Mail,
-  ArrowUp,
   ArrowUpRight,
   Copy,
   Check,
-  MapPin,
-  Sparkles,
   Lock,
-  Code2,
   X,
   KeyRound,
   ArrowRight,
@@ -47,7 +43,6 @@ export function Footer({ profile }: { profile: ProfileData }) {
 
   const s = profile.socialLinks || {};
   const email = s.email || "muhammadamircs47@gmail.com";
-  const year = new Date().getFullYear();
 
   const handleCopyEmail = () => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
@@ -58,24 +53,12 @@ export function Footer({ profile }: { profile: ProfileData }) {
   };
 
   const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Skills", href: "/skills" },
-    { label: "Projects & Work", href: "/work" },
-    { label: "Experience", href: "/experience" },
-    { label: "Education", href: "/education" },
-    { label: "Testimonials", href: "/testimonials" },
-    { label: "Contact", href: "/contact" },
-  ];
-
-  const techStack = [
-    "Next.js 15",
-    "React 19",
-    "TypeScript",
-    "Prisma ORM",
-    "Tailwind CSS",
-    "SQLite / PostgreSQL",
-    "Framer Motion",
+    { label: "Home", href: "/#top" },
+    { label: "About", href: "/#about" },
+    { label: "Skills", href: "/#skills" },
+    { label: "Projects & Work", href: "/#work" },
+    { label: "Experience", href: "/#experience" },
+    { label: "Contact", href: "/#contact" },
   ];
 
   const initials = profile.name
@@ -124,7 +107,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
 
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               <Link
-                href="/contact"
+                href="/#contact"
                 className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition-all hover:brightness-110 active:scale-95"
               >
                 Start a Conversation
@@ -151,10 +134,10 @@ export function Footer({ profile }: { profile: ProfileData }) {
           </div>
         </div>
 
-        {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5 pb-12 border-b border-white/5">
-          {/* Brand & Bio (2 cols on lg) */}
-          <div className="lg:col-span-2 space-y-4">
+        {/* Main Footer Content: 3-column balanced layout */}
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pt-4">
+          {/* Left: Brand & Bio */}
+          <div className="space-y-3 max-w-sm">
             <Link href="/" className="inline-flex items-center gap-3 group">
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-violet-600 font-display text-sm font-bold text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
                 {initials}
@@ -169,52 +152,23 @@ export function Footer({ profile }: { profile: ProfileData }) {
               </div>
             </Link>
 
-            <p className="text-sm leading-relaxed text-muted-foreground max-w-sm">
+            <p className="text-sm leading-relaxed text-muted-foreground">
               {profile.tagline ||
                 "Crafting performant, accessible, and delight-driven web experiences from database schema to user interaction."}
             </p>
-
-            {/* Social Links */}
-            <div className="pt-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 block mb-3">
-                Connect Across Platforms
-              </span>
-              <div className="flex flex-wrap items-center gap-2">
-                {s.github && (
-                  <SocialButton href={s.github} label="GitHub">
-                    <Github className="h-4 w-4" />
-                  </SocialButton>
-                )}
-                {s.linkedin && (
-                  <SocialButton href={s.linkedin} label="LinkedIn">
-                    <Linkedin className="h-4 w-4" />
-                  </SocialButton>
-                )}
-                {s.twitter && (
-                  <SocialButton href={s.twitter} label="Twitter / X">
-                    <Twitter className="h-4 w-4" />
-                  </SocialButton>
-                )}
-                {email && (
-                  <SocialButton href={`mailto:${email}`} label="Email">
-                    <Mail className="h-4 w-4" />
-                  </SocialButton>
-                )}
-              </div>
-            </div>
           </div>
 
-          {/* Column 2: Navigation */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-4">
+          {/* Center: Navigation in 2 columns and 3 rows */}
+          <div className="space-y-2.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-white block">
               Explore
-            </h4>
-            <ul className="space-y-2.5 text-sm">
+            </span>
+            <ul className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-white transition-colors group"
+                    className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-white transition-colors group font-medium"
                   >
                     <span className="h-1 w-1 rounded-full bg-blue-500/0 group-hover:bg-blue-400 transition-all group-hover:w-2" />
                     {link.label}
@@ -224,82 +178,43 @@ export function Footer({ profile }: { profile: ProfileData }) {
             </ul>
           </div>
 
-          {/* Column 3: Tech Architecture */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-4">
-              Technologies
-            </h4>
-            <div className="flex flex-wrap gap-1.5">
-              {techStack.map((tech) => (
-                <span
-                  key={tech}
-                  className="inline-flex items-center gap-1 rounded-lg border border-white/5 bg-white/[0.03] px-2.5 py-1 text-xs text-muted-foreground hover:border-white/10 hover:text-foreground transition-colors"
-                >
-                  <Code2 className="h-3 w-3 text-blue-400/70" />
-                  {tech}
-                </span>
-              ))}
-            </div>
+          {/* Right: Social Icons */}
+          <div className="flex items-center gap-2">
+            {s.github && (
+              <SocialButton href={s.github} label="GitHub">
+                <Github className="h-4 w-4" />
+              </SocialButton>
+            )}
+            {s.linkedin && (
+              <SocialButton href={s.linkedin} label="LinkedIn">
+                <Linkedin className="h-4 w-4" />
+              </SocialButton>
+            )}
+            {s.twitter && (
+              <SocialButton href={s.twitter} label="Twitter / X">
+                <Twitter className="h-4 w-4" />
+              </SocialButton>
+            )}
+            {email && (
+              <SocialButton href={`mailto:${email}`} label="Email">
+                <Mail className="h-4 w-4" />
+              </SocialButton>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setPinModalOpen(true);
+                setPin("");
+                setPinError("");
+                setIsUnlocked(false);
+              }}
+              aria-label="Admin Access"
+              title="Admin Access"
+              className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-muted-foreground/40 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-95 cursor-pointer"
+            >
+              <Lock className="h-3.5 w-3.5" />
+            </button>
           </div>
-
-          {/* Column 4: Location & Status */}
-          <div className="space-y-4">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-4">
-              Status & Info
-            </h4>
-            <div className="space-y-3 text-sm text-muted-foreground">
-              <div className="flex items-start gap-2.5">
-                <MapPin className="h-4 w-4 text-blue-400 shrink-0 mt-0.5" />
-                <div>
-                  <div className="font-medium text-foreground">Location</div>
-                  <div className="text-xs">Faisalabad, Punjab, Pakistan (UTC+5)</div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-2.5">
-                <Sparkles className="h-4 w-4 text-violet-400 shrink-0 mt-0.5" />
-                <div>
-                  <div className="font-medium text-foreground">Response Rate</div>
-                  <div className="text-xs">Quick response within 24 hours</div>
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPinModalOpen(true);
-                    setPin("");
-                    setPinError("");
-                    setIsUnlocked(false);
-                  }}
-                  aria-label="Admin Access"
-                  title="Admin Access"
-                  className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-white/5 bg-white/[0.02] text-muted-foreground/40 transition-all hover:border-white/15 hover:bg-white/[0.06] hover:text-white active:scale-95 cursor-pointer"
-                >
-                  <Lock className="h-3 w-3" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom copyright & back to top */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <p className="flex items-center gap-1.5 text-center sm:text-left">
-            <span>© {year} {profile.name}. All rights reserved.</span>
-            <span className="hidden sm:inline text-white/20">•</span>
-            <span className="hidden sm:inline">Built with passion & precision.</span>
-          </p>
-
-          <button
-            type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-muted-foreground hover:border-white/20 hover:text-white hover:bg-white/10 transition-all group cursor-pointer"
-          >
-            Back to Top
-            <ArrowUp className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5" />
-          </button>
         </div>
       </div>
 

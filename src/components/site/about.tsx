@@ -2,6 +2,7 @@
 
 import { Reveal, RevealStagger, RevealItem } from "@/components/site/reveal";
 import { CountUp } from "@/components/site/count-up";
+import { GraduationCap, ArrowRight } from "lucide-react";
 import type { ProfileData } from "@/lib/data";
 
 export function About({ profile }: { profile: ProfileData }) {
@@ -43,6 +44,44 @@ export function About({ profile }: { profile: ProfileData }) {
                     Featured Project
                   </span>
                 </div>
+              </div>
+
+              {/* Project Specs Card */}
+              <div className="mt-4 rounded-2xl glass p-4 sm:p-5 border border-white/5 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="grid h-8 w-8 place-items-center rounded-xl bg-blue-500/10 text-blue-400">
+                      <GraduationCap className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-xs sm:text-sm text-foreground">Bright Horizon Public School</h3>
+                      <p className="text-[10px] sm:text-[11px] text-muted-foreground">Academic Platform & AI Assistant</p>
+                    </div>
+                  </div>
+                  <a
+                    href="https://bright-horizon-public-school.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-0.5 text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors"
+                  >
+                    <span>Live</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </a>
+                </div>
+                <ul className="space-y-1.5 text-xs text-muted-foreground pt-2 border-t border-white/5">
+                  <li className="flex items-center justify-between py-0.5 border-b border-white/5">
+                    <span>Frontend & UI</span>
+                    <span className="font-medium text-foreground">Next.js 15, TypeScript, TailwindCSS</span>
+                  </li>
+                  <li className="flex items-center justify-between py-0.5 border-b border-white/5">
+                    <span>Key Innovations</span>
+                    <span className="font-medium text-foreground">Online Admissions & AI Assistant</span>
+                  </li>
+                  <li className="flex items-center justify-between py-0.5">
+                    <span>Deployment</span>
+                    <span className="font-medium text-foreground">Vercel Edge Network</span>
+                  </li>
+                </ul>
               </div>
             </Reveal>
           </div>

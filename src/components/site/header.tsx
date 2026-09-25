@@ -10,12 +10,11 @@ import { Magnetic } from "@/components/site/magnetic";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 
 const NAV = [
-  { label: "About", href: "/about", hash: "#about" },
-  { label: "Skills", href: "/skills", hash: "#skills" },
-  { label: "Work", href: "/work", hash: "#work" },
-  { label: "Experience", href: "/experience", hash: "#experience" },
-  { label: "Voices", href: "/testimonials", hash: "#testimonials" },
-  { label: "Contact", href: "/contact", hash: "#contact" },
+  { label: "About", hash: "#about" },
+  { label: "Skills", hash: "#skills" },
+  { label: "Work", hash: "#work" },
+  { label: "Experience", hash: "#experience" },
+  { label: "Contact", hash: "#contact" },
 ];
 
 export function SiteHeader({ name, socials }: { name: string; socials?: Record<string, string> }) {
@@ -33,14 +32,14 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
 
   useEffect(() => {
     if (pathname !== "/") return;
-    const ids = NAV.map((n) => n.hash.slice(1));
+    const ids = NAV.map((n) => n.hash.replace("#", ""));
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) setHashActive(entry.target.id);
         }
       },
-      { rootMargin: "-45% 0px -50% 0px" }
+      { rootMargin: "-35% 0px -45% 0px" }
     );
     ids.forEach((id) => {
       const el = document.getElementById(id);
@@ -49,14 +48,20 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
     return () => observer.disconnect();
   }, [pathname]);
 
-  const isItemActive = (item: (typeof NAV)[number]) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
     if (pathname === "/") {
-      return hashActive === item.hash.slice(1);
+      e.preventDefault();
+      const id = hash.replace("#", "");
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        setHashActive(id);
+      }
     }
-    if (item.href === "/work") {
-      return pathname === "/work" || pathname.startsWith("/projects");
-    }
-    return pathname === item.href;
+  };
+
+  const isItemActive = (item: (typeof NAV)[number]) => {
+    return hashActive === item.hash.replace("#", "");
   };
 
   return (
@@ -76,7 +81,17 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
             scrolled ? "glass-strong shadow-2xl shadow-black/40" : "bg-transparent"
           )}
         >
-          <Link href="/" className="group flex items-center gap-2.5">
+          <a
+            href={pathname === "/" ? "#top" : "/"}
+            onClick={(e) => {
+              if (pathname === "/") {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                setHashActive("");
+              }
+            }}
+            className="group flex items-center gap-2.5 cursor-pointer"
+          >
             <span className="relative grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 font-display text-sm font-bold text-white shadow-lg shadow-blue-500/30">
               {name.split(" ").map((p) => p[0]).join("").slice(0, 2)}
               <span className="absolute -inset-px rounded-xl ring-1 ring-white/20" />
@@ -84,18 +99,19 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
             <span className="hidden sm:block font-display text-sm font-semibold tracking-tight text-foreground/90">
               {name}
             </span>
-          </Link>
+          </a>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
             {NAV.map((item) => {
               const active = isItemActive(item);
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
+                <a
+                  key={item.hash}
+                  href={pathname === "/" ? item.hash : `/${item.hash}`}
+                  onClick={(e) => handleNavClick(e, item.hash)}
                   className={cn(
-                    "relative rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+                    "relative rounded-lg px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer",
                     active
                       ? "text-foreground"
                       : "text-muted-foreground hover:text-foreground"
@@ -109,7 +125,7 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
                     />
                   )}
                   {item.label}
-                </Link>
+                </a>
               );
             })}
           </nav>
@@ -117,12 +133,13 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Magnetic className="hidden sm:block">
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-500 to-violet-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-violet-600/25 transition-transform hover:shadow-violet-600/40"
+              <a
+                href={pathname === "/" ? "#contact" : "/#contact"}
+                onClick={(e) => handleNavClick(e, "#contact")}
+                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-500 to-violet-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-violet-600/25 transition-transform hover:shadow-violet-600/40 cursor-pointer"
               >
                 Let&apos;s talk
-              </Link>
+              </a>
             </Magnetic>
             <button
               type="button"
@@ -149,22 +166,24 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
                 {NAV.map((item) => {
                   const active = isItemActive(item);
                   return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setOpen(false)}
+                    <a
+                      key={item.hash}
+                      href={pathname === "/" ? item.hash : `/${item.hash}`}
+                      onClick={(e) => {
+                        setOpen(false);
+                        handleNavClick(e, item.hash);
+                      }}
                       className={cn(
-                        "block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                        "block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer",
                         active
                           ? "bg-white/10 text-foreground font-semibold"
                           : "text-foreground/80 hover:bg-white/5"
                       )}
                     >
                       {item.label}
-                    </Link>
+                    </a>
                   );
                 })}
-
               </div>
             </motion.nav>
           )}
