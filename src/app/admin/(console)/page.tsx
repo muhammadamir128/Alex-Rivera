@@ -348,26 +348,28 @@ export default function AdminDashboardPage() {
             >
               <Link
                 href={card.href}
-                className="group relative block overflow-hidden rounded-xl glass p-3 sm:p-4 transition-all hover:bg-white/[0.06] hover:shadow-lg hover:shadow-blue-500/5"
+                className="group relative block overflow-hidden rounded-xl glass p-3.5 sm:p-4 transition-all hover:bg-white/[0.06] hover:shadow-lg hover:shadow-blue-500/5"
               >
                 <div
                   className={`absolute -right-6 -top-6 h-16 w-16 rounded-full bg-gradient-to-br ${card.color} opacity-20 blur-xl transition-opacity group-hover:opacity-40`}
                 />
-                <div className="flex items-start justify-between">
+                <ArrowUpRight className="absolute top-3 right-3 sm:top-3.5 sm:right-3.5 h-3.5 w-3.5 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                <div className="flex items-center gap-3 sm:gap-3.5">
                   <div
-                    className={`grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-lg bg-gradient-to-br ${card.color} text-white shadow-md`}
+                    className={`grid h-10 w-10 sm:h-11 sm:w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${card.color} text-white shadow-md`}
                   >
-                    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                  <div className="min-w-0 flex-1 pr-3">
+                    <div className="font-display text-xl sm:text-2xl font-bold tracking-tight leading-tight">
+                      {card.value}
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-medium uppercase tracking-wider text-muted-foreground truncate">
+                      {card.label}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground/75 truncate">{card.hint}</div>
+                  </div>
                 </div>
-                <div className="mt-2 sm:mt-2.5 font-display text-xl sm:text-2xl font-bold tracking-tight">
-                  {card.value}
-                </div>
-                <div className="mt-0.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider text-muted-foreground truncate">
-                  {card.label}
-                </div>
-                <div className="mt-1 text-[10px] text-muted-foreground/75 truncate">{card.hint}</div>
               </Link>
             </motion.div>
           );

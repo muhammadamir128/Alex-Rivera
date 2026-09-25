@@ -61,6 +61,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="dark">
       <body
+        suppressHydrationWarning
         className={`${spaceGrotesk.variable} ${inter.variable} font-sans antialiased bg-background text-foreground min-h-screen`}
       >
         <ThemeProvider>

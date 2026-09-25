@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Download } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Magnetic } from "@/components/site/magnetic";
 import { ThemeToggle } from "@/components/site/theme-toggle";
@@ -115,20 +115,6 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
           </nav>
 
           <div className="flex items-center gap-2">
-            <Magnetic>
-              <a
-                href={socials?.cv || socials?.resume || "/cv.pdf"}
-                target="_blank"
-                rel="noopener noreferrer"
-                download
-                aria-label="Download CV"
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-3.5 py-1.5 text-xs font-medium text-foreground backdrop-blur-md transition-all hover:bg-white/[0.1] hover:border-white/20 active:scale-95 shadow-sm"
-              >
-                <Download className="h-3.5 w-3.5 text-blue-400" />
-                <span className="hidden sm:inline">Download CV</span>
-                <span className="sm:hidden">CV</span>
-              </a>
-            </Magnetic>
             <ThemeToggle />
             <Magnetic className="hidden sm:block">
               <Link
@@ -178,17 +164,7 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
                     </Link>
                   );
                 })}
-                <a
-                  href={socials?.cv || socials?.resume || "/cv.pdf"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-blue-400 hover:bg-white/5 transition-colors border-t border-white/5 pt-3"
-                >
-                  <Download className="h-4 w-4" />
-                  <span>Download CV</span>
-                </a>
+
               </div>
             </motion.nav>
           )}
