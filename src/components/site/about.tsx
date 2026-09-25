@@ -30,17 +30,17 @@ export function About({ profile }: { profile: ProfileData }) {
 
             {/* Featured workspace/setup image */}
             <Reveal delay={0.15}>
-              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl sm:rounded-3xl glass neon-border shadow-xl">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl sm:rounded-3xl glass neon-border shadow-xl bg-slate-950">
                 <img
-                  src="/uploads/workspace.jpg"
-                  alt="Developer Workstation"
-                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                  src="/uploads/project-bright-horizon.webp"
+                  alt="Bright Horizon Public School"
+                  className="h-full w-full object-cover object-top transition-transform duration-700 hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs text-white/90">
-                  <span className="font-mono text-[11px] text-blue-300">Engineering Studio</span>
+                  <span className="font-mono text-[11px] text-blue-300">Bright Horizon Public School</span>
                   <span className="rounded-full glass-strong px-2.5 py-0.5 text-[10px] text-white/80">
-                    High Performance
+                    Featured Project
                   </span>
                 </div>
               </div>

@@ -201,42 +201,53 @@ export default async function AboutPage() {
             {/* Quick facts & setup */}
             <div className="flex flex-col gap-4">
               <div className="rounded-2xl glass p-6">
-                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl mb-5 shadow-lg border border-white/5">
+                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl mb-5 shadow-lg border border-white/5 bg-slate-950">
                   <img
-                    src="/uploads/workspace.jpg"
-                    alt="Developer Workspace"
-                    className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                    src="/uploads/project-bright-horizon.webp"
+                    alt="Bright Horizon Public School"
+                    className="h-full w-full object-cover object-top transition-transform duration-700 hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                   <span className="absolute bottom-2.5 left-3 rounded-full glass-strong px-2.5 py-0.5 text-[10px] font-mono text-blue-300">
-                    Daily Dev Environment
+                    Bright Horizon Public School
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-500/10 text-blue-400">
-                    <Laptop className="h-5 w-5" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-500/10 text-blue-400">
+                      <GraduationCap className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">Bright Horizon Public School</h3>
+                      <p className="text-xs text-muted-foreground">Academic Platform & AI Assistant</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Current Setup</h3>
-                    <p className="text-xs text-muted-foreground">Modern web tools & daily drivers</p>
-                  </div>
+                  <a
+                    href="https://bright-horizon-public-school.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors"
+                  >
+                    <span>Live</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </a>
                 </div>
                 <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-center justify-between border-b border-white/5 pb-2">
-                    <span>Primary Stack</span>
-                    <span className="font-medium text-foreground">Next.js 16, TypeScript, TailwindCSS</span>
+                    <span>Frontend & UI</span>
+                    <span className="font-medium text-foreground">Next.js 15, TypeScript, TailwindCSS</span>
                   </li>
                   <li className="flex items-center justify-between border-b border-white/5 pb-2">
-                    <span>Backend & Database</span>
-                    <span className="font-medium text-foreground">Node.js, Prisma, PostgreSQL / SQLite</span>
+                    <span>Key Innovations</span>
+                    <span className="font-medium text-foreground">Online Admissions, 24/7 AI Assistant</span>
                   </li>
                   <li className="flex items-center justify-between border-b border-white/5 pb-2">
-                    <span>State & Realtime</span>
-                    <span className="font-medium text-foreground">Zustand, React Query, WebSockets</span>
+                    <span>Motion & Interaction</span>
+                    <span className="font-medium text-foreground">Framer Motion, Glassmorphism UI</span>
                   </li>
                   <li className="flex items-center justify-between">
-                    <span>Deployments</span>
-                    <span className="font-medium text-foreground">Vercel, Docker, Cloudflare</span>
+                    <span>Hosting & Domain</span>
+                    <span className="font-medium text-foreground">Vercel Cloud Edge Network</span>
                   </li>
                 </ul>
               </div>
