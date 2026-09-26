@@ -140,11 +140,11 @@ export function Hero({ profile }: { profile: ProfileData }) {
           style={{ y: portraitY, opacity: portraitOpacity }}
           className="relative mx-auto w-full max-w-[290px] xs:max-w-[320px] sm:max-w-[340px] lg:max-w-[330px] xl:max-w-[360px]"
         >
-          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl glass neon-border neon-glow">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl glass neon-border neon-glow select-none">
             <img
-              src={profile.avatarUrl || "/uploads/avatar-cropped-1789590640132-1789590640173.jpg"}
+              src={profile.avatarUrl || "/uploads/whatsapp-image-2026-06-02-at-50233-am-1789578972741.jpeg"}
               alt={`Portrait of ${profile.name}`}
-              className="h-full w-full object-cover transition-transform duration-300"
+              className="h-full w-full object-cover transition-transform duration-300 pointer-events-none select-none"
               style={{
                 objectPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
                 transform:
@@ -153,8 +153,9 @@ export function Hero({ profile }: { profile: ProfileData }) {
                     : undefined,
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90" />
-            <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex items-end justify-between">
+            {/* Event shield over portrait to prevent extension element injection */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90 z-10 pointer-events-auto" />
+            <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex items-end justify-between z-20">
               <div>
                 <p className="font-display text-sm sm:text-base font-semibold text-white">{profile.name}</p>
                 <p className="text-xs text-white/70">{profile.title}</p>

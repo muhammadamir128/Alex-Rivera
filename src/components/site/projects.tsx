@@ -299,21 +299,21 @@ function ProjectCard({ project }: { project: ProjectData }) {
         />
 
         {/* Hero preview screenshot */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-950/60 border-b border-white/[0.06]">
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-950/60 border-b border-white/[0.06] select-none">
           {project.coverImage ? (
             <Image
               src={project.coverImage}
               alt={project.title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+              className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105 pointer-events-none select-none"
             />
           ) : (
             <div className="grid h-full w-full place-items-center bg-gradient-to-br from-blue-600/30 to-violet-600/30" />
           )}
 
-          {/* Gentle vignette gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0c1322] via-transparent to-transparent opacity-40" />
+          {/* Gentle vignette gradient overlay & event barrier */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0c1322] via-transparent to-transparent opacity-40 z-10 pointer-events-auto" />
         </div>
 
         {/* Card Body */}

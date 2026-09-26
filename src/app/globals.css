@@ -327,3 +327,38 @@
   outline-offset: 2px;
   border-radius: 6px;
 }
+
+/* ==========================================================================
+   BLOCK THIRD-PARTY VIRTUAL TRY-ON EXTENSIONS (Try-On badges / popups)
+   ========================================================================== */
+[class*="try-on" i],
+[class*="tryon" i],
+[class*="virtual-try" i],
+[id*="try-on" i],
+[id*="tryon" i],
+[id*="virtual-try" i],
+[data-try-on],
+[data-tryon],
+[data-vto],
+[aria-label*="try on" i],
+[aria-label*="try-on" i],
+[title*="try on" i],
+[title*="try-on" i],
+button[class*="try" i],
+div[class*="try-on" i],
+span[class*="try-on" i] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  left: -99999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  z-index: -9999 !important;
+  clip: rect(0, 0, 0, 0) !important;
+}
+

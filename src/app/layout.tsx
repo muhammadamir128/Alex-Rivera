@@ -3,6 +3,7 @@ import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
+import { ExtensionShield } from "@/components/site/extension-shield";
 import { GrainOverlay } from "@/components/site/grain-overlay";
 import { CursorGlow } from "@/components/site/cursor-glow";
 import { ScrollProgress } from "@/components/site/scroll-progress";
@@ -65,6 +66,7 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${inter.variable} font-sans antialiased bg-background text-foreground min-h-screen`}
       >
         <ThemeProvider>
+          <ExtensionShield />
           <GrainOverlay />
           <CursorGlow />
           <ScrollProgress />
