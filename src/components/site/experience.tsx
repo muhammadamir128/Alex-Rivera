@@ -39,19 +39,22 @@ function calcDuration(start: string, end: string | null, current: boolean): stri
 
 export function Experience({ items }: { items: ExperienceData[] }) {
   return (
-    <section id="experience" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section id="experience" className="relative scroll-mt-24 py-12 sm:py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
-          <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-cyan-400">
-            <span className="h-px w-8 bg-cyan-400/60" />
-            Experience
-          </p>
-          <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl text-balance">
-            Three years, <span className="gradient-text">one trajectory</span>.
-          </h2>
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+            <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-cyan-400">
+              <span className="h-px w-8 bg-cyan-400/60" />
+              Experience
+              <span className="h-px w-8 bg-cyan-400/60" />
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
+              Three years, <span className="gradient-text">one trajectory</span>.
+            </h2>
+          </div>
         </Reveal>
 
-        <div className="mt-14 relative">
+        <div className="mt-8 sm:mt-10 relative">
           {/* vertical line */}
           <div
             aria-hidden

@@ -14,20 +14,25 @@ export function About({ profile }: { profile: ProfileData }) {
   ];
 
   return (
-    <section id="about" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section id="about" className="relative scroll-mt-24 py-12 sm:py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        {/* Centered Section Header */}
+        <Reveal>
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+            <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-blue-400">
+              <span className="h-px w-8 bg-blue-400/60" />
+              About
+              <span className="h-px w-8 bg-blue-400/60" />
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
+              A developer who sweats the <span className="gradient-text">small details</span>.
+            </h2>
+          </div>
+        </Reveal>
+
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
-          {/* Left: section label & visual */}
-          <div className="lg:sticky lg:top-28 space-y-6">
-            <Reveal>
-              <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-blue-400">
-                <span className="h-px w-8 bg-blue-400/60" />
-                About
-              </p>
-              <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl text-balance">
-                A developer who sweats the <span className="gradient-text">small details</span>.
-              </h2>
-            </Reveal>
+          {/* Left: visual & specs */}
+          <div className="space-y-6">
 
             {/* Featured workspace/setup image */}
             <Reveal delay={0.15}>

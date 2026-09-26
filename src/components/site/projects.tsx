@@ -109,32 +109,30 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
   const filters = ["All", ...categories];
 
   return (
-    <section id="work" className="relative scroll-mt-24 py-16 sm:py-24 lg:py-28 overflow-hidden">
+    <section id="work" className="relative scroll-mt-24 py-12 sm:py-16 overflow-hidden">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute top-20 right-1/4 h-72 w-72 rounded-full bg-violet-600/10 blur-[100px]" />
       </div>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 sm:gap-6">
-            <div>
-              <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-blue-400">
-                <span className="h-px w-8 bg-blue-400/60" />
-                Selected work
-              </p>
-              <h2 className="mt-3 sm:mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
-                Projects that <span className="gradient-text">shipped</span>.
-              </h2>
-            </div>
-            <p className="max-w-md text-sm sm:text-base text-muted-foreground leading-relaxed">
-              A snapshot of products I&apos;ve designed, built, and maintained end-to-end. Tap any
-              card for the full case study.
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+            <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-blue-400">
+              <span className="h-px w-8 bg-blue-400/60" />
+              Selected work
+              <span className="h-px w-8 bg-blue-400/60" />
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
+              Projects that <span className="gradient-text">shipped</span>.
+            </h2>
+            <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
+              A snapshot of products I&apos;ve designed, built, and maintained end-to-end.
             </p>
           </div>
         </Reveal>
 
         {/* filters + search toolbar */}
         <Reveal delay={0.1}>
-          <div className="mt-8 sm:mt-10 space-y-4">
+          <div className="mt-6 sm:mt-8 space-y-4">
             {/* Row 1: Search bar and result count / clear button */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="relative w-full sm:w-72 md:w-80">

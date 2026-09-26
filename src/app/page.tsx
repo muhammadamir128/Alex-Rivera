@@ -22,13 +22,13 @@ export default async function HomePage() {
       <main className="flex-1">
         <Hero profile={profile} />
         <About profile={profile} />
-        <SectionDivider className="my-4" variant="gradient" />
+        <SectionDivider className="my-0" variant="gradient" />
         <Skills skills={skills} />
-        <SectionDivider className="my-4" variant="gradient" />
-        <Projects projects={projects} />
-        <SectionDivider className="my-4" variant="gradient" />
+        <SectionDivider className="my-0" variant="gradient" />
         <Experience items={experience} />
-        <SectionDivider className="my-4" variant="gradient" />
+        <SectionDivider className="my-0" variant="gradient" />
+        <Projects projects={projects} />
+        <SectionDivider className="my-0" variant="gradient" />
         <Contact profile={profile} />
       </main>
       <Footer profile={profile} />

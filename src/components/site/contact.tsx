@@ -70,27 +70,31 @@ export function Contact({ profile }: { profile: ProfileData }) {
   const s = profile.socialLinks;
 
   return (
-    <section id="contact" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section id="contact" className="relative scroll-mt-24 py-12 sm:py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-start">
-          {/* Left: pitch + direct contact */}
-          <div>
-            <Reveal>
-              <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-cyan-400">
-                <span className="h-px w-8 bg-cyan-400/60" />
-                Contact
-              </p>
-              <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl text-balance">
-                Let&apos;s build something <span className="gradient-text">worth shipping</span>.
-              </h2>
-              <p className="mt-4 max-w-md text-muted-foreground">
-                Have a project in mind, a role to fill, or just want to nerd out about web
-                performance? Drop me a line — I read every message.
-              </p>
-            </Reveal>
+        {/* Centered Section Header */}
+        <Reveal>
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+            <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-cyan-400">
+              <span className="h-px w-8 bg-cyan-400/60" />
+              Contact
+              <span className="h-px w-8 bg-cyan-400/60" />
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
+              Let&apos;s build something <span className="gradient-text">worth shipping</span>.
+            </h2>
+            <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
+              Have a project in mind, a role to fill, or just want to nerd out about web
+              performance? Drop me a line — I read every message.
+            </p>
+          </div>
+        </Reveal>
 
+        <div className="grid gap-8 lg:gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-start">
+          {/* Left: direct contact cards */}
+          <div>
             <Reveal delay={0.1}>
-              <div className="mt-8 space-y-3">
+              <div className="space-y-3">
                 {s.email && (
                   <a
                     href={`mailto:${s.email}`}

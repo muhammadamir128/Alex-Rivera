@@ -12,8 +12,8 @@ import { ThemeToggle } from "@/components/site/theme-toggle";
 const NAV = [
   { label: "About", hash: "#about" },
   { label: "Skills", hash: "#skills" },
-  { label: "Work", hash: "#work" },
   { label: "Experience", hash: "#experience" },
+  { label: "Work", hash: "#work" },
   { label: "Contact", hash: "#contact" },
 ];
 

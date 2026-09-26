@@ -29,21 +29,24 @@ export function Skills({ skills }: { skills: SkillData[] }) {
   }, [skills]);
 
   return (
-    <section id="skills" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section id="skills" className="relative scroll-mt-24 py-12 sm:py-16">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 grid-noise opacity-50" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
-          <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-violet-400">
-            <span className="h-px w-8 bg-violet-400/60" />
-            Skills
-          </p>
-          <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl text-balance">
-            The tools I reach for <span className="gradient-text">first</span>.
-          </h2>
-          <p className="mt-4 max-w-2xl text-muted-foreground">
-            A focused, opinionated stack refined across production work — measured by how often
-            I&apos;d choose them again, not by how many buzzwords fit on a page.
-          </p>
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+            <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-violet-400">
+              <span className="h-px w-8 bg-violet-400/60" />
+              Skills
+              <span className="h-px w-8 bg-violet-400/60" />
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
+              The tools I reach for <span className="gradient-text">first</span>.
+            </h2>
+            <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
+              A focused, opinionated stack refined across production work — measured by how often
+              I&apos;d choose them again, not by how many buzzwords fit on a page.
+            </p>
+          </div>
         </Reveal>
 
         <RevealStagger className="mt-12 grid gap-5 sm:grid-cols-2 items-stretch" stagger={0.1}>
