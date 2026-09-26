@@ -121,7 +121,7 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
               Selected work
               <span className="h-px w-8 bg-blue-400/60" />
             </p>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
+            <h2 className="gsap-heading-split mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
               Projects that <span className="gradient-text">shipped</span>.
             </h2>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
@@ -217,7 +217,7 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.35, delay: i * 0.04 }}
-                className="flex flex-col h-full min-h-0"
+                className="flex flex-col h-full min-h-0 project-card-item"
               >
                 <ProjectCard project={project} />
               </motion.div>

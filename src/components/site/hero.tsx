@@ -42,7 +42,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
         <div className="absolute bottom-0 left-1/3 h-[18rem] w-[18rem] sm:h-[24rem] sm:w-[24rem] lg:h-[28rem] lg:w-[28rem] rounded-full bg-cyan-500/10 blur-[90px] lg:blur-[120px] animate-blob animation-delay-4000" />
       </motion.div>
 
-      <div className="mx-auto grid w-full max-w-6xl gap-8 sm:gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center lg:gap-10 xl:gap-14 px-4 sm:px-6">
+      <div id="hero-content" className="mx-auto grid w-full max-w-6xl gap-8 sm:gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center lg:gap-10 xl:gap-14 px-4 sm:px-6">
         {/* Left: text */}
         <div className="flex flex-col items-start text-left">
           <motion.h1

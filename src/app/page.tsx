@@ -11,6 +11,9 @@ import { BackToTop } from "@/components/site/back-to-top";
 import { WhatsAppButton } from "@/components/site/whatsapp-button";
 import { SectionDivider } from "@/components/site/section-divider";
 
+import { TechTicker } from "@/components/site/tech-ticker";
+import { GsapScrollEffects } from "@/components/site/gsap-scroll-effects";
+
 export const revalidate = 0; // always fetch fresh admin-managed content
 
 export default async function HomePage() {
@@ -18,9 +21,11 @@ export default async function HomePage() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <GsapScrollEffects />
       <SiteHeader name={profile.name} socials={profile.socialLinks} />
       <main className="flex-1">
         <Hero profile={profile} />
+        <TechTicker />
         <About profile={profile} />
         <SectionDivider className="my-0" variant="gradient" />
         <Skills skills={skills} />

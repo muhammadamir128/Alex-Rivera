@@ -39,7 +39,7 @@ export function Skills({ skills }: { skills: SkillData[] }) {
               Skills
               <span className="h-px w-8 bg-violet-400/60" />
             </p>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
+            <h2 className="gsap-heading-split mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
               The tools I reach for <span className="gradient-text">first</span>.
             </h2>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">

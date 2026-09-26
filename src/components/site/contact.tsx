@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, MapPin, Phone, Send, CheckCircle2, Loader2, Github, Linkedin, Twitter } from "lucide-react";
+import { Mail, MapPin, Phone, Send, CheckCircle2, Loader2 } from "lucide-react";
 import { Reveal } from "@/components/site/reveal";
 import { Magnetic } from "@/components/site/magnetic";
 import type { ProfileData } from "@/lib/data";
@@ -80,7 +80,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
               Contact
               <span className="h-px w-8 bg-cyan-400/60" />
             </p>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
+            <h2 className="gsap-heading-split mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
               Let&apos;s build something <span className="gradient-text">worth shipping</span>.
             </h2>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
@@ -130,14 +130,6 @@ export function Contact({ profile }: { profile: ProfileData }) {
                     <div className="text-sm font-medium text-foreground">Faisalabad, Punjab, Pakistan</div>
                   </div>
                 </div>
-              </div>
-            </Reveal>
-
-            <Reveal delay={0.2}>
-              <div className="mt-6 flex items-center gap-2">
-                {s.github && <SocialPill href={s.github} label="GitHub"><Github className="h-4 w-4" /></SocialPill>}
-                {s.linkedin && <SocialPill href={s.linkedin} label="LinkedIn"><Linkedin className="h-4 w-4" /></SocialPill>}
-                {s.twitter && <SocialPill href={s.twitter} label="Twitter"><Twitter className="h-4 w-4" /></SocialPill>}
               </div>
             </Reveal>
           </div>
@@ -336,19 +328,5 @@ function Field({
         </motion.p>
       ) : null}
     </div>
-  );
-}
-
-function SocialPill({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className="grid h-10 w-10 place-items-center rounded-xl glass text-muted-foreground transition-colors hover:bg-white/[0.08] hover:text-foreground"
-    >
-      {children}
-    </a>
   );
 }

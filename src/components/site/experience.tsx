@@ -48,17 +48,22 @@ export function Experience({ items }: { items: ExperienceData[] }) {
               Experience
               <span className="h-px w-8 bg-cyan-400/60" />
             </p>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
+            <h2 className="gsap-heading-split mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
               Three years, <span className="gradient-text">one trajectory</span>.
             </h2>
           </div>
         </Reveal>
 
         <div className="mt-8 sm:mt-10 relative">
-          {/* vertical line */}
+          {/* background track line */}
           <div
             aria-hidden
-            className="absolute left-[18px] sm:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-gradient-to-b from-transparent via-blue-400/40 dark:via-white/20 to-transparent"
+            className="absolute left-[18px] sm:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-slate-200/80 dark:bg-white/10"
+          />
+          {/* animated scroll-drawn line */}
+          <div
+            aria-hidden
+            className="timeline-scroll-draw absolute left-[18px] sm:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-gradient-to-b from-blue-500 via-violet-500 to-cyan-400 origin-top shadow-sm shadow-blue-500/50"
           />
 
           <RevealStagger className="space-y-10 sm:space-y-16" stagger={0.12}>
