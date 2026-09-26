@@ -32,7 +32,7 @@ export default async function HomePage() {
         <Contact profile={profile} />
       </main>
       <Footer profile={profile} />
-      <WhatsAppButton phone={profile.socialLinks?.whatsapp || "923069609884"} />
+      <WhatsAppButton phone={profile.socialLinks?.whatsapp || "923064609884"} />
       <BackToTop />
     </div>
   );

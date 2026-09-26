@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, X, Star, Search } from "lucide-react";
 import { Reveal } from "@/components/site/reveal";
@@ -72,10 +73,13 @@ const PROJECT_THEMES: Record<
 };
 
 export function Projects({ projects }: { projects: ProjectData[] }) {
-  const allTags = useMemo(() => {
+  const categories = useMemo(() => {
     const set = new Set<string>();
-    projects.forEach((p) => p.techTags.forEach((t) => set.add(t)));
-    return Array.from(set).sort();
+    projects.forEach((p) => {
+      const cat = PROJECT_THEMES[p.slug]?.tagLabel;
+      if (cat) set.add(cat);
+    });
+    return Array.from(set);
   }, [projects]);
 
   const [filter, setFilter] = useState<string>("All");
@@ -83,21 +87,26 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
 
   const visible = useMemo(() => {
     let result = projects;
-    if (filter === "Featured") result = result.filter((p) => p.isFeatured);
-    else if (filter !== "All") result = result.filter((p) => p.techTags.includes(filter));
+    if (filter !== "All") {
+      result = result.filter((p) => {
+        const cat = PROJECT_THEMES[p.slug]?.tagLabel;
+        return cat?.toLowerCase() === filter.toLowerCase();
+      });
+    }
     const q = search.trim().toLowerCase();
     if (q) {
       result = result.filter(
         (p) =>
           p.title.toLowerCase().includes(q) ||
           p.description.toLowerCase().includes(q) ||
+          PROJECT_THEMES[p.slug]?.tagLabel.toLowerCase().includes(q) ||
           p.techTags.some((t) => t.toLowerCase().includes(q))
       );
     }
     return result;
   }, [projects, filter, search]);
 
-  const filters = ["All", "Featured", ...allTags];
+  const filters = ["All", ...categories];
 
   return (
     <section id="work" className="relative scroll-mt-24 py-16 sm:py-24 lg:py-28 overflow-hidden">
@@ -189,7 +198,6 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
                     )}
                   >
                     {tag}
-                    {tag === "Featured" && <Star className="ml-1 inline h-3 w-3 fill-amber-300 text-amber-300" />}
                   </button>
                 ))}
               </div>
@@ -252,6 +260,7 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
 }
 
 function ProjectCard({ project }: { project: ProjectData }) {
+  const router = useRouter();
   const theme = PROJECT_THEMES[project.slug] || {
     glow: "rgba(59, 130, 246, 0.2)",
     badgeBorder: "border-blue-400/30",
@@ -261,10 +270,22 @@ function ProjectCard({ project }: { project: ProjectData }) {
     domain: project.slug + ".vercel.app",
   };
 
+  const handleCardClick = () => {
+    router.push(`/projects/${project.slug}`);
+  };
+
   return (
     <Tilt max={5} className="h-full w-full">
-      <Link
-        href={`/projects/${project.slug}`}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={handleCardClick}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleCardClick();
+          }
+        }}
         className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-white/[0.08] bg-[#0c1322]/90 backdrop-blur-xl text-left transition-all duration-300 hover:border-white/20 hover:bg-[#101930]/95 hover:shadow-2xl cursor-pointer"
         style={{
           boxShadow: `0 10px 30px -10px rgba(0, 0, 0, 0.5)`,
@@ -320,11 +341,26 @@ function ProjectCard({ project }: { project: ProjectData }) {
             )}
           </div>
 
-          {/* Project Title */}
-          <h3 className="font-display text-base sm:text-lg font-bold leading-snug text-foreground group-hover:text-blue-300 transition-colors flex items-start justify-between gap-2">
-            <span>{project.title}</span>
-            <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-blue-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all mt-0.5" />
-          </h3>
+          {/* Project Title and External Vercel Link Icon */}
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-display text-base sm:text-lg font-bold leading-snug text-foreground group-hover:text-blue-300 transition-colors">
+              {project.title}
+            </h3>
+
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                title="Open live site on Vercel"
+                aria-label={`Open ${project.title} on Vercel`}
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5 text-muted-foreground transition-all hover:scale-110 hover:border-blue-400/40 hover:bg-blue-500/20 hover:text-blue-300 active:scale-95"
+              >
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            )}
+          </div>
 
           {/* Project Description */}
           <p className="mt-2 text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
@@ -348,7 +384,7 @@ function ProjectCard({ project }: { project: ProjectData }) {
             )}
           </div>
         </div>
-      </Link>
+      </div>
     </Tilt>
   );
 }

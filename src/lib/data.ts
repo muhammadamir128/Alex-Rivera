@@ -98,7 +98,8 @@ export const DEFAULT_PROFILE: ProfileData = {
     email: "muhammadamircs47@gmail.com",
     website: "https://muhammadamir.dev",
     cv: "/cv.pdf",
-    whatsapp: "923069609884",
+    whatsapp: "923064609884",
+    phone: "+92 306 4609884",
   },
   seo: {
     title: "Muhammad Amir — Full-Stack Developer",

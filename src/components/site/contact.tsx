@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, MapPin, Send, CheckCircle2, Loader2, Github, Linkedin, Twitter } from "lucide-react";
+import { Mail, MapPin, Phone, Send, CheckCircle2, Loader2, Github, Linkedin, Twitter } from "lucide-react";
 import { Reveal } from "@/components/site/reveal";
 import { Magnetic } from "@/components/site/magnetic";
 import type { ProfileData } from "@/lib/data";
@@ -105,6 +105,18 @@ export function Contact({ profile }: { profile: ProfileData }) {
                     </div>
                   </a>
                 )}
+                <a
+                  href={`tel:${s.phone || "+923064609884"}`}
+                  className="group flex items-center gap-3 rounded-2xl glass p-4 transition-colors hover:bg-white/[0.06]"
+                >
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+                    <Phone className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-muted-foreground">Phone / WhatsApp</div>
+                    <div className="text-sm font-medium text-foreground">{s.phone || "+92 306 4609884"}</div>
+                  </div>
+                </a>
                 <div className="flex items-center gap-3 rounded-2xl glass p-4">
                   <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/5 text-foreground">
                     <MapPin className="h-4 w-4" />
