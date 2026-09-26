@@ -49,10 +49,10 @@ export function Hero({ profile }: { profile: ProfileData }) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.05 }}
-            className="mt-4 sm:mt-6 font-display text-[clamp(2.15rem,5.5vw+0.5rem,4.75rem)] font-bold leading-[1.05] tracking-tight text-balance">
-            <span className="block text-foreground">{firstName}</span>
+            className="gsap-heading-split mt-4 sm:mt-6 font-display text-[clamp(2.15rem,5.5vw+0.5rem,4.75rem)] font-bold leading-[1.05] tracking-tight text-balance group">
+            <span className="block text-foreground transition-transform duration-300 group-hover:translate-x-1">{firstName}</span>
             {lastName && (
-              <span className="block gradient-text animate-gradient-pan">
+              <span className="block gradient-text animate-gradient-pan drop-shadow-sm">
                 {lastName}
               </span>
             )}
@@ -82,32 +82,35 @@ export function Hero({ profile }: { profile: ProfileData }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.35 }}
             className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3" >
-            <Magnetic strength={0.2}>
+            <Magnetic strength={0.25}>
               <Link href="#work"
-                className="group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-violet-600 px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-all hover:shadow-violet-600/50 hover:scale-[1.02] active:scale-[0.98]"
+                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-500 via-indigo-600 to-violet-600 px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-all duration-300 hover:shadow-violet-600/50 hover:scale-[1.03] active:scale-[0.97]"
               >
-                <span>View work</span>
-                <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                <span className="relative z-10">View work</span>
+                <ArrowDown className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" />
               </Link>
             </Magnetic>
-            <Magnetic strength={0.2}>
+            <Magnetic strength={0.25}>
               <Link href="#contact"
-                className="inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all hover:bg-white/[0.08] hover:scale-[1.02] active:scale-[0.98]"
+                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:bg-white/[0.12] hover:border-blue-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-500/15 active:scale-[0.97]"
               >
-                <span>Get in touch</span>
-                <ArrowUpRight className="h-4 w-4" />
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                <span className="relative z-10">Get in touch</span>
+                <ArrowUpRight className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
             </Magnetic>
-            <Magnetic strength={0.2}>
+            <Magnetic strength={0.25}>
               <a
                 href={s.cv || s.resume || "/cv.pdf"}
                 target="_blank"
                 rel="noopener noreferrer"
                 download
-                className="inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all hover:bg-white/[0.08] hover:scale-[1.02] active:scale-[0.98]"
+                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:bg-white/[0.12] hover:border-violet-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-violet-500/15 active:scale-[0.97]"
               >
-                <Download className="h-4 w-4 text-blue-400" />
-                <span>Download CV</span>
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                <Download className="relative z-10 h-4 w-4 text-blue-400 transition-transform duration-300 group-hover:translate-y-0.5 group-hover:scale-110" />
+                <span className="relative z-10">Download CV</span>
               </a>
             </Magnetic>
           </motion.div>
@@ -123,7 +126,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
               Follow
             </span>
             <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-slate-400/40 dark:from-white/25 to-transparent" />
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               {s.github && <Social href={s.github} label="GitHub"><Github className="h-4 w-4" /></Social>}
               {s.linkedin && <Social href={s.linkedin} label="LinkedIn"><Linkedin className="h-4 w-4" /></Social>}
               {s.twitter && <Social href={s.twitter} label="Twitter"><Twitter className="h-4 w-4" /></Social>}
@@ -255,15 +258,21 @@ export function Hero({ profile }: { profile: ProfileData }) {
 
 function Social({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
   return (
-    <a
+    <motion.a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="grid h-8 w-8 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+      whileHover={{ y: -3, scale: 1.15 }}
+      whileTap={{ scale: 0.92 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      className="group relative grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/40 dark:bg-white/5 text-muted-foreground transition-colors duration-200 hover:border-blue-500/40 hover:bg-blue-500/10 hover:text-blue-500 dark:hover:text-blue-400 hover:shadow-md hover:shadow-blue-500/20"
     >
-      {children}
-    </a>
+      <span className="relative z-10 transition-transform duration-200 group-hover:scale-110">
+        {children}
+      </span>
+      <span className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-tr from-blue-500/15 via-indigo-500/10 to-violet-500/15 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+    </motion.a>
   );
 }
 

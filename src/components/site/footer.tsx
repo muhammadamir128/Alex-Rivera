@@ -9,19 +9,16 @@ import {
   Linkedin,
   Twitter,
   Mail,
-  ArrowUpRight,
-  Copy,
-  Check,
   Lock,
   X,
   KeyRound,
   ArrowRight,
+  Check,
 } from "lucide-react";
 import type { ProfileData } from "@/lib/data";
 
 export function Footer({ profile }: { profile: ProfileData }) {
   const router = useRouter();
-  const [copied, setCopied] = useState(false);
   const [pinModalOpen, setPinModalOpen] = useState(false);
   const [pin, setPin] = useState("");
   const [pinError, setPinError] = useState("");
@@ -43,14 +40,6 @@ export function Footer({ profile }: { profile: ProfileData }) {
 
   const s = profile.socialLinks || {};
   const email = s.email || "muhammadamircs47@gmail.com";
-
-  const handleCopyEmail = () => {
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
 
   const navLinks = [
     { label: "Home", href: "/#top" },
@@ -82,59 +71,9 @@ export function Footer({ profile }: { profile: ProfileData }) {
         className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 via-violet-500/50 to-transparent"
       />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-12">
-        {/* Pre-footer Callout Banner */}
-        <div className="relative mb-12 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.05] via-white/[0.02] to-transparent p-5 sm:p-6 shadow-xl backdrop-blur-xl">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-blue-500/15 blur-3xl"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -left-12 -bottom-12 h-40 w-40 rounded-full bg-violet-500/15 blur-3xl"
-          />
-
-          <div className="relative z-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <div className="space-y-1.5">
-              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-                Have a project or vision in mind?
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-300/80">
-                Let&apos;s engineer high-performance, scalable, and delightful web products together.
-              </p>
-            </div>
-
-            <div className="flex shrink-0 flex-wrap items-center gap-2">
-              <Link
-                href="/#contact"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition-all hover:brightness-110 active:scale-95"
-              >
-                Start a Conversation
-                <ArrowUpRight className="h-3.5 w-3.5" />
-              </Link>
-              <button
-                type="button"
-                onClick={handleCopyEmail}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/10 px-3.5 py-2 text-sm font-medium text-white transition-all hover:bg-white/20 hover:border-white/30 active:scale-95 cursor-pointer shadow-sm"
-              >
-                {copied ? (
-                  <>
-                    <Check className="h-4 w-4 text-emerald-400" />
-                    <span className="text-emerald-400">Email Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-4 w-4 text-slate-300" />
-                    <span className="text-white">Copy Email</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         {/* Main Footer Content: 3-column balanced layout */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pt-4">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
           {/* Left: Brand & Bio */}
           <div className="space-y-3 max-w-sm">
             <Link href="/" className="inline-flex items-center gap-3 group">
@@ -199,8 +138,11 @@ export function Footer({ profile }: { profile: ProfileData }) {
                 <Mail className="h-4 w-4" />
               </SocialButton>
             )}
-            <button
+            <motion.button
               type="button"
+              whileHover={{ y: -3, scale: 1.12 }}
+              whileTap={{ scale: 0.94 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
               onClick={() => {
                 setPinModalOpen(true);
                 setPin("");
@@ -209,10 +151,13 @@ export function Footer({ profile }: { profile: ProfileData }) {
               }}
               aria-label="Admin Access"
               title="Admin Access"
-              className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-95 cursor-pointer"
+              className="group relative grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-colors duration-200 hover:border-violet-500/50 hover:bg-violet-500/15 hover:text-white hover:shadow-lg hover:shadow-violet-500/25 cursor-pointer"
             >
-              <Lock className="h-3.5 w-3.5" />
-            </button>
+              <span className="relative z-10 transition-transform duration-200 group-hover:scale-110">
+                <Lock className="h-3.5 w-3.5" />
+              </span>
+              <span className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-tr from-violet-500/20 to-fuchsia-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            </motion.button>
           </div>
         </div>
       </div>
@@ -323,14 +268,20 @@ function SocialButton({
   children: React.ReactNode;
 }) {
   return (
-    <a
+    <motion.a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-300 transition-all duration-200 hover:border-blue-500/40 hover:bg-blue-500/10 hover:text-blue-400 hover:scale-105 active:scale-95"
+      whileHover={{ y: -3, scale: 1.12 }}
+      whileTap={{ scale: 0.94 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      className="group relative grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-300 transition-colors duration-200 hover:border-blue-500/50 hover:bg-blue-500/15 hover:text-blue-400 hover:shadow-lg hover:shadow-blue-500/25"
     >
-      {children}
-    </a>
+      <span className="relative z-10 transition-transform duration-200 group-hover:scale-110">
+        {children}
+      </span>
+      <span className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-tr from-blue-500/20 via-indigo-500/15 to-violet-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+    </motion.a>
   );
 }

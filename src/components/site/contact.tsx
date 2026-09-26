@@ -96,40 +96,50 @@ export function Contact({ profile }: { profile: ProfileData }) {
             <Reveal delay={0.1}>
               <div className="space-y-3">
                 {s.email && (
-                  <a
+                  <motion.a
                     href={`mailto:${s.email}`}
-                    className="group flex items-center gap-3 rounded-2xl glass p-4 transition-colors hover:bg-white/[0.06]"
+                    whileHover={{ scale: 1.025, x: 4 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                    className="group flex items-center gap-3 rounded-2xl glass p-4 transition-all duration-300 hover:bg-white/[0.08] hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10"
                   >
-                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 text-white">
+                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 text-white shadow-md shadow-blue-500/20 group-hover:scale-110 transition-transform duration-200">
                       <Mail className="h-4 w-4" />
                     </span>
                     <div>
                       <div className="text-xs uppercase tracking-wider text-muted-foreground">Email</div>
-                      <div className="text-sm font-medium text-foreground">{s.email}</div>
+                      <div className="text-sm font-medium text-foreground group-hover:text-blue-400 transition-colors">{s.email}</div>
                     </div>
-                  </a>
+                  </motion.a>
                 )}
-                <a
+                <motion.a
                   href={`tel:${s.phone || "+923064609884"}`}
-                  className="group flex items-center gap-3 rounded-2xl glass p-4 transition-colors hover:bg-white/[0.06]"
+                  whileHover={{ scale: 1.025, x: 4 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  className="group flex items-center gap-3 rounded-2xl glass p-4 transition-all duration-300 hover:bg-white/[0.08] hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/10"
                 >
-                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20 group-hover:scale-110 transition-transform duration-200">
                     <Phone className="h-4 w-4" />
                   </span>
                   <div>
                     <div className="text-xs uppercase tracking-wider text-muted-foreground">Phone / WhatsApp</div>
-                    <div className="text-sm font-medium text-foreground">{s.phone || "+92 306 4609884"}</div>
+                    <div className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors">{s.phone || "+92 306 4609884"}</div>
                   </div>
-                </a>
-                <div className="flex items-center gap-3 rounded-2xl glass p-4">
-                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/5 text-foreground">
+                </motion.a>
+                <motion.div
+                  whileHover={{ scale: 1.025, x: 4 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  className="group flex items-center gap-3 rounded-2xl glass p-4 transition-all duration-300 hover:bg-white/[0.08] hover:border-white/20"
+                >
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/5 text-foreground group-hover:scale-110 transition-transform duration-200">
                     <MapPin className="h-4 w-4" />
                   </span>
                   <div>
                     <div className="text-xs uppercase tracking-wider text-muted-foreground">Based</div>
                     <div className="text-sm font-medium text-foreground">Faisalabad, Punjab, Pakistan</div>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </Reveal>
           </div>
@@ -228,8 +238,9 @@ export function Contact({ profile }: { profile: ProfileData }) {
                   <Button
                     type="submit"
                     disabled={status === "loading"}
-                    className="group w-full bg-gradient-to-r from-blue-500 to-violet-600 text-white shadow-lg shadow-violet-600/30 hover:shadow-violet-600/50 disabled:opacity-50"
+                    className="group relative overflow-hidden w-full bg-gradient-to-r from-blue-500 via-indigo-600 to-violet-600 text-white shadow-lg shadow-violet-600/30 transition-all duration-300 hover:shadow-violet-600/50 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 cursor-pointer"
                   >
+                    <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
                     <AnimatePresence mode="wait" initial={false}>
                       {status === "loading" ? (
                         <motion.span
@@ -248,7 +259,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0 }}
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 font-medium"
                         >
                           <motion.span
                             initial={{ scale: 0, rotate: -45 }}
@@ -273,10 +284,10 @@ export function Contact({ profile }: { profile: ProfileData }) {
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
-                          className="flex items-center gap-2"
+                          className="relative z-10 flex items-center gap-2 font-medium"
                         >
                           Send message
-                          <Send className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                          <Send className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5" />
                         </motion.span>
                       )}
                     </AnimatePresence>
@@ -319,11 +330,12 @@ function Field({
       {children}
       {error ? (
         <motion.p
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-1.5 flex items-center gap-1 text-xs text-red-400"
+          initial={{ opacity: 0, y: -4, x: -3 }}
+          animate={{ opacity: 1, y: 0, x: [-3, 3, -1, 1, 0] }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400 font-medium"
         >
-          <span className="h-1 w-1 rounded-full bg-red-400" />
+          <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse" />
           {error}
         </motion.p>
       ) : null}
