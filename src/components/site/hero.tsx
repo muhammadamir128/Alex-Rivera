@@ -122,7 +122,7 @@ export function Hero({ profile }: { profile: ProfileData }) {
             <span className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
               Follow
             </span>
-            <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-white/25 to-white/5" />
+            <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-slate-400/40 dark:from-white/25 to-transparent" />
             <div className="flex items-center gap-1">
               {s.github && <Social href={s.github} label="GitHub"><Github className="h-4 w-4" /></Social>}
               {s.linkedin && <Social href={s.linkedin} label="LinkedIn"><Linkedin className="h-4 w-4" /></Social>}
@@ -140,27 +140,31 @@ export function Hero({ profile }: { profile: ProfileData }) {
           style={{ y: portraitY, opacity: portraitOpacity }}
           className="relative mx-auto w-full max-w-[290px] xs:max-w-[320px] sm:max-w-[340px] lg:max-w-[330px] xl:max-w-[360px]"
         >
-          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl glass neon-border neon-glow select-none">
-            <img
-              src={profile.avatarUrl || "/uploads/whatsapp-image-2026-06-02-at-50233-am-1789578972741.jpeg"}
-              alt={`Portrait of ${profile.name}`}
-              className="h-full w-full object-cover transition-transform duration-300 pointer-events-none select-none"
+          <div
+            suppressHydrationWarning
+            className="relative aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl glass neon-border neon-glow select-none"
+          >
+            <div
+              role="img"
+              aria-label={`Portrait of ${profile.name}`}
+              className="h-full w-full bg-cover transition-transform duration-300 pointer-events-none select-none"
               style={{
-                objectPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
+                backgroundImage: `url("${profile.avatarUrl || "/uploads/whatsapp-image-2026-06-02-at-50233-am-1789578972741.jpeg"}")`,
+                backgroundPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
                 transform:
                   profile.stats?.avatarZoom && Number(profile.stats.avatarZoom) !== 100
                     ? `scale(${Number(profile.stats.avatarZoom) / 100})`
                     : undefined,
               }}
             />
-            {/* Event shield over portrait to prevent extension element injection */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90 z-10 pointer-events-auto" />
+            {/* Dark gradient overlay over portrait bottom for high-contrast text in both light & dark themes */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent z-10 pointer-events-auto" />
             <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex items-end justify-between z-20">
               <div>
-                <p className="font-display text-sm sm:text-base font-semibold text-white">{profile.name}</p>
-                <p className="text-xs text-white/70">{profile.title}</p>
+                <p className="font-display text-sm sm:text-base font-semibold text-white drop-shadow-sm">{profile.name}</p>
+                <p className="text-xs text-white/80 drop-shadow-sm">{profile.title}</p>
               </div>
-              <div className="rounded-full glass-strong px-2.5 py-1 text-[10px] font-medium text-white/90">
+              <div className="rounded-full bg-white/20 dark:bg-black/40 backdrop-blur-md px-2.5 py-1 text-[10px] font-semibold text-white border border-white/25 shadow-sm">
                 {profile.stats?.yearsExperience ?? 2} yrs
               </div>
             </div>
@@ -173,11 +177,11 @@ export function Hero({ profile }: { profile: ProfileData }) {
             transition={{ duration: 0.7, delay: 0.6 }}
             className="absolute -right-2 sm:-right-4 top-8 sm:top-10 hidden sm:block animate-float-slow pointer-events-none"
           >
-            <div className="glass-strong rounded-2xl px-3 py-2 text-center shadow-xl border border-white/10">
+            <div className="glass-strong rounded-2xl px-3 py-2 text-center shadow-xl border border-slate-200/80 dark:border-white/10">
               <div className="font-display text-lg sm:text-xl font-bold gradient-text">
                 {profile.stats?.projectsDelivered ?? 4}
               </div>
-              <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+              <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-600 dark:text-muted-foreground font-semibold">
                 shipped
               </div>
             </div>
@@ -189,11 +193,11 @@ export function Hero({ profile }: { profile: ProfileData }) {
             transition={{ duration: 0.7, delay: 0.75 }}
             className="absolute -left-2 sm:-left-4 bottom-20 sm:bottom-24 hidden sm:block animate-float-slow [animation-delay:1.5s] pointer-events-none"
           >
-            <div className="glass-strong rounded-2xl px-3 py-2 text-center shadow-xl border border-white/10">
+            <div className="glass-strong rounded-2xl px-3 py-2 text-center shadow-xl border border-slate-200/80 dark:border-white/10">
               <div className="font-display text-lg sm:text-xl font-bold gradient-text">
                 {profile.stats?.technologies ?? 14}+
               </div>
-              <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+              <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-600 dark:text-muted-foreground font-semibold">
                 stack
               </div>
             </div>
@@ -201,27 +205,27 @@ export function Hero({ profile }: { profile: ProfileData }) {
 
           {/* Mobile compact stat pills */}
           <div className="mt-3 flex sm:hidden items-center justify-center gap-2">
-            <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1">
+            <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1 border border-slate-200/80 dark:border-white/10">
               <div className="font-display text-sm font-bold gradient-text">
                 {profile.stats?.projectsDelivered ?? 4}
               </div>
-              <div className="text-[8px] uppercase tracking-wider text-muted-foreground">
+              <div className="text-[8px] uppercase tracking-wider text-slate-600 dark:text-muted-foreground font-semibold">
                 shipped
               </div>
             </div>
-            <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1">
+            <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1 border border-slate-200/80 dark:border-white/10">
               <div className="font-display text-sm font-bold gradient-text">
                 {profile.stats?.technologies ?? 14}+
               </div>
-              <div className="text-[8px] uppercase tracking-wider text-muted-foreground">
+              <div className="text-[8px] uppercase tracking-wider text-slate-600 dark:text-muted-foreground font-semibold">
                 stack
               </div>
             </div>
-            <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1">
+            <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1 border border-slate-200/80 dark:border-white/10">
               <div className="font-display text-sm font-bold gradient-text">
                 {profile.stats?.yearsExperience ?? 2} yrs
               </div>
-              <div className="text-[8px] uppercase tracking-wider text-muted-foreground">
+              <div className="text-[8px] uppercase tracking-wider text-slate-600 dark:text-muted-foreground font-semibold">
                 experience
               </div>
             </div>
@@ -234,14 +238,14 @@ export function Hero({ profile }: { profile: ProfileData }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-3 xl:bottom-6 left-1/2 -translate-x-1/2 hidden xl:flex flex-col items-center gap-2 text-muted-foreground pointer-events-none"
+        className="absolute bottom-3 xl:bottom-6 left-1/2 -translate-x-1/2 hidden xl:flex flex-col items-center gap-2 pointer-events-none"
       >
-        <span className="text-[10px] uppercase tracking-[0.3em]">Scroll</span>
-        <div className="relative h-8 xl:h-10 w-px overflow-hidden bg-white/10">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-600 dark:text-muted-foreground">Scroll</span>
+        <div className="relative h-8 xl:h-10 w-0.5 overflow-hidden rounded-full bg-slate-300 dark:bg-white/15">
           <motion.div
             animate={{ y: ["-100%", "100%"] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-0 w-px bg-gradient-to-b from-transparent via-blue-400 to-transparent"
+            className="absolute inset-0 w-0.5 bg-gradient-to-b from-transparent via-blue-600 dark:via-blue-400 to-transparent"
           />
         </div>
       </motion.div>

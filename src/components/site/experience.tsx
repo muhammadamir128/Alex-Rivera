@@ -58,7 +58,7 @@ export function Experience({ items }: { items: ExperienceData[] }) {
           {/* vertical line */}
           <div
             aria-hidden
-            className="absolute left-[18px] sm:left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-white/15 to-transparent"
+            className="absolute left-[18px] sm:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-gradient-to-b from-transparent via-blue-400/40 dark:via-white/20 to-transparent"
           />
 
           <RevealStagger className="space-y-10 sm:space-y-16" stagger={0.12}>
@@ -76,7 +76,7 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                       className="absolute left-[10px] sm:left-1/2 top-2 z-10 grid h-4 w-4 -translate-x-1/2 place-items-center"
                     >
                       <span className="absolute h-4 w-4 rounded-full bg-blue-500/30 animate-ping" />
-                      <span className="relative h-3 w-3 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 ring-4 ring-[#0a0e1a]" />
+                      <span className="relative h-3 w-3 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 ring-4 ring-background" />
                     </motion.span>
 
                     {/* card */}
@@ -88,17 +88,17 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                           : "sm:col-start-2 sm:pl-12"
                       )}
                     >
-                      <div className="group relative overflow-hidden rounded-2xl glass p-5 transition-all hover:bg-white/[0.06] hover:shadow-xl hover:shadow-blue-500/5">
+                      <div className="group relative overflow-hidden rounded-2xl glass p-5 transition-all hover:bg-white/80 dark:hover:bg-white/[0.06] hover:shadow-xl hover:shadow-blue-500/5">
                         <div className="absolute -left-8 top-0 h-full w-px bg-gradient-to-b from-blue-500/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div>
                             <div className="flex items-center gap-2">
-                              <Briefcase className="h-4 w-4 text-blue-400" />
-                              <h3 className="font-display text-lg font-semibold leading-tight">
+                              <Briefcase className="h-4 w-4 text-blue-500 dark:text-blue-400" />
+                              <h3 className="font-display text-lg font-semibold leading-tight text-foreground">
                                 {exp.role}
                               </h3>
                             </div>
-                            <p className="mt-1 text-sm font-medium text-violet-300">
+                            <p className="mt-1 text-sm font-medium text-violet-600 dark:text-violet-300">
                               {exp.company}
                               {exp.location && (
                                 <span className="ml-2 inline-flex items-center gap-1 text-xs text-muted-foreground">
@@ -109,7 +109,7 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                             </p>
                           </div>
                           {exp.current && (
-                            <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-500/20">
+                            <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-300 ring-1 ring-emerald-500/20">
                               Current
                             </span>
                           )}
@@ -123,14 +123,14 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                           {(() => {
                             const dur = calcDuration(exp.startDate, exp.endDate, exp.current);
                             return dur ? (
-                              <span className="rounded-full bg-white/5 px-2 py-0.5 font-mono text-[10px] font-medium text-blue-300/80">
+                              <span className="rounded-full bg-blue-500/10 dark:bg-white/5 px-2 py-0.5 font-mono text-[10px] font-medium text-blue-600 dark:text-blue-300/80">
                                 {dur}
                               </span>
                             ) : null;
                           })()}
                         </div>
 
-                        <p className="mt-4 text-sm leading-relaxed text-foreground/70">
+                        <p className="mt-4 text-sm leading-relaxed text-foreground/80">
                           {exp.description}
                         </p>
 
@@ -139,7 +139,7 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                             {exp.techUsed.map((t) => (
                               <span
                                 key={t}
-                                className="rounded-md bg-white/5 px-2 py-0.5 text-[11px] font-medium text-foreground/70 ring-1 ring-white/10"
+                                className="rounded-md bg-slate-100 dark:bg-white/5 px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:text-foreground/70 ring-1 ring-slate-200 dark:ring-white/10"
                               >
                                 {t}
                               </span>

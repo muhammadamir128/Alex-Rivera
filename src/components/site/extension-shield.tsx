@@ -13,6 +13,11 @@ export function ExtensionShield() {
       try {
         // 1. Selector match
         const selector = `
+          .vton-btn,
+          [class*="vton" i],
+          [id*="vton" i],
+          [data-vton-pinned],
+          [data-vton],
           [class*="try-on" i],
           [class*="tryon" i],
           [class*="virtual-try" i],

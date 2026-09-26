@@ -45,17 +45,18 @@ export function BackToTop() {
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
           onClick={scrollToTop}
           aria-label="Back to top"
-          className="group fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full glass-strong text-foreground shadow-2xl shadow-black/40 transition-colors hover:bg-white/[0.1] hover:text-blue-300"
+          className="group fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full bg-white/90 dark:bg-[#0f172a]/90 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-white shadow-xl shadow-black/10 dark:shadow-black/50 transition-all hover:scale-105 hover:text-blue-600 dark:hover:text-blue-400 active:scale-95 cursor-pointer"
         >
           {/* progress ring */}
-          <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 48 48">
+          <svg className="absolute inset-0 h-full w-full -rotate-90 pointer-events-none" viewBox="0 0 48 48">
             <circle
               cx="24"
               cy="24"
               r={R}
               fill="none"
-              stroke="rgba(255,255,255,0.1)"
-              strokeWidth="2"
+              stroke="currentColor"
+              className="text-slate-200 dark:text-white/10"
+              strokeWidth="2.5"
             />
             <circle
               cx="24"
@@ -63,7 +64,7 @@ export function BackToTop() {
               r={R}
               fill="none"
               stroke="url(#bt-ring)"
-              strokeWidth="2"
+              strokeWidth="2.5"
               strokeLinecap="round"
               strokeDasharray={CIRC}
               strokeDashoffset={CIRC * (1 - progress)}
@@ -76,7 +77,7 @@ export function BackToTop() {
               </linearGradient>
             </defs>
           </svg>
-          <ArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" />
+          <ArrowUp className="relative z-10 h-4 w-4 transition-transform group-hover:-translate-y-0.5" />
         </motion.button>
       )}
     </AnimatePresence>

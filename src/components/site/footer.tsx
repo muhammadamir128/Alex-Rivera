@@ -96,11 +96,10 @@ export function Footer({ profile }: { profile: ProfileData }) {
 
           <div className="relative z-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div className="space-y-1.5">
-
               <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
                 Have a project or vision in mind?
               </h3>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-slate-300/80">
                 Let&apos;s engineer high-performance, scalable, and delightful web products together.
               </p>
             </div>
@@ -116,7 +115,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
               <button
                 type="button"
                 onClick={handleCopyEmail}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 text-sm font-medium text-foreground transition-all hover:bg-white/10 hover:border-white/20 active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/10 px-3.5 py-2 text-sm font-medium text-white transition-all hover:bg-white/20 hover:border-white/30 active:scale-95 cursor-pointer shadow-sm"
               >
                 {copied ? (
                   <>
@@ -125,8 +124,8 @@ export function Footer({ profile }: { profile: ProfileData }) {
                   </>
                 ) : (
                   <>
-                    <Copy className="h-4 w-4 text-muted-foreground" />
-                    <span>Copy Email</span>
+                    <Copy className="h-4 w-4 text-slate-300" />
+                    <span className="text-white">Copy Email</span>
                   </>
                 )}
               </button>
@@ -146,13 +145,13 @@ export function Footer({ profile }: { profile: ProfileData }) {
                 <span className="font-display text-base font-bold text-white group-hover:text-blue-400 transition-colors">
                   {profile.name}
                 </span>
-                <span className="block text-xs text-muted-foreground">
+                <span className="block text-xs text-slate-400">
                   {profile.title || "Full-Stack Developer"}
                 </span>
               </div>
             </Link>
 
-            <p className="text-sm leading-relaxed text-muted-foreground">
+            <p className="text-sm leading-relaxed text-slate-400">
               {profile.tagline ||
                 "Crafting performant, accessible, and delight-driven web experiences from database schema to user interaction."}
             </p>
@@ -168,7 +167,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-white transition-colors group font-medium"
+                    className="inline-flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors group font-medium"
                   >
                     <span className="h-1 w-1 rounded-full bg-blue-500/0 group-hover:bg-blue-400 transition-all group-hover:w-2" />
                     {link.label}
@@ -210,7 +209,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
               }}
               aria-label="Admin Access"
               title="Admin Access"
-              className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-muted-foreground/40 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-95 cursor-pointer"
+              className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-95 cursor-pointer"
             >
               <Lock className="h-3.5 w-3.5" />
             </button>
@@ -329,7 +328,7 @@ function SocialButton({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-muted-foreground transition-all duration-200 hover:border-blue-500/40 hover:bg-blue-500/10 hover:text-blue-400 hover:scale-105 active:scale-95"
+      className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-300 transition-all duration-200 hover:border-blue-500/40 hover:bg-blue-500/10 hover:text-blue-400 hover:scale-105 active:scale-95"
     >
       {children}
     </a>

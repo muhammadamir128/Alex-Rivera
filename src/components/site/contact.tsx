@@ -161,7 +161,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
                     onBlur={() => setTouched({ ...touched, name: true })}
                     placeholder="Ada Lovelace"
                     className={cn(
-                      "bg-white/5 border-white/10 placeholder:text-muted-foreground/60 transition-colors",
+                      "bg-white/80 dark:bg-white/5 border-slate-200 dark:border-white/10 text-foreground placeholder:text-muted-foreground/60 transition-colors",
                       touched.name && errors.name && "border-red-400/50 focus:border-red-400/70",
                       touched.name && !errors.name && form.name && "border-emerald-400/50 focus:border-emerald-400/70"
                     )}
@@ -177,7 +177,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
                     onBlur={() => setTouched({ ...touched, email: true })}
                     placeholder="ada@example.com"
                     className={cn(
-                      "bg-white/5 border-white/10 placeholder:text-muted-foreground/60 transition-colors",
+                      "bg-white/80 dark:bg-white/5 border-slate-200 dark:border-white/10 text-foreground placeholder:text-muted-foreground/60 transition-colors",
                       touched.email && errors.email && "border-red-400/50 focus:border-red-400/70",
                       touched.email && !errors.email && form.email && "border-emerald-400/50 focus:border-emerald-400/70"
                     )}
@@ -211,7 +211,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
                     placeholder="Tell me about your project, timeline, and budget…"
                     rows={5}
                     className={cn(
-                      "bg-white/5 border-white/10 resize-none placeholder:text-muted-foreground/60 transition-colors",
+                      "bg-white/80 dark:bg-white/5 border-slate-200 dark:border-white/10 text-foreground resize-none placeholder:text-muted-foreground/60 transition-colors",
                       touched.message && errors.message && "border-red-400/50 focus:border-red-400/70",
                       touched.message && !errors.message && form.message.trim().length >= MIN_MSG && "border-emerald-400/50 focus:border-emerald-400/70"
                     )}

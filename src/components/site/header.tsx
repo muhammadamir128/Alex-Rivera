@@ -120,7 +120,7 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
                   {active && (
                     <motion.span
                       layoutId="nav-active"
-                      className="absolute inset-0 -z-10 rounded-lg bg-white/5 ring-1 ring-white/10"
+                      className="absolute inset-0 -z-10 rounded-lg bg-black/5 ring-1 ring-black/10 dark:bg-white/5 dark:ring-white/10"
                       transition={{ type: "spring", stiffness: 400, damping: 32 }}
                     />
                   )}
@@ -176,8 +176,8 @@ export function SiteHeader({ name, socials }: { name: string; socials?: Record<s
                       className={cn(
                         "block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer",
                         active
-                          ? "bg-white/10 text-foreground font-semibold"
-                          : "text-foreground/80 hover:bg-white/5"
+                          ? "bg-black/5 dark:bg-white/10 text-foreground font-semibold"
+                          : "text-foreground/80 hover:bg-black/5 dark:hover:bg-white/5"
                       )}
                     >
                       {item.label}

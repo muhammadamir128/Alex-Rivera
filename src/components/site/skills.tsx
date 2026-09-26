@@ -103,7 +103,7 @@ export function Skills({ skills }: { skills: SkillData[] }) {
                             </span>
                           </div>
                         </div>
-                        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+                        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-white/5">
                           <motion.div
                             className={cn(
                               "relative h-full rounded-full bg-gradient-to-r",

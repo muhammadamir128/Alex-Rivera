@@ -141,7 +141,7 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search projects by title, tech..."
-                  className="w-full rounded-full border border-white/10 bg-white/[0.04] py-2 pl-10 pr-9 text-xs sm:text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:border-blue-400/50 focus:bg-white/[0.08] focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/[0.04] py-2 pl-10 pr-9 text-xs sm:text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/60 focus:border-blue-500/50 focus:bg-white dark:focus:bg-white/[0.08] focus:ring-2 focus:ring-blue-500/20 shadow-sm"
                 />
                 {search && (
                   <button
@@ -158,12 +158,12 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
               <div className="flex items-center justify-between sm:justify-end gap-3 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1.5">
                   <span>Showing</span>
-                  <span className="font-mono font-medium text-foreground bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                  <span className="font-mono font-medium text-foreground bg-slate-200/60 dark:bg-white/5 px-2 py-0.5 rounded-full border border-slate-300/60 dark:border-white/5">
                     {visible.length}
                   </span>
                   <span>of {projects.length}</span>
                   {filter !== "All" && (
-                    <span className="hidden xs:inline text-blue-400 font-medium">({filter})</span>
+                    <span className="hidden xs:inline text-blue-500 dark:text-blue-400 font-medium">({filter})</span>
                   )}
                 </div>
 
@@ -173,7 +173,7 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
                       setSearch("");
                       setFilter("All");
                     }}
-                    className="text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors underline underline-offset-4"
+                    className="text-xs text-blue-500 dark:text-blue-400 hover:underline font-medium transition-colors underline-offset-4"
                   >
                     Clear filters
                   </button>
@@ -189,10 +189,10 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
                     key={tag}
                     onClick={() => setFilter(tag)}
                     className={cn(
-                      "flex-shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
+                      "flex-shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all cursor-pointer",
                       filter === tag
                         ? "bg-gradient-to-r from-blue-500 to-violet-600 text-white shadow-md shadow-violet-600/30 scale-[1.02]"
-                        : "glass text-muted-foreground hover:text-foreground hover:bg-white/[0.08]"
+                        : "glass text-muted-foreground hover:text-foreground hover:bg-white/80 dark:hover:bg-white/[0.08]"
                     )}
                   >
                     {tag}
@@ -299,14 +299,18 @@ function ProjectCard({ project }: { project: ProjectData }) {
         />
 
         {/* Hero preview screenshot */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-950/60 border-b border-white/[0.06] select-none">
+        <div
+          suppressHydrationWarning
+          className="relative aspect-[16/10] w-full overflow-hidden bg-slate-950/60 border-b border-white/[0.06] select-none"
+        >
           {project.coverImage ? (
-            <Image
-              src={project.coverImage}
-              alt={project.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105 pointer-events-none select-none"
+            <div
+              role="img"
+              aria-label={project.title}
+              className="h-full w-full bg-cover bg-top transition-transform duration-700 ease-out group-hover:scale-105 pointer-events-none select-none"
+              style={{
+                backgroundImage: `url("${project.coverImage}")`,
+              }}
             />
           ) : (
             <div className="grid h-full w-full place-items-center bg-gradient-to-br from-blue-600/30 to-violet-600/30" />

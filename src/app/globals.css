@@ -225,10 +225,15 @@
     -webkit-backdrop-filter: blur(14px) saturate(140%);
   }
   .glass-strong {
-    background: rgba(15, 23, 41, 0.7);
+    background: rgba(15, 23, 41, 0.75);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
+  }
+  .light .glass-strong {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
   }
   .gradient-text {
     background: linear-gradient(110deg, #60a5fa 0%, #a78bfa 50%, #22d3ee 100%);
@@ -331,6 +336,11 @@
 /* ==========================================================================
    BLOCK THIRD-PARTY VIRTUAL TRY-ON EXTENSIONS (Try-On badges / popups)
    ========================================================================== */
+.vton-btn,
+[class*="vton" i],
+[id*="vton" i],
+[data-vton],
+[data-vton-pinned],
 [class*="try-on" i],
 [class*="tryon" i],
 [class*="virtual-try" i],
