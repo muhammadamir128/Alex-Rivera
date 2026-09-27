@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { ok, badRequest, serverError, getClientIp } from "@/lib/api";
 import { contactRateLimit } from "@/lib/rate-limit";
 import { getAdminWithRefresh } from "@/lib/session";
+import { sendContactEmail } from "@/lib/email";
 
 export async function GET(request: NextRequest) {
   const admin = await getAdminWithRefresh();
@@ -86,13 +87,24 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  let entryId = `msg_${Date.now()}`;
   try {
     const entry = await db.message.create({
       data: { name, email, message, isSpam },
     });
-    return ok({ ok: true, id: entry.id });
+    entryId = entry.id;
   } catch (e) {
     console.warn("Message DB write failed, accepting message gracefully:", (e as Error).message);
-    return ok({ ok: true, id: `msg_${Date.now()}` });
   }
+
+  // If not spam, dispatch email notification to owner's Gmail
+  if (!isSpam) {
+    try {
+      await sendContactEmail({ name, email, message });
+    } catch (mailError) {
+      console.error("[EMAIL ERROR] Failed to send email alert:", (mailError as Error).message);
+    }
+  }
+
+  return ok({ ok: true, id: entryId });
 }
