@@ -59,12 +59,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
     : "MA";
 
   return (
-    <footer className="relative mt-20 border-t border-white/10 bg-[#080c16]/95 backdrop-blur-2xl text-foreground">
-      {/* Top subtle radiant glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 -top-24 h-24 bg-gradient-to-t from-[#080c16]/80 to-transparent"
-      />
+    <footer className="relative border-t border-white/10 bg-[#060913] backdrop-blur-2xl text-foreground">
       {/* Top gradient highlight bar */}
       <div
         aria-hidden
