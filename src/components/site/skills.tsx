@@ -347,94 +347,60 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
     label: string;
     score: string;
   } | null>(null);
-  const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
-  const [isBoxVisible, setIsBoxVisible] = useState(false);
-  const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [activeNodeId, setActiveNodeId] = useState<string | null>("frontend-hub");
+  const [isInspecting, setIsInspecting] = useState(false);
+  const [timerKey, setTimerKey] = useState(0);
+  const inspectTimerRef = useRef<NodeJS.Timeout | null>(null);
   const constellationContainerRef = useRef<HTMLDivElement>(null);
 
-  const [tooltipPos, setTooltipPos] = useState<{
-    left: number;
-    top: number;
-    placement: "top" | "bottom" | "left" | "right";
-  }>({
-    left: 20,
-    top: 20,
-    placement: "right",
-  });
-
-  const showTooltipFor3s = (nodeId: string, e?: React.MouseEvent) => {
+  const start5sInspection = (nodeId: string) => {
     setActiveNodeId(nodeId);
+    setIsInspecting(true);
+    setTimerKey((prev) => prev + 1);
 
-    if (e && constellationContainerRef.current) {
-      const targetEl = e.currentTarget as SVGElement;
-      const targetRect = targetEl.getBoundingClientRect();
-      const containerRect = constellationContainerRef.current.getBoundingClientRect();
-
-      const centerX = targetRect.left - containerRect.left + targetRect.width / 2;
-      const centerY = targetRect.top - containerRect.top + targetRect.height / 2;
-
-      const w = containerRect.width;
-      const h = containerRect.height;
-      const boxWidth = Math.min(280, w - 32);
-      const boxHeight = 220;
-
-      let left = 0;
-      let top = 0;
-      let placement: "top" | "bottom" | "left" | "right" = "right";
-
-      // If near bottom, place above
-      if (centerY > h * 0.55) {
-        placement = "top";
-        left = Math.max(16, Math.min(centerX - boxWidth / 2, w - boxWidth - 16));
-        top = Math.max(12, centerY - boxHeight - 20);
-      } else if (centerY < h * 0.35) {
-        // If near top, place below
-        placement = "bottom";
-        left = Math.max(16, Math.min(centerX - boxWidth / 2, w - boxWidth - 16));
-        top = Math.min(centerY + 20, Math.max(12, h - boxHeight - 16));
-      } else if (centerX > w * 0.5) {
-        // If on right side, place to left
-        placement = "left";
-        left = Math.max(16, centerX - boxWidth - 20);
-        top = Math.max(12, Math.min(centerY - boxHeight / 2, h - boxHeight - 16));
-      } else {
-        // If on left side, place to right
-        placement = "right";
-        left = Math.min(centerX + 20, w - boxWidth - 16);
-        top = Math.max(12, Math.min(centerY - boxHeight / 2, h - boxHeight - 16));
-      }
-
-      setTooltipPos({ left, top, placement });
+    if (inspectTimerRef.current) {
+      clearTimeout(inspectTimerRef.current);
     }
 
-    setIsBoxVisible(true);
-    if (hideTimerRef.current) {
-      clearTimeout(hideTimerRef.current);
-    }
-    hideTimerRef.current = setTimeout(() => {
-      setIsBoxVisible(false);
-    }, 3000);
+    inspectTimerRef.current = setTimeout(() => {
+      setIsInspecting(false);
+    }, 5000);
   };
 
-  const handleBoxMouseEnter = () => {
-    if (hideTimerRef.current) {
-      clearTimeout(hideTimerRef.current);
+  const handleNodeMouseEnter = (nodeId: string, _e?: React.MouseEvent) => {
+    start5sInspection(nodeId);
+  };
+
+  const handleNodeMouseLeave = () => {
+    // 5 seconds countdown continues running even after cursor leaves the node
+  };
+
+  const handleNodeClick = (nodeId: string, _e?: React.MouseEvent) => {
+    start5sInspection(nodeId);
+  };
+
+  const handleCardMouseEnter = () => {
+    // Pause timer while user is hovering the card
+    if (inspectTimerRef.current) {
+      clearTimeout(inspectTimerRef.current);
+      inspectTimerRef.current = null;
     }
   };
 
-  const handleBoxMouseLeave = () => {
-    if (hideTimerRef.current) {
-      clearTimeout(hideTimerRef.current);
+  const handleCardMouseLeave = () => {
+    // Resume a 3s countdown when user leaves the card
+    if (inspectTimerRef.current) {
+      clearTimeout(inspectTimerRef.current);
     }
-    hideTimerRef.current = setTimeout(() => {
-      setIsBoxVisible(false);
+    inspectTimerRef.current = setTimeout(() => {
+      setIsInspecting(false);
     }, 3000);
   };
 
   useEffect(() => {
     return () => {
-      if (hideTimerRef.current) {
-        clearTimeout(hideTimerRef.current);
+      if (inspectTimerRef.current) {
+        clearTimeout(inspectTimerRef.current);
       }
     };
   }, []);
@@ -442,7 +408,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
   // Determine active node details
   const activeNode = useMemo(() => {
     if (!activeNodeId) return null;
-    return NODES.find((n) => n.id === activeNodeId) || null;
+    return NODES.find((n) => n.id === activeNodeId) || NODES[0];
   }, [activeNodeId]);
 
   // Check if a node is highlighted
@@ -489,8 +455,8 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
           </p>
         </div>
 
-        {/* Top row: Left Filter Card + Right Radar Chart */}
-        <div className="relative mb-6 grid grid-cols-1 md:grid-cols-2 lg:flex lg:justify-between gap-4 sm:gap-6 pointer-events-auto">
+        {/* Top row: Left Filter Card + Center Node Inspector + Right Radar Chart */}
+        <div className="relative mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[18rem_1fr_18rem] items-stretch gap-4 sm:gap-6 pointer-events-auto">
           {/* Project Filter Card with Framer Motion entry and hover dynamics */}
           <motion.div
             initial={{ opacity: 0, x: -30, y: 15 }}
@@ -498,108 +464,335 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             whileHover={{ y: -3, transition: { duration: 0.25 } }}
-            className="w-full lg:w-72 rounded-2xl glass p-4 sm:p-5 border border-white/10 hover:border-cyan-500/40 shadow-xl bg-slate-950/60 backdrop-blur-xl transition-colors duration-300 relative group"
+            className="w-full rounded-2xl glass p-4 sm:p-5 border border-white/10 hover:border-cyan-500/40 shadow-xl bg-slate-950/60 backdrop-blur-xl transition-colors duration-300 relative group flex flex-col justify-between"
           >
             {/* Ambient background glow on card hover */}
             <div className="pointer-events-none absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10" />
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-cyan-400 animate-pulse" />
-                <h3 className="font-display text-sm font-semibold text-white tracking-wide">
-                  Project Filter
-                </h3>
-              </div>
-              {(selectedFilter || searchQuery) && (
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  onClick={() => {
-                    setSelectedFilter(null);
-                    setSearchQuery("");
-                  }}
-                  className="text-[10px] font-mono text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
-                >
-                  Reset
-                </motion.button>
-              )}
-            </div>
-
-            <div className="relative mt-3">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  if (e.target.value) setSelectedFilter(null);
-                }}
-                placeholder="e.g., Real-time Chat, SaaS, Blog"
-                className="w-full rounded-xl border border-white/15 bg-white/5 pl-3.5 pr-8 py-2 text-xs text-white placeholder:text-slate-400 focus:border-cyan-400/60 focus:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
-              />
-              {searchQuery ? (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2.5 top-2.5 text-slate-400 hover:text-white transition-colors cursor-pointer"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              ) : (
-                <Search className="pointer-events-none absolute right-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
-              )}
-            </div>
-
-            <div className="mt-4 space-y-2">
-              {FILTER_PRESETS.map((filter) => {
-                const checked = selectedFilter === filter.id;
-                const matchCount = NODES.filter((n) => n.tags.includes(filter.id)).length;
-
-                return (
+            <div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-cyan-400 animate-pulse" />
+                  <h3 className="font-display text-sm font-semibold text-white tracking-wide">
+                    Project Filter
+                  </h3>
+                </div>
+                {(selectedFilter || searchQuery) && (
                   <motion.button
-                    key={filter.id}
-                    type="button"
-                    whileHover={{ x: 3 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ duration: 0.15 }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
                     onClick={() => {
-                      setSelectedFilter(checked ? null : filter.id);
+                      setSelectedFilter(null);
                       setSearchQuery("");
                     }}
-                    className={cn(
-                      "flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all text-left cursor-pointer",
-                      checked
-                        ? "text-cyan-300 bg-cyan-500/15 border border-cyan-500/30 shadow-sm"
-                        : "text-slate-300 hover:text-white hover:bg-white/5 border border-transparent"
-                    )}
+                    className="text-[10px] font-mono text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <motion.div
-                        animate={{ scale: checked ? [1, 1.25, 1] : 1 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {checked ? (
-                          <CheckSquare className="h-4 w-4 text-cyan-400 flex-shrink-0" />
-                        ) : (
-                          <Square className="h-4 w-4 text-slate-500 flex-shrink-0" />
-                        )}
-                      </motion.div>
-                      <span>{filter.label}</span>
-                    </div>
+                    Reset
+                  </motion.button>
+                )}
+              </div>
 
-                    <span
+              <div className="relative mt-3">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    if (e.target.value) setSelectedFilter(null);
+                  }}
+                  placeholder="e.g., Real-time Chat, SaaS, Blog"
+                  className="w-full rounded-xl border border-white/15 bg-white/5 pl-3.5 pr-8 py-2 text-xs text-white placeholder:text-slate-400 focus:border-cyan-400/60 focus:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                />
+                {searchQuery ? (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2.5 top-2.5 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                ) : (
+                  <Search className="pointer-events-none absolute right-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+                )}
+              </div>
+
+              <div className="mt-4 space-y-2">
+                {FILTER_PRESETS.map((filter) => {
+                  const checked = selectedFilter === filter.id;
+                  const matchCount = NODES.filter((n) => n.tags.includes(filter.id)).length;
+
+                  return (
+                    <motion.button
+                      key={filter.id}
+                      type="button"
+                      whileHover={{ x: 3 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
+                      onClick={() => {
+                        setSelectedFilter(checked ? null : filter.id);
+                        setSearchQuery("");
+                      }}
                       className={cn(
-                        "text-[10px] font-mono rounded-full px-1.5 py-0.5",
+                        "flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all text-left cursor-pointer",
                         checked
-                          ? "bg-cyan-400/20 text-cyan-300 font-bold"
-                          : "text-slate-500 bg-white/5"
+                          ? "text-cyan-300 bg-cyan-500/15 border border-cyan-500/30 shadow-sm"
+                          : "text-slate-300 hover:text-white hover:bg-white/5 border border-transparent"
                       )}
                     >
-                      {matchCount}
+                      <div className="flex items-center gap-2.5">
+                        <motion.div
+                          animate={{ scale: checked ? [1, 1.25, 1] : 1 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          {checked ? (
+                            <CheckSquare className="h-4 w-4 text-cyan-400 flex-shrink-0" />
+                          ) : (
+                            <Square className="h-4 w-4 text-slate-500 flex-shrink-0" />
+                          )}
+                        </motion.div>
+                        <span>{filter.label}</span>
+                      </div>
+
+                      <span
+                        className={cn(
+                          "text-[10px] font-mono rounded-full px-1.5 py-0.5",
+                          checked
+                            ? "bg-cyan-400/20 text-cyan-300 font-bold"
+                            : "text-slate-500 bg-white/5"
+                        )}  >
+                        {matchCount}
+                      </span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Center: Live Architecture Node Inspector Card (5s duration) */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ y: -3, transition: { duration: 0.25 } }}
+            onMouseEnter={handleCardMouseEnter}
+            onMouseLeave={handleCardMouseLeave}
+            className={cn(
+              "w-full md:col-span-2 lg:col-span-1 rounded-2xl glass p-4 sm:p-5 border shadow-xl bg-slate-950/60 backdrop-blur-xl transition-all duration-300 relative group flex flex-col justify-between overflow-hidden",
+              isInspecting && activeNode
+                ? activeNode.category === "backend"
+                  ? "border-violet-500/50 hover:border-violet-400/70"
+                  : activeNode.category === "bridge"
+                    ? "border-purple-500/50 hover:border-purple-400/70"
+                    : "border-cyan-500/50 hover:border-cyan-400/70"
+                : "border-white/10 hover:border-cyan-500/30"
+            )}
+          >
+            {/* Top 5-second countdown progress bar */}
+            {isInspecting && activeNode && (
+              <div className="absolute top-0 left-0 right-0 h-0.5 overflow-hidden rounded-t-2xl bg-white/10 z-20">
+                <motion.div
+                  key={`timer-${timerKey}`}
+                  initial={{ width: "100%" }}
+                  animate={{ width: "0%" }}
+                  transition={{ duration: 5, ease: "linear" }}
+                  className={cn(
+                    "h-full",
+                    activeNode.category === "backend"
+                      ? "bg-violet-400"
+                      : activeNode.category === "bridge"
+                        ? "bg-purple-400"
+                        : "bg-cyan-400"
+                  )}
+                />
+              </div>
+            )}
+
+            {/* Ambient dynamic background glow on card matching active node */}
+            <div
+              className={cn(
+                "pointer-events-none absolute -inset-0.5 rounded-2xl transition-opacity duration-500 blur-sm -z-10",
+                isInspecting && activeNode
+                  ? activeNode.category === "backend"
+                    ? "bg-gradient-to-r from-violet-500/0 via-violet-500/25 to-fuchsia-500/0 opacity-70 group-hover:opacity-100"
+                    : activeNode.category === "bridge"
+                      ? "bg-gradient-to-r from-purple-500/0 via-purple-500/25 to-pink-500/0 opacity-70 group-hover:opacity-100"
+                      : "bg-gradient-to-r from-cyan-500/0 via-cyan-500/25 to-blue-500/0 opacity-70 group-hover:opacity-100"
+                  : "bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-blue-500/0 opacity-0 group-hover:opacity-40"
+              )}
+            />
+
+            {/* Top header bar */}
+            <div className="flex items-center justify-between pb-2 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <Layers
+                  className={cn(
+                    "h-4 w-4",
+                    isInspecting && activeNode
+                      ? activeNode.category === "backend"
+                        ? "text-violet-400"
+                        : activeNode.category === "bridge"
+                          ? "text-purple-400"
+                          : "text-cyan-400"
+                      : "text-cyan-400"
+                  )}
+                />
+                <h3 className="font-display text-sm font-semibold text-white tracking-wide">
+                  Node Inspector
+                </h3>
+              </div>
+              <div className="flex items-center gap-1.5 rounded-full bg-white/5 border border-white/10 px-2 py-0.5">
+                {isInspecting ? (
+                  <>
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span
+                        className={cn(
+                          "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
+                          activeNode?.category === "backend" ? "bg-violet-400" : "bg-cyan-400"
+                        )}
+                      />
+                      <span
+                        className={cn(
+                          "relative inline-flex rounded-full h-1.5 w-1.5",
+                          activeNode?.category === "backend" ? "bg-violet-400" : "bg-cyan-400"
+                        )}
+                      />
                     </span>
-                  </motion.button>
-                );
-              })}
+                    <span className="text-[9px] font-mono font-medium text-cyan-300 tracking-wider uppercase">
+                      5s Inspecting
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
+                    <span className="text-[9px] font-mono text-slate-400 tracking-wider uppercase">
+                      Standby
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Node Info Content with AnimatePresence */}
+            <AnimatePresence mode="wait">
+              {isInspecting && activeNode ? (
+                <motion.div
+                  key={`node-${activeNode.id}-${timerKey}`}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.18 }}
+                  className="py-2.5 space-y-3"
+                >
+                  {/* Node icon + label + techCount/category */}
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={cn(
+                        "grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white font-mono text-sm font-bold shadow-md",
+                        activeNode.category === "backend"
+                          ? "bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-violet-500/25"
+                          : activeNode.category === "bridge"
+                            ? "bg-gradient-to-br from-purple-500 to-indigo-600 shadow-purple-500/25"
+                            : "bg-gradient-to-br from-blue-500 to-cyan-500 shadow-cyan-500/25"
+                      )}
+                    >
+                      {activeNode.category === "backend" ? (
+                        <Server className="h-5 w-5" />
+                      ) : (
+                        <Code2 className="h-5 w-5" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-display text-base font-bold text-white tracking-tight truncate">
+                        {activeNode.label}
+                      </h4>
+                      <p className="text-xs text-slate-400 truncate">
+                        {activeNode.techCount || "Specialized technology"}
+                      </p>
+                    </div>
+                    <div className="shrink-0 rounded-lg bg-white/5 px-2 py-1 text-[11px] font-mono text-cyan-300 border border-white/5">
+                      {activeNode.proficiency.split(" ")[0]}
+                    </div>
+                  </div>
+
+                  {/* Proficiency full tag */}
+                  <div className="rounded-lg bg-white/[0.04] px-2.5 py-1.5 text-xs font-mono text-slate-300 border border-white/5 flex items-center justify-between">
+                    <span className="text-slate-400 text-[11px]">Proficiency</span>
+                    <span
+                      className={cn(
+                        "font-semibold",
+                        activeNode.category === "backend" ? "text-violet-300" : "text-cyan-300"
+                      )}
+                    >
+                      {activeNode.proficiency}
+                    </span>
+                  </div>
+
+                  {/* Applications list */}
+                  <div className="pt-1">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+                      <Zap className="h-3 w-3 text-cyan-400" />
+                      <span>Production Applications</span>
+                    </p>
+                    <ul className="space-y-1 text-xs text-slate-300/90">
+                      {activeNode.applications.slice(0, 3).map((app, i) => (
+                        <li key={i} className="flex items-start gap-1.5 leading-snug">
+                          <span
+                            className={cn(
+                              "font-bold shrink-0",
+                              activeNode.category === "backend" ? "text-violet-400" : "text-cyan-400"
+                            )}
+                          >
+                            •
+                          </span>
+                          <span className="line-clamp-1">{app}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="standby-view"
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.2 }}
+                  className="py-4 flex flex-col items-center justify-center text-center space-y-2.5"
+                >
+                  <div className="relative">
+                    <div className="h-10 w-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shadow-inner">
+                      <Sparkles className="h-5 w-5 animate-pulse" />
+                    </div>
+                    <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500" />
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="font-display text-sm font-bold text-white tracking-wide">
+                      Node Telemetry Standby
+                    </h4>
+                    <p className="mt-1 text-xs text-slate-400 max-w-xs leading-relaxed">
+                      Hover any node below in the constellation to view architectural details for 5 seconds.
+                    </p>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-white/5 border border-white/10 px-3 py-1 text-[10px] font-mono text-cyan-300">
+                    <Activity className="h-3 w-3 text-cyan-400" />
+                    <span>Hover any node to inspect (5s)</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Bottom hint */}
+            <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-slate-500">
+              <span>Constellation Telemetry</span>
+              <span className="text-cyan-400/80">
+                {isInspecting ? "Auto-resets in 5s" : "Hover any node"}
+              </span>
             </div>
           </motion.div>
 
@@ -610,7 +803,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             whileHover={{ y: -3, transition: { duration: 0.25 } }}
-            className="w-full lg:w-72 rounded-2xl glass p-4 sm:p-5 border border-white/10 hover:border-violet-500/40 shadow-xl bg-slate-950/60 backdrop-blur-xl flex flex-col items-center transition-colors duration-300 relative group"
+            className="w-full rounded-2xl glass p-4 sm:p-5 border border-white/10 hover:border-violet-500/40 shadow-xl bg-slate-950/60 backdrop-blur-xl flex flex-col items-center transition-colors duration-300 relative group"
           >
             {/* Ambient background glow on card hover */}
             <div className="pointer-events-none absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-violet-500/0 via-fuchsia-500/10 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10" />
@@ -870,7 +1063,9 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                     return (
                       <div
                         key={node.id}
-                        onClick={(e) => showTooltipFor3s(node.id, e)}
+                        onClick={(e) => handleNodeClick(node.id, e)}
+                        onMouseEnter={(e) => handleNodeMouseEnter(node.id, e)}
+                        onMouseLeave={handleNodeMouseLeave}
                         className={cn(
                           "rounded-xl border p-3 transition-all cursor-pointer",
                           isSelected
@@ -908,7 +1103,9 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                     return (
                       <div
                         key={node.id}
-                        onClick={(e) => showTooltipFor3s(node.id, e)}
+                        onClick={(e) => handleNodeClick(node.id, e)}
+                        onMouseEnter={(e) => handleNodeMouseEnter(node.id, e)}
+                        onMouseLeave={handleNodeMouseLeave}
                         className={cn(
                           "rounded-xl border p-3 transition-all cursor-pointer",
                           isSelected
@@ -931,116 +1128,6 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
           ) : (
             /* Interactive Constellation View */
             <div className="relative w-full z-10 flex flex-col items-center">
-              {/* Floating Detail Tooltip Card (Desktop: md and up) */}
-              <div
-                style={{
-                  left: `${tooltipPos.left}px`,
-                  top: `${tooltipPos.top}px`,
-                }}
-                className="hidden md:block absolute z-30 w-full max-w-[280px] xs:max-w-[300px] pointer-events-none transition-[left,top] duration-200"
-              >
-                <AnimatePresence>
-                  {isBoxVisible && activeNode && (
-                    <motion.div
-                      key={activeNode.id}
-                      initial={{ opacity: 0, y: -10, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -6, scale: 0.96 }}
-                      transition={{ duration: 0.25, ease: "easeOut" }}
-                      onMouseEnter={handleBoxMouseEnter}
-                      onMouseLeave={handleBoxMouseLeave}
-                      className={cn(
-                        "pointer-events-auto relative rounded-2xl glass p-5 shadow-2xl backdrop-blur-2xl border transition-all duration-300",
-                        activeNode.category === "backend"
-                          ? "border-violet-500/60 shadow-violet-500/20"
-                          : "border-cyan-400/60 shadow-cyan-400/20"
-                      )}
-                    >
-                      {/* Auto-hide 3-second animated countdown bar */}
-                      <div className="absolute top-0 left-0 right-0 h-0.5 overflow-hidden rounded-t-2xl bg-white/10">
-                        <motion.div
-                          key={`timer-bar-${activeNode.id}`}
-                          initial={{ width: "100%" }}
-                          animate={{ width: "0%" }}
-                          transition={{ duration: 3, ease: "linear" }}
-                          className={cn(
-                            "h-full",
-                            activeNode.category === "backend" ? "bg-violet-400" : "bg-cyan-400"
-                          )}
-                        />
-                      </div>
-
-                      {/* Close button */}
-                      <button
-                        type="button"
-                        onClick={() => setIsBoxVisible(false)}
-                        aria-label="Close details"
-                        className="absolute top-3.5 right-3.5 grid h-6 w-6 place-items-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                      >
-                        <X className="h-3.5 w-3.5" />
-                      </button>
-
-                      {/* Dynamic Pointer Notch */}
-                      <div
-                        className={cn(
-                          "absolute h-3.5 w-3.5 rotate-45 bg-slate-950/95",
-                          tooltipPos.placement === "left" && "-right-1.5 top-8 border-r border-t",
-                          tooltipPos.placement === "right" && "-left-1.5 top-8 border-l border-b",
-                          tooltipPos.placement === "top" && "-bottom-1.5 left-1/2 -translate-x-1/2 border-r border-b",
-                          tooltipPos.placement === "bottom" && "-top-1.5 left-1/2 -translate-x-1/2 border-l border-t",
-                          activeNode.category === "backend"
-                            ? "border-violet-500/60"
-                            : "border-cyan-400/60"
-                        )}
-                      />
-
-                      <div className="flex items-center gap-3 pr-6">
-                        <div
-                          className={cn(
-                            "grid h-10 w-10 place-items-center rounded-xl text-white font-mono text-sm font-bold shadow-md",
-                            activeNode.category === "backend"
-                              ? "bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-violet-500/25"
-                              : "bg-gradient-to-br from-blue-500 to-cyan-500 shadow-cyan-500/25"
-                          )}
-                        >
-                          {activeNode.category === "backend" ? (
-                            <Server className="h-5 w-5" />
-                          ) : (
-                            <Code2 className="h-5 w-5" />
-                          )}
-                        </div>
-                        <div>
-                          <h4 className="font-display text-base font-bold text-white tracking-tight">
-                            {activeNode.label}
-                          </h4>
-                          <p className="text-xs text-slate-400">
-                            {activeNode.techCount || "Specialized technology"}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mt-3.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-xs font-mono text-cyan-300 border border-white/5">
-                        {activeNode.proficiency}
-                      </div>
-
-                      <div className="mt-4 pt-3 border-t border-white/10">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-2">
-                          Applications
-                        </p>
-                        <ul className="space-y-1.5 text-xs text-slate-300/90">
-                          {activeNode.applications.map((app, i) => (
-                            <li key={i} className="flex items-start gap-1.5 leading-snug">
-                              <span className="text-cyan-400 font-bold">•</span>
-                              <span>{app}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
               {/* Responsive SVG Constellation Canvas Wrapper */}
               <div className="w-full overflow-x-auto scrollbar-none flex justify-center py-1">
                 <svg
@@ -1331,8 +1418,9 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                     return (
                       <g
                         key={node.id}
-                        onClick={(e) => showTooltipFor3s(node.id, e)}
-                        onMouseEnter={(e) => showTooltipFor3s(node.id, e)}
+                        onClick={(e) => handleNodeClick(node.id, e)}
+                        onMouseEnter={(e) => handleNodeMouseEnter(node.id, e)}
+                        onMouseLeave={handleNodeMouseLeave}
                         className="cursor-pointer"
                         style={{
                           opacity: isHighlighted ? 1 : 0.25,
@@ -1419,8 +1507,9 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                     return (
                       <g
                         key={hub.id}
-                        onClick={(e) => showTooltipFor3s(hub.id, e)}
-                        onMouseEnter={(e) => showTooltipFor3s(hub.id, e)}
+                        onClick={(e) => handleNodeClick(hub.id, e)}
+                        onMouseEnter={(e) => handleNodeMouseEnter(hub.id, e)}
+                        onMouseLeave={handleNodeMouseLeave}
                         className="cursor-pointer transition-all duration-300"
                         style={{ opacity: isHighlighted ? 1 : 0.3 }}
                       >
@@ -1476,7 +1565,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
 
               {/* Mobile Docked Inspector Card (Screens < md) */}
               <AnimatePresence>
-                {isBoxVisible && activeNode && (
+                {isInspecting && activeNode && (
                   <motion.div
                     key={`mobile-panel-${activeNode.id}`}
                     initial={{ opacity: 0, y: 10 }}
@@ -1487,30 +1576,13 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                       activeNode.category === "backend"
                         ? "border-violet-500/50 bg-slate-950/90"
                         : "border-cyan-400/50 bg-slate-950/90"
-                    )}
-                  >
-                    {/* Auto-hide countdown bar */}
-                    <div className="absolute top-0 left-0 right-0 h-0.5 overflow-hidden rounded-t-2xl bg-white/10">
-                      <motion.div
-                        key={`m-timer-${activeNode.id}`}
-                        initial={{ width: "100%" }}
-                        animate={{ width: "0%" }}
-                        transition={{ duration: 3, ease: "linear" }}
-                        className={cn(
-                          "h-full",
-                          activeNode.category === "backend" ? "bg-violet-400" : "bg-cyan-400"
-                        )}
-                      />
-                    </div>
-
+                    )}  >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <div
-                          className={cn(
-                            "grid h-8 w-8 place-items-center rounded-lg text-white font-mono text-xs font-bold",
-                            activeNode.category === "backend" ? "bg-violet-600" : "bg-cyan-500"
-                          )}
-                        >
+                        <div className={cn(
+                          "grid h-8 w-8 place-items-center rounded-lg text-white font-mono text-xs font-bold",
+                          activeNode.category === "backend" ? "bg-violet-600" : "bg-cyan-500"
+                        )} >
                           {activeNode.category === "backend" ? (
                             <Server className="h-4 w-4" />
                           ) : (
@@ -1526,9 +1598,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                           </span>
                         </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => setIsBoxVisible(false)}
+                      <button type="button" onClick={() => setIsInspecting(false)}
                         className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 cursor-pointer"
                       >
                         <X className="h-4 w-4" />

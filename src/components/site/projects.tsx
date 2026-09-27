@@ -21,7 +21,7 @@ const PROJECT_THEMES: Record<
   }
 > = {
   "bright-horizon-public-school": {
-    glow: "rgba(59, 130, 246, 0.2)",
+    glow: "rgba(59, 130, 246, 0.25)",
     badgeBorder: "border-blue-400/30",
     badgeBg: "bg-blue-500/10",
     badgeText: "text-blue-300",
@@ -29,42 +29,42 @@ const PROJECT_THEMES: Record<
     domain: "brighthorizon.edu",
   },
   "al-shifa-medical-complex": {
-    glow: "rgba(16, 185, 129, 0.2)",
-    badgeBorder: "border-emerald-400/30",
-    badgeBg: "bg-emerald-500/10",
-    badgeText: "text-emerald-300",
+    glow: "rgba(59, 130, 246, 0.25)",
+    badgeBorder: "border-blue-400/30",
+    badgeBg: "bg-blue-500/10",
+    badgeText: "text-blue-300",
     tagLabel: "Healthcare & HMS",
     domain: "alshifa-hospital.org",
   },
   "qanoon-pk-pakistan-legal-directory": {
-    glow: "rgba(245, 158, 11, 0.2)",
-    badgeBorder: "border-amber-400/30",
-    badgeBg: "bg-amber-500/10",
-    badgeText: "text-amber-300",
+    glow: "rgba(59, 130, 246, 0.25)",
+    badgeBorder: "border-blue-400/30",
+    badgeBg: "bg-blue-500/10",
+    badgeText: "text-blue-300",
     tagLabel: "Legal Directory",
     domain: "qanoonpk.org",
   },
   "tool-grove-two": {
-    glow: "rgba(139, 92, 246, 0.2)",
-    badgeBorder: "border-violet-400/30",
-    badgeBg: "bg-violet-500/10",
-    badgeText: "text-violet-300",
+    glow: "rgba(59, 130, 246, 0.25)",
+    badgeBorder: "border-blue-400/30",
+    badgeBg: "bg-blue-500/10",
+    badgeText: "text-blue-300",
     tagLabel: "Utility Suite",
     domain: "toolsgrove.dev",
   },
   "blood-link-tau-lyart": {
-    glow: "rgba(244, 63, 94, 0.2)",
-    badgeBorder: "border-rose-400/30",
-    badgeBg: "bg-rose-500/10",
-    badgeText: "text-rose-300",
+    glow: "rgba(59, 130, 246, 0.25)",
+    badgeBorder: "border-blue-400/30",
+    badgeBg: "bg-blue-500/10",
+    badgeText: "text-blue-300",
     tagLabel: "Real-Time SOS",
     domain: "bloodlink.app",
   },
   "zynore": {
-    glow: "rgba(236, 72, 153, 0.2)",
-    badgeBorder: "border-pink-400/30",
-    badgeBg: "bg-pink-500/10",
-    badgeText: "text-pink-300",
+    glow: "rgba(59, 130, 246, 0.25)",
+    badgeBorder: "border-blue-400/30",
+    badgeBg: "bg-blue-500/10",
+    badgeText: "text-blue-300",
     tagLabel: "E-Commerce",
     domain: "zynora.shop",
   },
@@ -307,20 +307,19 @@ function ProjectCard({ project }: { project: ProjectData }) {
         className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl cursor-pointer transition-all duration-300"
         style={{
           background: "rgba(6,9,19,0.85)",
-          border: `1px solid ${theme.glow.replace("0.2", "0.45")}`,
-          boxShadow: `0 0 20px 2px ${theme.glow}, inset 0 0 12px ${theme.glow.replace("0.2", "0.04")}`,
+          border: "1px solid rgba(59, 130, 246, 0.35)",
+          boxShadow: "0 0 20px 2px rgba(59, 130, 246, 0.2), inset 0 0 12px rgba(59, 130, 246, 0.04)",
           backdropFilter: "blur(16px)",
         }}
       >
         {/* Corner brackets */}
-        <span className="absolute top-0 left-0 h-6 w-6 border-t-2 border-l-2 rounded-tl-2xl z-10" style={{ borderColor: theme.glow.replace("0.2", "0.7") }} />
-        <span className="absolute bottom-0 right-0 h-6 w-6 border-b-2 border-r-2 rounded-br-2xl z-10" style={{ borderColor: theme.glow.replace("0.2", "0.7") }} />
+        <span className="absolute top-0 left-0 h-6 w-6 border-t-2 border-l-2 rounded-tl-2xl z-10" style={{ borderColor: "rgba(96, 165, 250, 0.75)" }} />
+        <span className="absolute bottom-0 right-0 h-6 w-6 border-b-2 border-r-2 rounded-br-2xl z-10" style={{ borderColor: "rgba(96, 165, 250, 0.75)" }} />
 
         {/* Scanning top border animation */}
         <div className="absolute top-0 left-0 right-0 h-px overflow-hidden rounded-t-2xl z-10">
           <motion.div
-            className="h-full w-1/3"
-            style={{ background: theme.glow.replace("0.2", "0.9") }}
+            className="h-full w-1/3 bg-gradient-to-r from-transparent via-blue-400 to-transparent shadow-[0_0_10px_#3b82f6]"
             animate={{ x: ["-100%", "350%"] }}
             transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
           />
@@ -330,11 +329,11 @@ function ProjectCard({ project }: { project: ProjectData }) {
         <div
           aria-hidden
           className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100 -z-10 blur-xl"
-          style={{ background: `radial-gradient(circle at 50% 0%, ${theme.glow} 0%, transparent 70%)` }}
+          style={{ background: "radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.25) 0%, transparent 70%)" }}
         />
 
         {/* Hero screenshot */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden border-b select-none" style={{ borderColor: theme.glow.replace("0.2", "0.15") }}>
+        <div className="relative aspect-[16/10] w-full overflow-hidden border-b select-none border-blue-500/20">
           {project.coverImage ? (
             <div
               role="img"
@@ -345,7 +344,7 @@ function ProjectCard({ project }: { project: ProjectData }) {
           ) : (
             <div
               className="grid h-full w-full place-items-center"
-              style={{ background: `radial-gradient(ellipse at 50% 50%, ${theme.glow}, transparent 70%)` }}
+              style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.25), transparent 70%)" }}
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-[#060913] via-transparent to-transparent opacity-50 z-10 pointer-events-auto" />
@@ -355,10 +354,7 @@ function ProjectCard({ project }: { project: ProjectData }) {
         <div className="flex flex-1 flex-col p-5">
           {/* Top tags */}
           <div className="flex items-center justify-between gap-2 mb-3">
-            <span className={cn(
-              "text-[10px] font-mono font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full border",
-              theme.badgeBorder, theme.badgeBg, theme.badgeText
-            )}>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full border border-blue-400/30 bg-blue-500/10 text-blue-300">
               {theme.tagLabel}
             </span>
             {project.isFeatured && (
@@ -371,7 +367,7 @@ function ProjectCard({ project }: { project: ProjectData }) {
 
           {/* Title + link */}
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-display text-base sm:text-lg font-bold leading-snug text-white group-hover:text-cyan-300 transition-colors duration-300">
+            <h3 className="font-display text-base sm:text-lg font-bold leading-snug text-white group-hover:text-blue-300 transition-colors duration-300">
               {project.title}
             </h3>
             {project.liveUrl && (
@@ -381,8 +377,7 @@ function ProjectCard({ project }: { project: ProjectData }) {
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
                 aria-label={`Open ${project.title}`}
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg border bg-slate-950/50 text-slate-400 transition-all hover:scale-110 hover:text-cyan-300 active:scale-95"
-                style={{ borderColor: theme.glow.replace("0.2", "0.3") }}
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-blue-500/30 bg-slate-950/50 text-slate-400 transition-all hover:scale-110 hover:text-blue-300 hover:border-blue-400/60 active:scale-95"
               >
                 <ArrowUpRight className="h-4 w-4" />
               </a>
@@ -401,13 +396,9 @@ function ProjectCard({ project }: { project: ProjectData }) {
                 key={tag}
                 className="rounded-md px-2 py-0.5 text-[11px] font-mono font-medium"
                 style={{
-                  background: theme.glow.replace("0.2", "0.08"),
-                  color: theme.badgeText.replace("text-", "").includes("cyan") ? "#a5f3fc" :
-                         theme.badgeText.includes("violet") ? "#e9d5ff" :
-                         theme.badgeText.includes("emerald") ? "#a7f3d0" :
-                         theme.badgeText.includes("amber") ? "#fde68a" :
-                         theme.badgeText.includes("rose") ? "#fecdd3" : "#fbcfe8",
-                  border: `1px solid ${theme.glow.replace("0.2", "0.25")}`,
+                  background: "rgba(59, 130, 246, 0.08)",
+                  color: "#93c5fd",
+                  border: "1px solid rgba(59, 130, 246, 0.25)",
                 }}
               >
                 {tag}
