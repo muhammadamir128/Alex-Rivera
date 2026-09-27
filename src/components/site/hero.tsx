@@ -178,13 +178,13 @@ export function Hero({ profile }: { profile: ProfileData }) {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.6 }}
-            className="absolute -right-2 sm:-right-4 top-8 sm:top-10 hidden sm:block animate-float-slow pointer-events-none"
+            className="absolute -right-2 sm:-right-4 top-8 sm:top-10 hidden sm:block animate-float-slow pointer-events-none z-30"
           >
-            <div className="glass-strong rounded-2xl px-3 py-2 text-center shadow-xl border border-slate-200/80 dark:border-white/10">
-              <div className="font-display text-lg sm:text-xl font-bold gradient-text">
+            <div className="rounded-2xl px-3.5 py-2 text-center shadow-xl backdrop-blur-md bg-slate-900/85 dark:bg-slate-950/80 border border-cyan-500/40 dark:border-cyan-400/40 shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+              <div className="font-display text-lg sm:text-xl font-bold bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent drop-shadow-sm">
                 {profile.stats?.projectsDelivered ?? 4}
               </div>
-              <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-600 dark:text-muted-foreground font-semibold">
+              <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-200 dark:text-cyan-200 font-semibold">
                 shipped
               </div>
             </div>
@@ -194,13 +194,13 @@ export function Hero({ profile }: { profile: ProfileData }) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.75 }}
-            className="absolute -left-2 sm:-left-4 bottom-20 sm:bottom-24 hidden sm:block animate-float-slow [animation-delay:1.5s] pointer-events-none"
+            className="absolute -left-2 sm:-left-4 bottom-20 sm:bottom-24 hidden sm:block animate-float-slow [animation-delay:1.5s] pointer-events-none z-30"
           >
-            <div className="glass-strong rounded-2xl px-3 py-2 text-center shadow-xl border border-slate-200/80 dark:border-white/10">
-              <div className="font-display text-lg sm:text-xl font-bold gradient-text">
+            <div className="rounded-2xl px-3.5 py-2 text-center shadow-xl backdrop-blur-md bg-slate-900/85 dark:bg-slate-950/80 border border-blue-500/40 dark:border-blue-400/40 shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+              <div className="font-display text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent drop-shadow-sm">
                 {profile.stats?.technologies ?? 14}+
               </div>
-              <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-600 dark:text-muted-foreground font-semibold">
+              <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-200 dark:text-blue-200 font-semibold">
                 stack
               </div>
             </div>
@@ -208,27 +208,27 @@ export function Hero({ profile }: { profile: ProfileData }) {
 
           {/* Mobile compact stat pills */}
           <div className="mt-3 flex sm:hidden items-center justify-center gap-2">
-            <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1 border border-slate-200/80 dark:border-white/10">
-              <div className="font-display text-sm font-bold gradient-text">
+            <div className="rounded-xl px-3 py-1.5 text-center flex-1 backdrop-blur-md bg-slate-900/85 dark:bg-slate-950/80 border border-cyan-500/40 shadow-sm">
+              <div className="font-display text-sm font-bold bg-gradient-to-r from-cyan-400 to-sky-300 bg-clip-text text-transparent">
                 {profile.stats?.projectsDelivered ?? 4}
               </div>
-              <div className="text-[8px] uppercase tracking-wider text-slate-600 dark:text-muted-foreground font-semibold">
+              <div className="text-[8px] uppercase tracking-wider text-slate-200 dark:text-cyan-200 font-semibold">
                 shipped
               </div>
             </div>
-            <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1 border border-slate-200/80 dark:border-white/10">
-              <div className="font-display text-sm font-bold gradient-text">
+            <div className="rounded-xl px-3 py-1.5 text-center flex-1 backdrop-blur-md bg-slate-900/85 dark:bg-slate-950/80 border border-blue-500/40 shadow-sm">
+              <div className="font-display text-sm font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
                 {profile.stats?.technologies ?? 14}+
               </div>
-              <div className="text-[8px] uppercase tracking-wider text-slate-600 dark:text-muted-foreground font-semibold">
+              <div className="text-[8px] uppercase tracking-wider text-slate-200 dark:text-blue-200 font-semibold">
                 stack
               </div>
             </div>
-            <div className="glass-strong rounded-xl px-3 py-1.5 text-center flex-1 border border-slate-200/80 dark:border-white/10">
-              <div className="font-display text-sm font-bold gradient-text">
+            <div className="rounded-xl px-3 py-1.5 text-center flex-1 backdrop-blur-md bg-slate-900/85 dark:bg-slate-950/80 border border-purple-500/40 shadow-sm">
+              <div className="font-display text-sm font-bold bg-gradient-to-r from-purple-400 to-pink-300 bg-clip-text text-transparent">
                 {profile.stats?.yearsExperience ?? 2} yrs
               </div>
-              <div className="text-[8px] uppercase tracking-wider text-slate-600 dark:text-muted-foreground font-semibold">
+              <div className="text-[8px] uppercase tracking-wider text-slate-200 dark:text-purple-200 font-semibold">
                 experience
               </div>
             </div>

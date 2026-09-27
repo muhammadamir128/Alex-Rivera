@@ -59,7 +59,7 @@ export function About({ profile }: { profile: ProfileData }) {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center max-w-2xl mx-auto mb-10 sm:mb-14"
         >
@@ -78,15 +78,15 @@ export function About({ profile }: { profile: ProfileData }) {
           <div className="mt-3 h-px w-24 mx-auto bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent" />
         </motion.div>
 
-        {/* 3-Column grid */}
+        {/* 3-Column grid with smooth scroll entrance */}
         <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr_0.9fr] lg:items-start">
 
           {/* Col 1 — Stats + Meta */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -35 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-4"
           >
             <div className="grid grid-cols-2 gap-3">
@@ -99,8 +99,8 @@ export function About({ profile }: { profile: ProfileData }) {
                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
                     whileInView={{ opacity: 1, y: 0, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.45, delay: i * 0.08 }}
-                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                    whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.2 } }}
                     className={`relative group overflow-hidden rounded-2xl border ${c.border} bg-slate-950/60 backdrop-blur-xl p-4 shadow-xl cursor-default`}
                   >
                     {/* Hover ambient glow */}
@@ -163,10 +163,11 @@ export function About({ profile }: { profile: ProfileData }) {
 
           {/* Col 2 — Bio Card */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 35 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ y: -6, transition: { duration: 0.25 } }}
             className="relative rounded-2xl border border-white/10 bg-slate-950/50 backdrop-blur-xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between min-h-[280px]"
           >
             {/* Corner brackets */}
@@ -200,8 +201,9 @@ export function About({ profile }: { profile: ProfileData }) {
                   initial={{ opacity: 0, scale: 0.85 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: 0.4 + i * 0.07 }}
-                  className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 text-[11px] font-mono font-medium text-cyan-300"
+                  transition={{ duration: 0.3, delay: 0.3 + i * 0.07 }}
+                  whileHover={{ scale: 1.08, borderColor: "rgba(6,182,212,0.8)" }}
+                  className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 text-[11px] font-mono font-medium text-cyan-300 cursor-default transition-colors"
                 >
                   {tech}
                 </motion.span>
@@ -211,14 +213,14 @@ export function About({ profile }: { profile: ProfileData }) {
 
           {/* Col 3 — Portrait */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 35 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-4"
           >
             <motion.div
-              whileHover={{ y: -5, transition: { duration: 0.25 } }}
+              whileHover={{ y: -6, scale: 1.01, transition: { duration: 0.25 } }}
               className="group relative overflow-hidden rounded-2xl shadow-2xl shadow-violet-500/20 cursor-default"
               style={{
                 background: "radial-gradient(ellipse at 50% 30%, #3b1f6e 0%, #1a0f3e 40%, #080415 100%)",
