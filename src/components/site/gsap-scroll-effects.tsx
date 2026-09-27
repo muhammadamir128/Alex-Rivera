@@ -3,67 +3,97 @@
 import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import SplitType from "split-type";
+import Lenis from "lenis";
+import "lenis/dist/lenis.css";
 
 export function GsapScrollEffects() {
   useEffect(() => {
-    // Register plugin only on client
+    // Register GSAP ScrollTrigger
     gsap.registerPlugin(ScrollTrigger);
 
-    const ctx = gsap.context(() => {
-      // 1. Text reveal animations using SplitType
-      const splitElements = document.querySelectorAll(".gsap-heading-split");
-      const splits: SplitType[] = [];
+    // Initialize Lenis buttery-smooth inertia scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.5,
+    });
 
-      splitElements.forEach((el) => {
-        try {
-          const split = new SplitType(el as HTMLElement, {
-            types: "words,chars",
-            tagName: "span",
-          });
-          splits.push(split);
+    lenis.on("scroll", ScrollTrigger.update);
 
-          if (split.words && split.words.length > 0) {
-            gsap.from(split.words, {
-              scrollTrigger: {
-                trigger: el,
-                start: "top 85%",
-                toggleActions: "play none none none",
-              },
-              y: 35,
-              opacity: 0,
-              rotateX: -15,
-              stagger: 0.03,
-              duration: 0.8,
-              ease: "power3.out",
-            });
-          }
-        } catch {
-          // Fallback if DOM splitting fails
+    let rafId: number;
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    // Smooth navigation anchor links
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest("a");
+      if (!target) return;
+      const href = target.getAttribute("href");
+      if (href && (href.startsWith("/#") || href.startsWith("#"))) {
+        const id = href.replace(/^\/?#/, "");
+        const targetEl = document.getElementById(id);
+        if (targetEl) {
+          e.preventDefault();
+          lenis.scrollTo(targetEl, { offset: -70, duration: 1.2 });
         }
-      });
+      }
+    };
+    document.addEventListener("click", handleAnchorClick);
 
-      // 2. Experience Timeline dynamic scrub draw
-      const timelineLine = document.querySelector(".timeline-scroll-draw");
-      const timelineSection = document.querySelector("#experience");
-      if (timelineLine && timelineSection) {
+    const ctx = gsap.context(() => {
+      // 1. Section scroll entrance and exit ("scroll bottom ya top par scroll kare to section bhi scroll kare normal sa")
+      const sectionSelectors = ["#about", "#skills", "#experience", "#work", "#contact"];
+      sectionSelectors.forEach((sel) => {
+        const sec = document.querySelector(sel);
+        if (!sec) return;
+
+        // Subtle, smooth natural scroll animation that responds both when scrolling down AND up
         gsap.fromTo(
-          timelineLine,
-          { scaleY: 0, transformOrigin: "top center" },
+          sec,
+          { y: 32, opacity: 0.88 },
           {
-            scaleY: 1,
-            ease: "none",
+            y: 0,
+            opacity: 1,
+            duration: 0.85,
+            ease: "power2.out",
             scrollTrigger: {
-              trigger: timelineSection,
-              start: "top 70%",
-              end: "bottom 70%",
-              scrub: 0.5,
+              trigger: sec,
+              start: "top 88%",
+              toggleActions: "play reverse play reverse",
             },
           }
         );
-      }
+      });
 
-      // 3. Smooth fade & subtle parallax float for hero
+      // 2. Heading reveals with 3D perspective (animates smoothly in and resets on reverse)
+      const headings = document.querySelectorAll(".gsap-heading-split");
+      headings.forEach((heading) => {
+        gsap.fromTo(
+          heading,
+          { y: 28, opacity: 0, scale: 0.98 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: heading,
+              start: "top 85%",
+              toggleActions: "play reverse play reverse",
+            },
+          }
+        );
+      });
+
+      // 3. Hero subtle parallax float on scroll
       const heroContent = document.querySelector("#hero-content");
       if (heroContent) {
         gsap.to(heroContent, {
@@ -73,46 +103,23 @@ export function GsapScrollEffects() {
             end: "bottom top",
             scrub: 0.6,
           },
-          opacity: 0.2,
+          opacity: 0.25,
           y: 60,
-          ease: "power1.inOut",
+          ease: "none",
         });
       }
-
-      // 4. Stagger reveal on project cards
-      const projectCards = document.querySelectorAll(".project-card-item");
-      if (projectCards.length > 0) {
-        gsap.from(projectCards, {
-          scrollTrigger: {
-            trigger: projectCards[0],
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-          y: 40,
-          opacity: 0,
-          stagger: 0.1,
-          duration: 0.8,
-          ease: "power2.out",
-        });
-      }
-
-      // Cleanup splits on context revert
-      return () => {
-        splits.forEach((s) => {
-          try {
-            s.revert();
-          } catch {}
-        });
-      };
     });
 
-    // Refresh triggers once fonts and images load
+    // Refresh triggers once layout settles
     const timer = setTimeout(() => {
       ScrollTrigger.refresh();
-    }, 500);
+    }, 600);
 
     return () => {
       clearTimeout(timer);
+      cancelAnimationFrame(rafId);
+      document.removeEventListener("click", handleAnchorClick);
+      lenis.destroy();
       ctx.revert();
     };
   }, []);
