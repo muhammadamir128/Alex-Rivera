@@ -42,7 +42,6 @@ const COMMANDS: Cmd[] = [
   { id: "skills", label: "Skills", hint: "Manage skills", href: "/admin/skills", icon: Boxes, group: "Admin" },
   { id: "experience", label: "Experience", hint: "Manage experience", href: "/admin/experience", icon: Briefcase, group: "Admin" },
   { id: "education", label: "Education", hint: "Manage degrees & study", href: "/admin/education", icon: GraduationCap, group: "Admin" },
-  { id: "testimonials", label: "Testimonials", hint: "Manage testimonials", href: "/admin/testimonials", icon: MessageSquareQuote, group: "Admin" },
   { id: "messages", label: "Messages", hint: "Inbox", href: "/admin/messages", icon: Inbox, group: "Admin" },
   { id: "media", label: "Media", hint: "Library & uploads", href: "/admin/media", icon: ImageIcon, group: "Admin" },
   { id: "analytics", label: "Analytics", hint: "Traffic insights", href: "/admin/analytics", icon: BarChart3, group: "Admin" },

@@ -619,43 +619,19 @@ export default function AdminProfilePage() {
             </div>
           </Section>
 
-          {/* Stats */}
-          <Section
-            title="Stats"
-            icon={Hash}
-            description="Numbers displayed in the hero/about section. Add or remove any key-value pair."
-          >
-            <div className="space-y-2.5">
-              {KNOWN_STATS.map((k) => (
-                <div key={k} className="flex items-center gap-2">
-                  <div className="w-40 shrink-0 font-mono text-xs text-muted-foreground">
-                    {k}
-                  </div>
-                  <Input
-                    value={stats[k] ?? ""}
-                    onChange={(e) => setStat(k, e.target.value)}
-                    placeholder="0"
-                    className="flex-1"
-                  />
-                  <button
-                    onClick={() => removeStat(k)}
-                    className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-red-500/10 hover:text-red-400"
-                    aria-label={`Remove ${k}`}
-                    type="button"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              ))}
-              {Object.keys(stats)
-                .filter((k) => !KNOWN_STATS.includes(k))
-                .map((k) => (
+          {/* Stats & Social links side-by-side in 1 row */}
+          <div className="grid gap-5 md:grid-cols-2 items-start">
+            {/* Stats */}
+            <Section
+              title="Stats"
+              icon={Hash}
+              description="Numbers displayed in the hero/about section. Add or remove any key-value pair."
+            >
+              <div className="space-y-2.5">
+                {KNOWN_STATS.map((k) => (
                   <div key={k} className="flex items-center gap-2">
-                    <div className="w-40 shrink-0 truncate font-mono text-xs text-foreground">
+                    <div className="w-32 sm:w-36 shrink-0 truncate font-mono text-xs text-muted-foreground" title={k}>
                       {k}
-                      <span className="ml-1.5 rounded bg-blue-500/15 px-1 py-0.5 text-[9px] text-blue-300">
-                        custom
-                      </span>
                     </div>
                     <Input
                       value={stats[k] ?? ""}
@@ -673,55 +649,82 @@ export default function AdminProfilePage() {
                     </button>
                   </div>
                 ))}
-            </div>
+                {Object.keys(stats)
+                  .filter((k) => !KNOWN_STATS.includes(k))
+                  .map((k) => (
+                    <div key={k} className="flex items-center gap-2">
+                      <div className="w-32 sm:w-36 shrink-0 truncate font-mono text-xs text-foreground" title={k}>
+                        {k}
+                        <span className="ml-1.5 rounded bg-blue-500/15 px-1 py-0.5 text-[9px] text-blue-300">
+                          custom
+                        </span>
+                      </div>
+                      <Input
+                        value={stats[k] ?? ""}
+                        onChange={(e) => setStat(k, e.target.value)}
+                        placeholder="0"
+                        className="flex-1"
+                      />
+                      <button
+                        onClick={() => removeStat(k)}
+                        className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-red-500/10 hover:text-red-400"
+                        aria-label={`Remove ${k}`}
+                        type="button"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+              </div>
 
-            <div className="mt-3 flex flex-col gap-2 rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-3 sm:flex-row sm:items-center">
-              <Input
-                value={newStatKey}
-                onChange={(e) => setNewStatKey(e.target.value)}
-                placeholder="new stat key (e.g. happyClients)"
-                className="flex-1 font-mono text-xs"
-              />
-              <Input
-                value={newStatValue}
-                onChange={(e) => setNewStatValue(e.target.value)}
-                placeholder="value"
-                className="flex-1 sm:max-w-[140px]"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={addStat}
-                className="gap-1.5"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Add
-              </Button>
-            </div>
-          </Section>
+              <div className="mt-3 flex flex-col gap-2 rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-3 sm:flex-row sm:items-center">
+                <Input
+                  value={newStatKey}
+                  onChange={(e) => setNewStatKey(e.target.value)}
+                  placeholder="new stat key (e.g. happyClients)"
+                  className="flex-1 font-mono text-xs"
+                />
+                <Input
+                  value={newStatValue}
+                  onChange={(e) => setNewStatValue(e.target.value)}
+                  placeholder="value"
+                  className="flex-1 sm:max-w-[140px]"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addStat}
+                  className="gap-1.5 shrink-0"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Add
+                </Button>
+              </div>
+            </Section>
 
-          {/* Social links */}
-          <Section
-            title="Social links"
-            icon={Link2}
-            description="Used in the header, footer, and contact section. Leave blank to hide."
-          >
-            <div className="grid gap-4 sm:grid-cols-2">
-              {SOCIAL_FIELDS.map((s) => (
-                <div key={s.key} className="space-y-2">
-                  <Label htmlFor={`social-${s.key}`}>{s.label}</Label>
-                  <Input
-                    id={`social-${s.key}`}
-                    value={socialLinks[s.key] ?? ""}
-                    onChange={(e) => setSocial(s.key, e.target.value)}
-                    placeholder={s.placeholder}
-                    className="font-mono text-xs"
-                  />
-                </div>
-              ))}
-            </div>
-          </Section>
+            {/* Social links */}
+            <Section
+              title="Social links"
+              icon={Link2}
+              description="Used in the header, footer, and contact section. Leave blank to hide."
+            >
+              <div className="grid gap-3 sm:grid-cols-2">
+                {SOCIAL_FIELDS.map((s) => (
+                  <div key={s.key} className="space-y-1.5">
+                    <Label htmlFor={`social-${s.key}`} className="text-xs">{s.label}</Label>
+                    <Input
+                      id={`social-${s.key}`}
+                      value={socialLinks[s.key] ?? ""}
+                      onChange={(e) => setSocial(s.key, e.target.value)}
+                      placeholder={s.placeholder}
+                      className="font-mono text-xs"
+                    />
+                  </div>
+                ))}
+              </div>
+            </Section>
+          </div>
         </div>
 
         {/* Live preview */}

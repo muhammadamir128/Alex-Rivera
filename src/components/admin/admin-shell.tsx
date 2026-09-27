@@ -56,7 +56,6 @@ export const NAV_SECTIONS: NavSection[] = [
       { href: "/admin/skills", label: "Skills", icon: Boxes },
       { href: "/admin/experience", label: "Experience", icon: Briefcase },
       { href: "/admin/education", label: "Education", icon: GraduationCap },
-      { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
     ],
   },
   {

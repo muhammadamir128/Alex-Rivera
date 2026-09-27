@@ -265,14 +265,6 @@ export default function AdminDashboardPage() {
       hint: "academic degrees",
     },
     {
-      label: "Testimonials",
-      value: stats.testimonials,
-      icon: MessageSquareQuote,
-      href: "/admin/testimonials",
-      color: "from-amber-500 to-orange-400",
-      hint: `${stats.testimonialsPending} pending approval`,
-    },
-    {
       label: "Unread messages",
       value: stats.unread,
       icon: Inbox,
@@ -443,72 +435,6 @@ export default function AdminDashboardPage() {
         <div className="space-y-5">
           <AnalyticsWidget />
 
-          {/* Pending testimonials quick-approve */}
-          <div className="rounded-2xl glass p-5">
-            <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <MessageSquareQuote className="h-4 w-4 text-amber-400" />
-                <h2 className="font-display text-base font-semibold">Pending testimonials</h2>
-              </div>
-              <Link
-                href="/admin/testimonials"
-                className="text-xs font-medium text-blue-400 hover:text-blue-300"
-              >
-                View all →
-              </Link>
-            </div>
-            {pendingTestimonials.length === 0 ? (
-              <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 px-3 py-3 text-xs text-emerald-300">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                No pending approvals — you&apos;re all caught up.
-              </div>
-            ) : (
-              <ul className="space-y-2">
-                {pendingTestimonials.map((t) => (
-                  <li
-                    key={t.id}
-                    className="rounded-xl border border-white/5 bg-white/[0.02] p-3"
-                  >
-                    <div className="flex items-start gap-2">
-                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-violet-600 text-[11px] font-bold text-white">
-                        {t.name.slice(0, 1).toUpperCase()}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-baseline justify-between gap-2">
-                          <span className="truncate text-sm font-medium">{t.name}</span>
-                          <span className="shrink-0 text-[10px] text-muted-foreground">
-                            {timeAgo(t.createdAt)}
-                          </span>
-                        </div>
-                        <p className="truncate text-[11px] text-muted-foreground">
-                          {t.role} @ {t.company}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="mt-2 line-clamp-2 text-xs text-foreground/70">
-                      {t.message}
-                    </p>
-                    <div className="mt-2.5 flex items-center justify-end gap-1.5">
-                      <Button
-                        size="sm"
-                        onClick={() => approveTestimonial(t.id)}
-                        disabled={approvingId === t.id}
-                        className="h-7 gap-1.5 bg-gradient-to-r from-blue-500 to-violet-600 px-2 text-xs text-white hover:opacity-90"
-                      >
-                        {approvingId === t.id ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
-                        ) : (
-                          <CheckCircle2 className="h-3 w-3" />
-                        )}
-                        Approve
-                      </Button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
           <div className="rounded-2xl glass p-5">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-violet-400" />
@@ -605,12 +531,6 @@ export default function AdminDashboardPage() {
                 className="rounded-lg bg-white/5 px-3 py-2 text-xs font-medium text-foreground/80 transition-colors hover:bg-white/10"
               >
                 + Add a project
-              </Link>
-              <Link
-                href="/admin/testimonials"
-                className="rounded-lg bg-white/5 px-3 py-2 text-xs font-medium text-foreground/80 transition-colors hover:bg-white/10"
-              >
-                + Add a testimonial
               </Link>
               <Link
                 href="/admin/profile"

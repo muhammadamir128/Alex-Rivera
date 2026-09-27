@@ -23,7 +23,6 @@ interface ContentDistributionProps {
 const CONTENT_ITEMS = [
   { key: "skills", label: "Skills", color: "#10b981", border: "#34d399" },
   { key: "projects", label: "Projects", color: "#3b82f6", border: "#60a5fa" },
-  { key: "testimonials", label: "Testimonials", color: "#f59e0b", border: "#fbbf24" },
   { key: "experience", label: "Experience Roles", color: "#8b5cf6", border: "#a78bfa" },
   { key: "education", label: "Education", color: "#06b6d4", border: "#22d3ee" },
 ] as const;

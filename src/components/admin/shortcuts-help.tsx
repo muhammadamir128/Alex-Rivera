@@ -27,7 +27,6 @@ const SHORTCUTS: Shortcut[] = [
   { keys: ["g", "p"], label: "Go to Projects", group: "Navigation" },
   { keys: ["g", "s"], label: "Go to Skills", group: "Navigation" },
   { keys: ["g", "e"], label: "Go to Experience", group: "Navigation" },
-  { keys: ["g", "t"], label: "Go to Testimonials", group: "Navigation" },
   { keys: ["g", "m"], label: "Go to Messages", group: "Navigation" },
 ];
 
@@ -75,7 +74,6 @@ export function ShortcutsHelp({
           p: "/admin/projects",
           s: "/admin/skills",
           e: "/admin/experience",
-          t: "/admin/testimonials",
           m: "/admin/messages",
         };
         const href = map[e.key.toLowerCase()];

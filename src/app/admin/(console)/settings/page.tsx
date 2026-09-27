@@ -310,170 +310,177 @@ export default function AdminSettingsPage() {
         </div>
       </Section>
 
-      {/* Backup & Restore data */}
-      <Section
-        title="Backup & Restore"
-        icon={Database}
-        description="Safeguard or migrate your portfolio data. Export a full JSON backup snapshot or restore previously saved data."
-      >
-        <div className="grid gap-4 sm:grid-cols-2">
-          {/* Export card */}
-          <div className="flex flex-col justify-between rounded-xl border border-white/5 bg-white/[0.02] p-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <Download className="h-4 w-4 text-blue-400" />
-                <span className="text-sm font-semibold text-foreground">Export Data</span>
+      {/* Backup & Restore and Change password side-by-side in 1 row */}
+      <div className="grid gap-6 lg:grid-cols-2 items-stretch">
+        {/* Backup & Restore data */}
+        <Section
+          title="Backup & Restore"
+          icon={Database}
+          description="Safeguard or migrate your portfolio data. Export a full JSON backup snapshot or restore previously saved data."
+          className="flex flex-col justify-between h-full"
+        >
+          <div className="grid gap-3.5 sm:grid-cols-2">
+            {/* Export card */}
+            <div className="flex flex-col justify-between rounded-xl border border-white/5 bg-white/[0.02] p-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Download className="h-4 w-4 text-blue-400" />
+                  <span className="text-sm font-semibold text-foreground">Export Data</span>
+                </div>
+                <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                  Download a JSON snapshot of all projects, skills, experience, education, messages, and profile data.
+                </p>
               </div>
-              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                Download a JSON snapshot of all projects, skills, experience, education, testimonials, messages, and profile data.
-              </p>
+              <div className="mt-4 pt-3 border-t border-white/5 flex flex-col gap-1.5">
+                <Button
+                  onClick={handleExport}
+                  disabled={exporting}
+                  size="sm"
+                  className="w-full gap-1.5 bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-90 h-8 text-xs cursor-pointer shadow-sm"
+                >
+                  {exporting ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      Exporting…
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-3.5 w-3.5" />
+                      Download JSON
+                    </>
+                  )}
+                </Button>
+                <span className="text-[10px] text-center text-muted-foreground font-mono">portfolio-export.json</span>
+              </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-              <span className="text-[11px] text-muted-foreground font-mono">portfolio-export.json</span>
+
+            {/* Import / Restore card */}
+            <div className="flex flex-col justify-between rounded-xl border border-white/5 bg-white/[0.02] p-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <FileUp className="h-4 w-4 text-emerald-400" />
+                  <span className="text-sm font-semibold text-foreground">Import & Restore</span>
+                </div>
+                <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                  Restore or merge content from a JSON backup file. Preview and select merge or overwrite modes.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-white/5 flex flex-col gap-1.5">
+                <label className="cursor-pointer w-full">
+                  <div className="flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-white/10 transition-colors w-full h-8 shadow-sm">
+                    <Upload className="h-3.5 w-3.5 text-emerald-400" />
+                    <span>Choose JSON file…</span>
+                  </div>
+                  <input
+                    type="file"
+                    accept=".json,application/json"
+                    className="hidden"
+                    onChange={(e) => {
+                      handleFileSelect(e.target.files?.[0]);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+                <span className="text-[10px] text-center text-muted-foreground">supports .json backup</span>
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        {/* Change password */}
+        <Section
+          title="Change password"
+          icon={Lock}
+          description="Pick a strong, unique password. Minimum 8 characters."
+          className="flex flex-col justify-between h-full"
+        >
+          <form onSubmit={submitPwd} className="space-y-4 flex flex-col justify-between h-full">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="cur-pwd">Current password</Label>
+                <div className="relative">
+                  <Input
+                    id="cur-pwd"
+                    type={showPwd ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    autoComplete="current-password"
+                    required
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPwd((v) => !v)}
+                    className="absolute right-2 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center text-muted-foreground hover:text-foreground"
+                    aria-label={showPwd ? "Hide password" : "Show password"}
+                    tabIndex={-1}
+                  >
+                    {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="new-pwd">New password</Label>
+                  <Input
+                    id="new-pwd"
+                    type={showPwd ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    autoComplete="new-password"
+                    required
+                    minLength={8}
+                  />
+                  {newPassword && newPassword.length < 8 && (
+                    <p className="text-[11px] text-amber-400">
+                      Must be at least 8 characters.
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-pwd">Confirm new password</Label>
+                  <Input
+                    id="confirm-pwd"
+                    type={showPwd ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    autoComplete="new-password"
+                    required
+                    className={cn(
+                      passwordError && confirmPassword ? "border-red-400/60" : ""
+                    )}
+                  />
+                  {passwordError && confirmPassword && (
+                    <p className="text-[11px] text-red-400">{passwordError}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <KeyRound className="h-3 w-3" />
+                Min 8 characters · mix letters & numbers for strength.
+              </div>
               <Button
-                onClick={handleExport}
-                disabled={exporting}
-                size="sm"
-                className="gap-1.5 bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-90 h-8 text-xs"
+                type="submit"
+                disabled={!canSubmitPwd || savingPwd}
+                className="gap-2 bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-90 shrink-0"
               >
-                {exporting ? (
+                {savingPwd ? (
                   <>
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Exporting…
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Updating…
                   </>
                 ) : (
-                  <>
-                    <Download className="h-3.5 w-3.5" />
-                    Download JSON
-                  </>
+                  "Update password"
                 )}
               </Button>
             </div>
-          </div>
-
-          {/* Import / Restore card */}
-          <div className="flex flex-col justify-between rounded-xl border border-white/5 bg-white/[0.02] p-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <FileUp className="h-4 w-4 text-emerald-400" />
-                <span className="text-sm font-semibold text-foreground">Import & Restore</span>
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                Restore or merge content from a JSON backup file. Preview and select merge or overwrite modes before restoring.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-              <label className="cursor-pointer">
-                <div className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-white/10 transition-colors">
-                  <Upload className="h-3.5 w-3.5 text-emerald-400" />
-                  <span>Choose JSON file…</span>
-                </div>
-                <input
-                  type="file"
-                  accept=".json,application/json"
-                  className="hidden"
-                  onChange={(e) => {
-                    handleFileSelect(e.target.files?.[0]);
-                    e.target.value = "";
-                  }}
-                />
-              </label>
-              <span className="text-[10px] text-muted-foreground">.json format</span>
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      {/* Change password */}
-      <Section
-        title="Change password"
-        icon={Lock}
-        description="Pick a strong, unique password. Minimum 8 characters."
-      >
-        <form onSubmit={submitPwd} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="cur-pwd">Current password</Label>
-            <div className="relative">
-              <Input
-                id="cur-pwd"
-                type={showPwd ? "text" : "password"}
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                autoComplete="current-password"
-                required
-                className="pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPwd((v) => !v)}
-                className="absolute right-2 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center text-muted-foreground hover:text-foreground"
-                aria-label={showPwd ? "Hide password" : "Show password"}
-                tabIndex={-1}
-              >
-                {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="new-pwd">New password</Label>
-              <Input
-                id="new-pwd"
-                type={showPwd ? "text" : "password"}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                autoComplete="new-password"
-                required
-                minLength={8}
-              />
-              {newPassword && newPassword.length < 8 && (
-                <p className="text-[11px] text-amber-400">
-                  Must be at least 8 characters.
-                </p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirm-pwd">Confirm new password</Label>
-              <Input
-                id="confirm-pwd"
-                type={showPwd ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                autoComplete="new-password"
-                required
-                className={cn(
-                  passwordError && confirmPassword ? "border-red-400/60" : ""
-                )}
-              />
-              {passwordError && confirmPassword && (
-                <p className="text-[11px] text-red-400">{passwordError}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <KeyRound className="h-3 w-3" />
-              Min 8 characters · mix letters & numbers for strength.
-            </div>
-            <Button
-              type="submit"
-              disabled={!canSubmitPwd || savingPwd}
-              className="gap-2 bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-90"
-            >
-              {savingPwd ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Updating…
-                </>
-              ) : (
-                "Update password"
-              )}
-            </Button>
-          </div>
-        </form>
-      </Section>
+          </form>
+        </Section>
+      </div>
 
       {/* SEO meta */}
       <Section
@@ -482,105 +489,111 @@ export default function AdminSettingsPage() {
         description="Controls the default <title>, meta description, and social preview image."
       >
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="seo-title">Default title</Label>
-            <Input
-              id="seo-title"
-              value={seoTitle}
-              onChange={(e) => setSeoTitle(e.target.value)}
-              placeholder="Muhammad Amir — Full-Stack Developer"
-            />
-            <p className="text-[11px] text-muted-foreground">
-              Falls back to "{profileData.name} — {profileData.title}" when blank.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="seo-desc">Meta description</Label>
-            <Textarea
-              id="seo-desc"
-              value={seoDescription}
-              onChange={(e) => setSeoDescription(e.target.value)}
-              placeholder="A short description that appears in search results and link previews."
-              rows={3}
-            />
-            <p className="text-[11px] text-muted-foreground">
-              Recommended length: 120–160 characters.{" "}
-              <span className="font-mono">{seoDescription.length}</span>
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label>OG image</Label>
-
-            {/* Preview + controls stacked vertically for cleaner layout */}
-            <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3 space-y-3">
-              {/* Thumbnail preview */}
-              <div className="relative h-28 w-full overflow-hidden rounded-lg border border-white/10 bg-white/5">
-                {seoOgImage && !ogImgError ? (
-                  <img
-                    src={seoOgImage}
-                    alt="OG preview"
-                    onError={() => setOgImgError(true)}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="grid h-full w-full place-items-center gap-1 text-muted-foreground">
-                    <ImagePlus className="h-6 w-6" />
-                    <span className="text-[11px]">
-                      {ogImgError ? "Image failed to load" : "No OG image set"}
-                    </span>
-                  </div>
-                )}
-                {seoOgImage && (
-                  <button
-                    type="button"
-                    onClick={() => setSeoOgImage("")}
-                    className="absolute right-2 top-2 rounded-md bg-black/60 px-2 py-0.5 text-[10px] text-red-400 hover:bg-black/80 hover:text-red-300 transition-colors"
-                  >
-                    Remove
-                  </button>
-                )}
-                <div className="absolute bottom-2 left-2 rounded-md bg-black/60 px-2 py-0.5 text-[10px] text-white/70">
-                  1200 × 630 recommended
-                </div>
-                {seoOgImage && !ogImgError && (
-                  <button
-                    type="button"
-                    onClick={() => setShowPreviewModal(true)}
-                    className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-md bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] font-medium text-white hover:bg-black/90 hover:text-blue-300 transition-all shadow-md cursor-pointer border border-white/10"
-                    title="Preview full image">
-                    <Eye className="h-3.5 w-3.5 text-blue-400" />
-                    <span>Preview</span>
-                  </button>
-                )}
+          <div className="grid gap-6 lg:grid-cols-2 items-start">
+            {/* Left Column: Title & Meta description */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="seo-title">Default title</Label>
+                <Input
+                  id="seo-title"
+                  value={seoTitle}
+                  onChange={(e) => setSeoTitle(e.target.value)}
+                  placeholder="Muhammad Amir — Full-Stack Developer"
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  Falls back to "{profileData.name} — {profileData.title}" when blank.
+                </p>
               </div>
 
-              {/* Upload file button + URL input in 1 row */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                <label className="cursor-pointer shrink-0">
-                  <div className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-medium text-muted-foreground hover:bg-white/[0.08] hover:text-foreground transition-colors whitespace-nowrap">
-                    <ImagePlus className="h-3.5 w-3.5 shrink-0" />
-                    {uploading ? (
-                      <span className="text-blue-400">Uploading…</span>
-                    ) : (
-                      <span>Choose file to upload…</span>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => handleUpload(e.target.files?.[0])}
-                    disabled={uploading} />
-                </label>
+              <div className="space-y-2">
+                <Label htmlFor="seo-desc">Meta description</Label>
+                <Textarea
+                  id="seo-desc"
+                  value={seoDescription}
+                  onChange={(e) => setSeoDescription(e.target.value)}
+                  placeholder="A short description that appears in search results and link previews."
+                  rows={3}
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  Recommended length: 120–160 characters.{" "}
+                  <span className="font-mono">{seoDescription.length}</span>
+                </p>
+              </div>
+            </div>
 
-                {/* URL input */}
-                <Input
-                  value={seoOgImage}
-                  onChange={(e) => setSeoOgImage(e.target.value)}
-                  placeholder="or paste image URL (e.g. /uploads/og-cover.jpg)"
-                  className="flex-1 font-mono text-xs" />
+            {/* Right Column: OG image */}
+            <div className="space-y-2">
+              <Label>OG image</Label>
+
+              {/* Preview + controls */}
+              <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3 space-y-3">
+                {/* Thumbnail preview */}
+                <div className="relative h-28 w-full overflow-hidden rounded-lg border border-white/10 bg-white/5">
+                  {seoOgImage && !ogImgError ? (
+                    <img
+                      src={seoOgImage}
+                      alt="OG preview"
+                      onError={() => setOgImgError(true)}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="grid h-full w-full place-items-center gap-1 text-muted-foreground">
+                      <ImagePlus className="h-6 w-6" />
+                      <span className="text-[11px]">
+                        {ogImgError ? "Image failed to load" : "No OG image set"}
+                      </span>
+                    </div>
+                  )}
+                  {seoOgImage && (
+                    <button
+                      type="button"
+                      onClick={() => setSeoOgImage("")}
+                      className="absolute right-2 top-2 rounded-md bg-black/60 px-2 py-0.5 text-[10px] text-red-400 hover:bg-black/80 hover:text-red-300 transition-colors"
+                    >
+                      Remove
+                    </button>
+                  )}
+                  <div className="absolute bottom-2 left-2 rounded-md bg-black/60 px-2 py-0.5 text-[10px] text-white/70">
+                    1200 × 630 recommended
+                  </div>
+                  {seoOgImage && !ogImgError && (
+                    <button
+                      type="button"
+                      onClick={() => setShowPreviewModal(true)}
+                      className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-md bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] font-medium text-white hover:bg-black/90 hover:text-blue-300 transition-all shadow-md cursor-pointer border border-white/10"
+                      title="Preview full image">
+                      <Eye className="h-3.5 w-3.5 text-blue-400" />
+                      <span>Preview</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Upload file button + URL input in 1 row */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <label className="cursor-pointer shrink-0">
+                    <div className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-white/[0.08] hover:text-foreground transition-colors whitespace-nowrap">
+                      <ImagePlus className="h-3.5 w-3.5 shrink-0" />
+                      {uploading ? (
+                        <span className="text-blue-400">Uploading…</span>
+                      ) : (
+                        <span>Choose file to upload…</span>
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleUpload(e.target.files?.[0])}
+                      disabled={uploading} />
+                  </label>
+
+                  {/* URL input */}
+                  <Input
+                    value={seoOgImage}
+                    onChange={(e) => setSeoOgImage(e.target.value)}
+                    placeholder="or paste image URL (e.g. /uploads/og-cover.jpg)"
+                    className="flex-1 font-mono text-xs" />
+                </div>
               </div>
             </div>
           </div>
@@ -944,15 +957,17 @@ function Section({
   title,
   description,
   icon: Icon,
+  className,
   children,
 }: {
   title: string;
   description?: string;
   icon: React.ComponentType<{ className?: string }>;
+  className?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl glass p-5 sm:p-6">
+    <section className={cn("rounded-2xl glass p-5 sm:p-6", className)}>
       <div className="mb-4 flex items-start gap-2.5">
         <div className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-white/5 text-blue-300">
           <Icon className="h-4 w-4" />
