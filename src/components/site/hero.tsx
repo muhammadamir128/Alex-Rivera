@@ -27,8 +27,8 @@ export function Hero({ profile }: { profile: ProfileData }) {
   const portraitY = isDesktop ? rawPortraitY : 0;
   const portraitOpacity = isDesktop ? rawPortraitOpacity : 1;
 
-  const firstName = profile.name.split(" ")[0] || profile.name;
-  const lastName = profile.name.split(" ").slice(1).join(" ");
+  const firstName = profile.name.split(" ")[0] || "Muhammad";
+  const lastName = profile.name.split(" ").slice(1).join(" ") || "Amir";
 
   return (
     <section
@@ -45,23 +45,29 @@ export function Hero({ profile }: { profile: ProfileData }) {
       <div id="hero-content" className="mx-auto grid w-full max-w-6xl gap-8 sm:gap-10 lg:grid-cols-[1.25fr_1fr] lg:items-center lg:gap-10 xl:gap-14 px-4 sm:px-6">
         {/* Left: text */}
         <div className="flex flex-col items-start text-left">
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.05 }}
-            className="gsap-heading-split mt-4 sm:mt-6 font-display text-[clamp(2.15rem,5.5vw+0.5rem,4.75rem)] font-bold leading-[1.05] tracking-tight text-balance group">
-            <span className="block text-foreground transition-transform duration-300 group-hover:translate-x-1">{firstName}</span>
-            {lastName && (
-              <span className="block gradient-text animate-gradient-pan drop-shadow-sm">
-                {lastName}
-              </span>
-            )}
-          </motion.h1>
+          <h1 className="mt-4 sm:mt-6 font-display text-[clamp(2.15rem,5.5vw+0.5rem,4.75rem)] font-bold leading-[1.05] tracking-tight group overflow-hidden">
+            <motion.span
+              initial={{ opacity: 0, x: 60 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="block text-foreground transition-transform duration-300 group-hover:translate-x-1"
+            >
+              {firstName}
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="block bg-gradient-to-r from-cyan-400 via-sky-300 to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(6,182,212,0.3)] transition-transform duration-300 group-hover:translate-x-1"
+            >
+              {lastName}
+            </motion.span>
+          </h1>
 
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
+            initial={{ opacity: 0, x: 70 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.34, ease: [0.22, 1, 0.36, 1] }}
             className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-display text-base sm:text-lg font-medium text-foreground/90" >
             <span className="text-foreground">{profile.title}</span>
             <span className="text-muted-foreground/40 hidden sm:inline">•</span>
@@ -70,56 +76,72 @@ export function Hero({ profile }: { profile: ProfileData }) {
           </motion.div>
 
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.25 }}
+            initial={{ opacity: 0, x: 70 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.44, ease: [0.22, 1, 0.36, 1] }}
             className="mt-4 sm:mt-5 max-w-xl text-sm sm:text-base md:text-lg leading-relaxed text-muted-foreground text-balance" >
             {profile.tagline}
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.35 }}
-            className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3" >
-            <Magnetic strength={0.25}>
-              <Link href="#work"
-                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-500 via-indigo-600 to-violet-600 px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-all duration-300 hover:shadow-violet-600/50 hover:scale-[1.03] active:scale-[0.97]"
-              >
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
-                <span className="relative z-10">View work</span>
-                <ArrowDown className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" />
-              </Link>
-            </Magnetic>
-            <Magnetic strength={0.25}>
-              <Link href="#contact"
-                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:bg-white/[0.12] hover:border-blue-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-500/15 active:scale-[0.97]"
-              >
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
-                <span className="relative z-10">Get in touch</span>
-                <ArrowUpRight className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
-            </Magnetic>
-            <Magnetic strength={0.25}>
-              <a
-                href={s.cv || s.resume || "/cv.pdf"}
-                target="_blank"
-                rel="noopener noreferrer"
-                download
-                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:bg-white/[0.12] hover:border-violet-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-violet-500/15 active:scale-[0.97]"
-              >
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
-                <Download className="relative z-10 h-4 w-4 text-blue-400 transition-transform duration-300 group-hover:translate-y-0.5 group-hover:scale-110" />
-                <span className="relative z-10">Download CV</span>
-              </a>
-            </Magnetic>
-          </motion.div>
+          <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3">
+            <motion.div
+              initial={{ opacity: 0, x: 60 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.75, delay: 0.54, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Magnetic strength={0.25}>
+                <Link href="#work"
+                  className="group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-500 via-indigo-600 to-violet-600 px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-all duration-300 hover:shadow-violet-600/50 hover:scale-[1.03] active:scale-[0.97]"
+                >
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                  <span className="relative z-10">View work</span>
+                  <ArrowDown className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" />
+                </Link>
+              </Magnetic>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 60 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.75, delay: 0.62, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Magnetic strength={0.25}>
+                <Link href="#contact"
+                  className="group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:bg-white/[0.12] hover:border-blue-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-500/15 active:scale-[0.97]"
+                >
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                  <span className="relative z-10">Get in touch</span>
+                  <ArrowUpRight className="relative z-10 h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              </Magnetic>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 60 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.75, delay: 0.70, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Magnetic strength={0.25}>
+                <a
+                  href={s.cv || s.resume || "/cv.pdf"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:bg-white/[0.12] hover:border-violet-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-violet-500/15 active:scale-[0.97]"
+                >
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                  <Download className="relative z-10 h-4 w-4 text-blue-400 transition-transform duration-300 group-hover:translate-y-0.5 group-hover:scale-110" />
+                  <span className="relative z-10">Download CV</span>
+                </a>
+              </Magnetic>
+            </motion.div>
+          </div>
 
           {/* Socials */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.45 }}
+            initial={{ opacity: 0, x: 60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.80, ease: [0.22, 1, 0.36, 1] }}
             className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3 sm:gap-4"
           >
             <span className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
