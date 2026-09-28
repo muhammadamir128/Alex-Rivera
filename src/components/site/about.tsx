@@ -1,9 +1,10 @@
 "use client";
 
 import { useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { MapPin, Zap, Clock, Briefcase, Code2, Users, Star } from "lucide-react";
 import { CountUp } from "@/components/site/count-up";
+import { ScrollTextReveal } from "@/components/site/scroll-text-reveal";
 import type { ProfileData } from "@/lib/data";
 
 const STAT_ICONS = [Briefcase, Star, Code2, Users];
@@ -16,6 +17,14 @@ const STAT_COLORS = [
 
 export function About({ profile }: { profile: ProfileData }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const yCol1 = useTransform(scrollYProgress, [0, 1], [18, -18]);
+  const yCol2 = useTransform(scrollYProgress, [0, 1], [-10, 10]);
+  const yCol3 = useTransform(scrollYProgress, [0, 1], [22, -22]);
 
   const stats = [
     { label: "Years Experience", value: profile.stats.yearsExperience ?? 3, suffix: "" },
@@ -78,14 +87,15 @@ export function About({ profile }: { profile: ProfileData }) {
           <div className="mt-3 h-px w-24 mx-auto bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent" />
         </motion.div>
 
-        {/* 3-Column grid with smooth scroll entrance */}
+        {/* 3-Column grid with smooth scroll entrance and parallax */}
         <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr_0.9fr] lg:items-start">
 
           {/* Col 1 — Stats + Meta */}
           <motion.div
+            style={{ y: yCol1 }}
             initial={{ opacity: 0, x: -35 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: false, margin: "-40px" }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-4"
           >
@@ -98,7 +108,7 @@ export function About({ profile }: { profile: ProfileData }) {
                     key={stat.label}
                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
                     whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: false }}
                     transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
                     whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.2 } }}
                     className={`relative group overflow-hidden rounded-2xl border ${c.border} bg-slate-950/60 backdrop-blur-xl p-4 shadow-xl cursor-default`}
@@ -125,7 +135,7 @@ export function About({ profile }: { profile: ProfileData }) {
                     </div>
 
                     <div className={`mt-3 font-display text-3xl font-extrabold tracking-tight ${c.text} tabular-nums`}>
-                      <CountUp value={Number(stat.value) || 0} />
+                      <CountUp value={Number(stat.value) || 0} once={false} />
                       <span>{stat.suffix}</span>
                     </div>
                     <div className="mt-0.5 text-[10px] font-mono font-medium uppercase tracking-wider text-slate-400">
@@ -140,8 +150,8 @@ export function About({ profile }: { profile: ProfileData }) {
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.35 }}
+              viewport={{ once: false }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               className="rounded-2xl border border-white/10 bg-slate-950/50 backdrop-blur-xl p-4 space-y-2.5"
             >
               {[
@@ -163,9 +173,10 @@ export function About({ profile }: { profile: ProfileData }) {
 
           {/* Col 2 — Bio Card */}
           <motion.div
+            style={{ y: yCol2 }}
             initial={{ opacity: 0, y: 35 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: false, margin: "-40px" }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             whileHover={{ y: -6, transition: { duration: 0.25 } }}
             className="relative rounded-2xl border border-white/10 bg-slate-950/50 backdrop-blur-xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between min-h-[280px]"
@@ -184,13 +195,13 @@ export function About({ profile }: { profile: ProfileData }) {
             />
 
             <div>
-              <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-white leading-snug">
+              <h3 className="gsap-heading-split font-display text-2xl sm:text-3xl font-extrabold text-white leading-snug">
                 A developer who sweats the{" "}
                 <span className="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
                   small details...
                 </span>
               </h3>
-              <p className="mt-4 text-sm sm:text-base leading-relaxed text-slate-300/85">{profile.bio}</p>
+              <ScrollTextReveal text={profile.bio} className="mt-4" />
             </div>
 
             {/* Tech badges */}
@@ -213,9 +224,10 @@ export function About({ profile }: { profile: ProfileData }) {
 
           {/* Col 3 — Portrait */}
           <motion.div
+            style={{ y: yCol3 }}
             initial={{ opacity: 0, x: 35 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: false, margin: "-40px" }}
             transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-4"
           >
