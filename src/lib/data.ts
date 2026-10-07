@@ -90,7 +90,7 @@ export const DEFAULT_PROFILE: ProfileData = {
   title: "Full-Stack Developer",
   tagline: "I design and build fast, accessible web products — from the database schema to the last pixel of micro-interaction.",
   bio: "I'm a full-stack developer with 2+ years of professional experience building production web applications with React, Next.js, Node.js and PostgreSQL. I care deeply about performance, accessibility, and the small details that make a product feel crafted. When I'm not shipping, I'm exploring design systems, WebGL experiments, and modern developer tools.",
-  avatarUrl: "/uploads/avatar-cropped-1789590640132-1789590640173.jpg",
+  avatarUrl: "/uploads/whatsapp-image-2026-06-02-at-50233-am-1789578972741.jpeg",
   socialLinks: {
     github: "https://github.com/muhammadamir128",
     linkedin: "https://www.linkedin.com/feed/",

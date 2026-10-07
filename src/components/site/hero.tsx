@@ -7,10 +7,13 @@ import { ArrowDown, ArrowUpRight, Github, Linkedin, Twitter, Mail, Sparkles, Dow
 import type { ProfileData } from "@/lib/data";
 import { Magnetic } from "@/components/site/magnetic";
 
+const FALLBACK_PORTRAIT = "/uploads/whatsapp-image-2026-06-02-at-50233-am-1789578972741.jpeg";
+
 export function Hero({ profile }: { profile: ProfileData }) {
   const s = profile.socialLinks;
   const { scrollY } = useScroll();
   const [isDesktop, setIsDesktop] = useState(false);
+  const [portraitSrc, setPortraitSrc] = useState(profile.avatarUrl || FALLBACK_PORTRAIT);
 
   useEffect(() => {
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
@@ -18,6 +21,10 @@ export function Hero({ profile }: { profile: ProfileData }) {
     window.addEventListener("resize", checkDesktop, { passive: true });
     return () => window.removeEventListener("resize", checkDesktop);
   }, []);
+
+  useEffect(() => {
+    setPortraitSrc(profile.avatarUrl || FALLBACK_PORTRAIT);
+  }, [profile.avatarUrl]);
 
   // parallax: applied on desktop side-by-side layout
   const rawPortraitY = useTransform(scrollY, [0, 600], [0, -50]);
@@ -169,13 +176,15 @@ export function Hero({ profile }: { profile: ProfileData }) {
             suppressHydrationWarning
             className="relative aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl glass neon-border neon-glow select-none"
           >
-            <div
-              role="img"
-              aria-label={`Portrait of ${profile.name}`}
-              className="h-full w-full bg-cover transition-transform duration-300 pointer-events-none select-none"
+            <img
+              alt={`Portrait of ${profile.name}`}
+              src={portraitSrc}
+              onError={() => {
+                if (portraitSrc !== FALLBACK_PORTRAIT) setPortraitSrc(FALLBACK_PORTRAIT);
+              }}
+              className="h-full w-full object-cover transition-transform duration-300 pointer-events-none select-none"
               style={{
-                backgroundImage: `url("${profile.avatarUrl || "/uploads/whatsapp-image-2026-06-02-at-50233-am-1789578972741.jpeg"}")`,
-                backgroundPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
+                objectPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
                 transform:
                   profile.stats?.avatarZoom && Number(profile.stats.avatarZoom) !== 100
                     ? `scale(${Number(profile.stats.avatarZoom) / 100})`
