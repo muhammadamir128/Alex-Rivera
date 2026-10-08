@@ -47,17 +47,12 @@ function Word({
 }) {
   const opacity = useTransform(progress, range, [0.25, 1]);
   const y = useTransform(progress, range, [4, 0]);
-  const color = useTransform(
-    progress,
-    range,
-    ["rgba(148, 163, 184, 0.45)", "rgba(241, 245, 249, 0.95)"]
-  );
 
   return (
     <span className="relative inline-block select-text">
       <motion.span
-        style={{ opacity, y, color }}
-        className="inline-block transition-colors duration-100 font-normal"
+        style={{ opacity, y }}
+        className="inline-block text-slate-700 dark:text-slate-100 transition-colors duration-100 font-normal"
       >
         {children}
       </motion.span>

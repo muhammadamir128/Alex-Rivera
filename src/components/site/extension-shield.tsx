@@ -16,7 +16,6 @@ export function ExtensionShield() {
           .vton-btn,
           [class*="vton" i],
           [id*="vton" i],
-          [data-vton-pinned],
           [data-vton],
           [class*="try-on" i],
           [class*="tryon" i],

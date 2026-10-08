@@ -9,10 +9,10 @@ import type { ProfileData } from "@/lib/data";
 
 const STAT_ICONS = [Briefcase, Star, Code2, Users];
 const STAT_COLORS = [
-  { border: "border-cyan-500/40", glow: "shadow-cyan-500/20", text: "text-cyan-300", bg: "bg-cyan-500/10", dot: "bg-cyan-400" },
-  { border: "border-violet-500/40", glow: "shadow-violet-500/20", text: "text-violet-300", bg: "bg-violet-500/10", dot: "bg-violet-400" },
-  { border: "border-fuchsia-500/40", glow: "shadow-fuchsia-500/20", text: "text-fuchsia-300", bg: "bg-fuchsia-500/10", dot: "bg-fuchsia-400" },
-  { border: "border-blue-500/40", glow: "shadow-blue-500/20", text: "text-blue-300", bg: "bg-blue-500/10", dot: "bg-blue-400" },
+  { border: "border-cyan-500/40", glow: "shadow-cyan-500/20", text: "text-cyan-700 dark:text-cyan-300", bg: "bg-cyan-500/10", dot: "bg-cyan-400" },
+  { border: "border-violet-500/40", glow: "shadow-violet-500/20", text: "text-violet-700 dark:text-violet-300", bg: "bg-violet-500/10", dot: "bg-violet-400" },
+  { border: "border-fuchsia-500/40", glow: "shadow-fuchsia-500/20", text: "text-fuchsia-700 dark:text-fuchsia-300", bg: "bg-fuchsia-500/10", dot: "bg-fuchsia-400" },
+  { border: "border-blue-500/40", glow: "shadow-blue-500/20", text: "text-blue-700 dark:text-blue-300", bg: "bg-blue-500/10", dot: "bg-blue-400" },
 ];
 
 export function About({ profile }: { profile: ProfileData }) {
@@ -40,10 +40,10 @@ export function About({ profile }: { profile: ProfileData }) {
       className="relative scroll-mt-24 py-14 sm:py-20 overflow-hidden"
     >
       {/* Cosmic Background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[#060913]">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-slate-50 dark:bg-[#060913]">
         <div className="absolute top-0 left-1/4 h-[28rem] w-[28rem] rounded-full bg-cyan-600/10 blur-[130px]" />
         <div className="absolute bottom-0 right-1/4 h-[28rem] w-[28rem] rounded-full bg-violet-600/12 blur-[130px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:28px_28px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(#0f172a0a_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:28px_28px]" />
       </div>
 
       {/* Animated corner circuit lines */}
@@ -72,19 +72,19 @@ export function About({ profile }: { profile: ProfileData }) {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center max-w-2xl mx-auto mb-10 sm:mb-14"
         >
-          <p className="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">
-            <span className="h-px w-8 bg-cyan-400/60" />
+          <p className="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.25em] text-cyan-700 dark:text-cyan-400">
+            <span className="h-px w-8 bg-cyan-500/60 dark:bg-cyan-400/60" />
             Professional Profile
-            <span className="h-px w-8 bg-cyan-400/60" />
+            <span className="h-px w-8 bg-cyan-500/60 dark:bg-cyan-400/60" />
           </p>
-          <h2 className="gsap-heading-split mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl text-white">
+          <h2 className="gsap-heading-split mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl text-slate-900 dark:text-white">
             MY{" "}
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-700 via-blue-700 to-violet-700 dark:from-cyan-400 dark:via-blue-400 dark:to-violet-400 bg-clip-text text-transparent">
               PROFESSIONAL
             </span>{" "}
             PROFILE
           </h2>
-          <div className="mt-3 h-px w-24 mx-auto bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent" />
+          <div className="mt-3 h-px w-24 mx-auto bg-gradient-to-r from-transparent via-cyan-500/60 dark:via-cyan-400/60 to-transparent" />
         </motion.div>
 
         {/* 3-Column grid with smooth scroll entrance and parallax */}
@@ -111,7 +111,7 @@ export function About({ profile }: { profile: ProfileData }) {
                     viewport={{ once: false }}
                     transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
                     whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.2 } }}
-                    className={`relative group overflow-hidden rounded-2xl border ${c.border} bg-slate-950/60 backdrop-blur-xl p-4 shadow-xl cursor-default`}
+                    className={`relative group overflow-hidden rounded-2xl border ${c.border} bg-white/80 dark:bg-slate-950/60 backdrop-blur-xl p-4 shadow-xl shadow-slate-900/5 dark:shadow-black/20 cursor-default`}
                   >
                     {/* Hover ambient glow */}
                     <div className={`pointer-events-none absolute -inset-0.5 rounded-2xl ${c.bg} opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10`} />
@@ -138,7 +138,7 @@ export function About({ profile }: { profile: ProfileData }) {
                       <CountUp value={Number(stat.value) || 0} once={false} />
                       <span>{stat.suffix}</span>
                     </div>
-                    <div className="mt-0.5 text-[10px] font-mono font-medium uppercase tracking-wider text-slate-400">
+                    <div className="mt-0.5 text-[10px] font-mono font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       {stat.label}
                     </div>
                   </motion.div>
@@ -152,14 +152,14 @@ export function About({ profile }: { profile: ProfileData }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-2xl border border-white/10 bg-slate-950/50 backdrop-blur-xl p-4 space-y-2.5"
+              className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-slate-950/50 backdrop-blur-xl p-4 space-y-2.5"
             >
               {[
-                { icon: MapPin, label: "Faisalabad, Pakistan", dot: "bg-emerald-400", col: "text-emerald-400" },
-                { icon: Zap, label: "Open to freelance", dot: "bg-blue-400", col: "text-blue-400" },
-                { icon: Clock, label: "Replies within 24h", dot: "bg-violet-400", col: "text-violet-400" },
+                { icon: MapPin, label: "Faisalabad, Pakistan", dot: "bg-emerald-400", col: "text-emerald-700 dark:text-emerald-400" },
+                { icon: Zap, label: "Open to freelance", dot: "bg-blue-400", col: "text-blue-700 dark:text-blue-400" },
+                { icon: Clock, label: "Replies within 24h", dot: "bg-violet-400", col: "text-violet-700 dark:text-violet-400" },
               ].map(({ icon: Icon, label, dot, col }) => (
-                <div key={label} className="flex items-center gap-2.5 text-sm text-slate-300">
+                <div key={label} className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-300">
                   <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
                     <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${dot} opacity-75`} />
                     <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${dot}`} />
@@ -179,7 +179,7 @@ export function About({ profile }: { profile: ProfileData }) {
             viewport={{ once: false, margin: "-40px" }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             whileHover={{ y: -6, transition: { duration: 0.25 } }}
-            className="relative rounded-2xl border border-white/10 bg-slate-950/50 backdrop-blur-xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between min-h-[280px]"
+            className="relative rounded-2xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-slate-950/50 backdrop-blur-xl p-6 sm:p-8 shadow-2xl shadow-slate-900/5 dark:shadow-black/20 flex flex-col justify-between min-h-[280px]"
           >
             {/* Corner brackets */}
             <span className="absolute top-0 left-0 h-8 w-8 border-t-2 border-l-2 border-cyan-500/60 rounded-tl-2xl" />
@@ -195,9 +195,9 @@ export function About({ profile }: { profile: ProfileData }) {
             />
 
             <div>
-              <h3 className="gsap-heading-split font-display text-2xl sm:text-3xl font-extrabold text-white leading-snug">
+              <h3 className="gsap-heading-split font-display text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-snug">
                 A developer who sweats the{" "}
-                <span className="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-700 to-violet-700 dark:from-cyan-400 dark:to-violet-400 bg-clip-text text-transparent">
                   small details...
                 </span>
               </h3>
@@ -214,7 +214,7 @@ export function About({ profile }: { profile: ProfileData }) {
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: 0.3 + i * 0.07 }}
                   whileHover={{ scale: 1.08, borderColor: "rgba(6,182,212,0.8)" }}
-                  className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 text-[11px] font-mono font-medium text-cyan-300 cursor-default transition-colors"
+                  className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 text-[11px] font-mono font-medium text-cyan-800 dark:text-cyan-300 cursor-default transition-colors"
                 >
                   {tech}
                 </motion.span>
@@ -233,11 +233,7 @@ export function About({ profile }: { profile: ProfileData }) {
           >
             <motion.div
               whileHover={{ y: -6, scale: 1.01, transition: { duration: 0.25 } }}
-              className="group relative overflow-hidden rounded-2xl shadow-2xl shadow-violet-500/20 cursor-default"
-              style={{
-                background: "radial-gradient(ellipse at 50% 30%, #3b1f6e 0%, #1a0f3e 40%, #080415 100%)",
-                border: "1.5px solid rgba(139,92,246,0.55)",
-              }}
+              className="group relative overflow-hidden rounded-2xl border border-violet-300/80 dark:border-violet-500/55 bg-gradient-to-br from-violet-100 via-white to-cyan-100 dark:from-[#3b1f6e] dark:via-[#1a0f3e] dark:to-[#080415] shadow-2xl shadow-violet-500/20 cursor-default"
             >
               {/* Animated neon border glow */}
               <motion.div
@@ -284,13 +280,12 @@ export function About({ profile }: { profile: ProfileData }) {
                       width: "310px",
                       height: "310px",
                       border: "2.5px solid rgba(139,92,246,0.7)",
-                      boxShadow: "0 0 28px 6px rgba(139,92,246,0.45), inset 0 0 20px rgba(0,240,255,0.08)",
+                      boxShadow: "0 0 28px 6px rgba(139,92,246,0.3), inset 0 0 20px rgba(0,240,255,0.08)",
                     }}
                   >
                     {/* Inner gradient bg */}
                     <div
-                      className="absolute inset-0"
-                      style={{ background: "radial-gradient(circle at 50% 35%, #2d1260 0%, #0d0620 100%)" }}
+                      className="absolute inset-0 bg-slate-100 dark:bg-[#0d0620]"
                     />
                     {/* Portrait image */}
                     <div
@@ -309,8 +304,8 @@ export function About({ profile }: { profile: ProfileData }) {
 
                 {/* Name below circle */}
                 <div className="mt-5 text-center">
-                  <p className="font-display text-lg font-bold text-white tracking-tight">{profile.name}</p>
-                  <p className="mt-0.5 text-[12px] font-mono text-violet-300/80">{profile.title || "Full-Stack Developer"}</p>
+                  <p className="font-display text-lg font-bold text-slate-900 dark:text-white tracking-tight">{profile.name}</p>
+                  <p className="mt-0.5 text-[12px] font-mono text-violet-700 dark:text-violet-300/80">{profile.title || "Full-Stack Developer"}</p>
                 </div>
 
                 {/* Available badge */}
@@ -319,7 +314,7 @@ export function About({ profile }: { profile: ProfileData }) {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
                   </span>
-                  <span className="text-[10px] font-mono font-semibold text-emerald-400 uppercase tracking-widest">Available for work</span>
+                  <span className="text-[10px] font-mono font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">Available for work</span>
                 </div>
               </div>
             </motion.div>
