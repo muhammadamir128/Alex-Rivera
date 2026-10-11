@@ -533,15 +533,25 @@ export default function AdminSettingsPage() {
                     <img
                       src={seoOgImage}
                       alt="OG preview"
+                      onLoad={() => setOgImgError(false)}
                       onError={() => setOgImgError(true)}
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="grid h-full w-full place-items-center gap-1 text-muted-foreground">
+                    <div className="grid h-full w-full place-items-center gap-1 text-muted-foreground p-2 text-center">
                       <ImagePlus className="h-6 w-6" />
                       <span className="text-[11px]">
                         {ogImgError ? "Image failed to load" : "No OG image set"}
                       </span>
+                      {ogImgError && seoOgImage && (
+                        <button
+                          type="button"
+                          onClick={() => setOgImgError(false)}
+                          className="text-[10px] text-blue-400 hover:underline cursor-pointer"
+                        >
+                          Retry loading
+                        </button>
+                      )}
                     </div>
                   )}
                   {seoOgImage && (
