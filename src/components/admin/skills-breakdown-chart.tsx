@@ -95,31 +95,32 @@ export function SkillsBreakdownChart({ skills = [] }: SkillsBreakdownChartProps)
 
   return (
     <div className="rounded-2xl glass p-3.5 sm:p-5 relative overflow-hidden border border-white/10 shadow-xl shadow-black/20">
-      <div className="flex flex-col gap-3.5 border-b border-white/5 pb-3.5 sm:pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-start gap-2.5">
-          <span className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-sm shrink-0 mt-0.5">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 border-b border-white/5 pb-3.5 sm:pb-4">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          <span className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-sm shrink-0">
             <Boxes className="h-4 w-4" />
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <h2 className="font-display text-sm sm:text-base font-semibold text-foreground truncate">
+              <h2 className="font-display text-sm sm:text-base font-semibold text-foreground">
                 Skills Domain & Proficiency
               </h2>
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-medium text-emerald-400 border border-emerald-500/20 shrink-0">
                 <CheckCircle2 className="h-2 w-2 sm:h-2.5 sm:w-2.5" /> {skills.length} Tracked
               </span>
             </div>
-            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 truncate">
               Categorized proficiency and competency across disciplines.
             </p>
           </div>
         </div>
 
         {/* View Toggle */}
-        <div className="flex items-center bg-white/[0.04] p-1 rounded-xl border border-white/10 text-xs shrink-0 self-start sm:self-center">
+        <div className="inline-flex items-center bg-white/[0.04] p-1 rounded-xl border border-white/10 text-xs shrink-0">
           <button
+            type="button"
             onClick={() => setViewMode("proficiency")}
-            className={`px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap text-xs ${
+            className={`px-2.5 sm:px-3 py-1 rounded-lg font-medium transition-all text-xs ${
               viewMode === "proficiency"
                 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-sm"
                 : "text-muted-foreground hover:text-white"
@@ -128,8 +129,9 @@ export function SkillsBreakdownChart({ skills = [] }: SkillsBreakdownChartProps)
             Proficiency
           </button>
           <button
+            type="button"
             onClick={() => setViewMode("count")}
-            className={`px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap text-xs ${
+            className={`px-2.5 sm:px-3 py-1 rounded-lg font-medium transition-all text-xs ${
               viewMode === "count"
                 ? "bg-blue-500/20 text-blue-300 border border-blue-500/30 shadow-sm"
                 : "text-muted-foreground hover:text-white"
@@ -171,7 +173,7 @@ export function SkillsBreakdownChart({ skills = [] }: SkillsBreakdownChartProps)
       </div>
 
       {/* Bar Chart */}
-      <div className="h-48 sm:h-52 w-full mt-2">
+      <div className="h-52 sm:h-56 w-full mt-2">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={categoriesData}

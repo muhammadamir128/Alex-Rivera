@@ -44,6 +44,17 @@ const BAR_COLORS = [
   "#14b8a6",
 ];
 
+function formatProjectLabel(title: string): string {
+  if (!title) return "";
+  // 1. Remove subtitles after em-dash, en-dash, colon, or spaced hyphen
+  let name = title.split(/\s*[—–]\s*|\s+-\s*|:\s*/)[0]?.trim() || title;
+  // 2. Remove common trailing suffixes if name is long
+  name = name.replace(/\s+(Public School|Medical Complex|Directory|Network|Suite|Boutique)$/i, "");
+  // 3. Truncate cleanly if still over 15 characters
+  if (name.length <= 15) return name;
+  return name.slice(0, 14).trim() + "…";
+}
+
 export function ProjectTechChart({
   projects = [],
   projectViews = [],
@@ -95,6 +106,7 @@ export function ProjectTechChart({
         const views = viewsMap.get(p.slug) || (p.isFeatured ? 95 : 45);
         return {
           name: p.title,
+          fullName: p.title,
           views,
           slug: p.slug,
           isFeatured: p.isFeatured,
@@ -111,31 +123,32 @@ export function ProjectTechChart({
 
   return (
     <div className="rounded-2xl glass p-3.5 sm:p-5 relative overflow-hidden border border-white/10 shadow-xl shadow-black/20">
-      <div className="flex flex-col gap-3.5 border-b border-white/5 pb-3.5 sm:pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-start gap-2.5">
-          <span className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 shadow-sm shrink-0 mt-0.5">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 border-b border-white/5 pb-3.5 sm:pb-4">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          <span className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 shadow-sm shrink-0">
             <FolderGit2 className="h-4 w-4" />
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <h2 className="font-display text-sm sm:text-base font-semibold text-foreground truncate">
-                Projects & Tech Stack Insights
+              <h2 className="font-display text-sm sm:text-base font-semibold text-foreground">
+                Projects & Tech Stack
               </h2>
               <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-medium text-blue-400 border border-blue-500/20 shrink-0">
                 <Star className="h-2 w-2 sm:h-2.5 sm:w-2.5 fill-current" /> {featuredCount} Featured
               </span>
             </div>
-            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">
-              Most implemented technologies and project popularity metrics.
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 truncate">
+              Technologies and project popularity metrics.
             </p>
           </div>
         </div>
 
         {/* Tab Toggle */}
-        <div className="flex items-center bg-white/[0.04] p-1 rounded-xl border border-white/10 text-xs shrink-0 self-start sm:self-center">
+        <div className="inline-flex items-center bg-white/[0.04] p-1 rounded-xl border border-white/10 text-xs shrink-0">
           <button
+            type="button"
             onClick={() => setTab("tech")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap text-xs ${
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg font-medium transition-all text-xs ${
               tab === "tech"
                 ? "bg-blue-500/20 text-blue-300 border border-blue-500/30 shadow-sm"
                 : "text-muted-foreground hover:text-white"
@@ -145,8 +158,9 @@ export function ProjectTechChart({
             <span>Tech Stack</span>
           </button>
           <button
+            type="button"
             onClick={() => setTab("views")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap text-xs ${
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg font-medium transition-all text-xs ${
               tab === "views"
                 ? "bg-violet-500/20 text-violet-300 border border-violet-500/30 shadow-sm"
                 : "text-muted-foreground hover:text-white"
@@ -200,8 +214,11 @@ export function ProjectTechChart({
           <span className="text-[11px] font-medium text-muted-foreground truncate">
             Most Viewed
           </span>
-          <div className="text-base sm:text-lg font-display font-bold text-emerald-400 mt-1 truncate">
-            {viewsData[0]?.name || "Featured"}
+          <div
+            className="text-base sm:text-lg font-display font-bold text-emerald-400 mt-1 truncate"
+            title={viewsData[0]?.fullName || viewsData[0]?.name}
+          >
+            {viewsData[0]?.name ? formatProjectLabel(viewsData[0].name) : "Featured"}
           </div>
           <span className="text-[10px] text-muted-foreground/80 truncate mt-0.5">
             {viewsData[0]?.views || 140} views
@@ -210,7 +227,7 @@ export function ProjectTechChart({
       </div>
 
       {/* Chart Canvas */}
-      <div className="h-48 sm:h-52 w-full mt-2">
+      <div className="h-52 sm:h-56 w-full mt-2">
         <ResponsiveContainer width="100%" height="100%">
           {tab === "tech" ? (
             <BarChart
@@ -272,7 +289,7 @@ export function ProjectTechChart({
             <BarChart
               data={viewsData}
               layout="vertical"
-              margin={{ top: 5, right: 20, bottom: 5, left: 20 }}
+              margin={{ top: 6, right: 20, bottom: 6, left: 10 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -291,7 +308,8 @@ export function ProjectTechChart({
                 tick={{ fill: "rgba(148,163,184,0.85)", fontSize: 11 }}
                 tickLine={false}
                 axisLine={false}
-                width={100}
+                width={110}
+                tickFormatter={formatProjectLabel}
               />
               <Tooltip
                 cursor={{ fill: "rgba(255,255,255,0.04)" }}
@@ -303,8 +321,12 @@ export function ProjectTechChart({
                   fontSize: "12px",
                 }}
                 formatter={(val: number) => [`${val} Views`, "Popularity"]}
+                labelFormatter={(label, payload) => {
+                  const item = payload?.[0]?.payload;
+                  return item?.fullName || label;
+                }}
               />
-              <Bar dataKey="views" radius={[0, 6, 6, 0]} maxBarSize={20}>
+              <Bar dataKey="views" radius={[0, 6, 6, 0]} maxBarSize={18}>
                 {viewsData.map((_, index) => (
                   <Cell
                     key={`views-cell-${index}`}
@@ -319,3 +341,4 @@ export function ProjectTechChart({
     </div>
   );
 }
+

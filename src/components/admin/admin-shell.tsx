@@ -204,7 +204,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </AnimatePresence>
 
       <main className="lg:pl-64 min-w-0 overflow-x-hidden">
-        <div className="mx-auto max-w-6xl px-3 py-4 sm:px-6 sm:py-8 min-w-0">{children}</div>
+        <div className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-8 min-w-0">{children}</div>
       </main>
     </div>
   );

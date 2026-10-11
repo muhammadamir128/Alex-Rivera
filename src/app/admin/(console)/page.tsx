@@ -449,7 +449,7 @@ export default function AdminDashboardPage() {
                     cy="32"
                     r="28"
                     fill="none"
-                    stroke="url(#grad)"
+                    stroke="url(#completeness-grad)"
                     strokeWidth="6"
                     strokeLinecap="round"
                     initial={{ strokeDasharray: "0 176" }}
@@ -459,7 +459,7 @@ export default function AdminDashboardPage() {
                     transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                   />
                   <defs>
-                    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+                    <linearGradient id="completeness-grad" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0%" stopColor="#3b82f6" />
                       <stop offset="100%" stopColor="#8b5cf6" />
                     </linearGradient>
