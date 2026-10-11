@@ -60,7 +60,8 @@ type FormState = {
   name: string;
   category: string;
   proficiency: number;
-  order: number;
+  /** Kept as text so the field can be left blank; blank means "append to the category". */
+  order: string;
 };
 
 const DEFAULT_CATEGORIES = ["Frontend", "Backend", "Database", "Tools"];
@@ -69,7 +70,7 @@ const EMPTY_FORM: FormState = {
   name: "",
   category: "Frontend",
   proficiency: 80,
-  order: 0,
+  order: "",
 };
 
 function proficiencyColor(value: number) {
@@ -127,11 +128,18 @@ export default function AdminSkillsPage() {
       name: s.name,
       category: s.category,
       proficiency: s.proficiency,
-      order: s.order,
+      order: String(s.order),
     });
     setCustomCat(DEFAULT_CATEGORIES.includes(s.category) ? "" : s.category);
     setSheetOpen(true);
   };
+
+  // Where a skill lands when "Display order" is left blank: after the last
+  // one in its category, so a blank field appends instead of colliding on 0.
+  const nextOrderFor = (category: string) =>
+    (data || [])
+      .filter((s) => s.category === category && s.id !== editing?.id)
+      .reduce((max, s) => Math.max(max, s.order), -1) + 1;
 
   const submit = async () => {
     if (!form.name.trim()) {
@@ -149,7 +157,10 @@ export default function AdminSkillsPage() {
       name: form.name.trim(),
       category,
       proficiency: Number(form.proficiency),
-      order: Number(form.order) || 0,
+      order:
+        form.order.trim() === ""
+          ? nextOrderFor(category)
+          : Math.max(0, Number(form.order) || 0),
     };
     try {
       if (editing) {
@@ -372,11 +383,15 @@ export default function AdminSkillsPage() {
                 <Input
                   id="s-order"
                   type="number"
+                  min={0}
+                  inputMode="numeric"
+                  placeholder="Automatic"
                   value={form.order}
-                  onChange={(e) => setForm({ ...form, order: Number(e.target.value) })}
+                  onChange={(e) => setForm({ ...form, order: e.target.value })}
                 />
                 <p className="text-[11px] text-muted-foreground">
-                  Lower numbers appear first within a category.
+                  Lower numbers appear first within a category. Leave blank to add
+                  it at the end of the category.
                 </p>
               </div>
             </div>

@@ -77,7 +77,8 @@ type FormState = {
   avatarUrl: string;
   rating: number;
   approved: boolean;
-  order: number;
+  /** Kept as text so the field can be left blank; blank means "append to the list". */
+  order: string;
 };
 
 const EMPTY_FORM: FormState = {
@@ -88,7 +89,7 @@ const EMPTY_FORM: FormState = {
   avatarUrl: "",
   rating: 5,
   approved: true,
-  order: 0,
+  order: "",
 };
 
 type FilterKey = "all" | "approved" | "pending";
@@ -159,10 +160,17 @@ export default function AdminTestimonialsPage() {
       avatarUrl: t.avatarUrl || "",
       rating: t.rating,
       approved: t.approved,
-      order: t.order,
+      order: String(t.order),
     });
     setSheetOpen(true);
   };
+
+  // Where a testimonial lands when "Display order" is left blank: after the last
+  // one, so a blank field appends instead of colliding on 0.
+  const nextOrder = () =>
+    (data || [])
+      .filter((t) => t.id !== editing?.id)
+      .reduce((max, t) => Math.max(max, t.order), -1) + 1;
 
   const handleUpload = async (file: File | undefined) => {
     if (!file) return;
@@ -192,7 +200,10 @@ export default function AdminTestimonialsPage() {
       avatarUrl: form.avatarUrl || null,
       rating: Number(form.rating),
       approved: form.approved,
-      order: Number(form.order) || 0,
+      order:
+        form.order.trim() === ""
+          ? nextOrder()
+          : Math.max(0, Number(form.order) || 0),
     };
     try {
       if (editing) {
@@ -579,8 +590,11 @@ export default function AdminTestimonialsPage() {
                   <Input
                     id="t-order"
                     type="number"
+                    min={0}
+                    inputMode="numeric"
+                    placeholder="Automatic"
                     value={form.order}
-                    onChange={(e) => setForm({ ...form, order: Number(e.target.value) })}
+                    onChange={(e) => setForm({ ...form, order: e.target.value })}
                   />
                 </div>
                 <div className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2">

@@ -72,7 +72,8 @@ type FormState = {
   current: boolean;
   grade: string;
   description: string;
-  order: number;
+  /** Kept as text so the field can be left blank; blank means "append to the list". */
+  order: string;
 };
 
 const EMPTY_FORM: FormState = {
@@ -85,7 +86,7 @@ const EMPTY_FORM: FormState = {
   current: false,
   grade: "",
   description: "",
-  order: 0,
+  order: "",
 };
 
 function formatDate(yyyy_mm: string) {
@@ -129,10 +130,17 @@ export default function AdminEducationPage() {
       current: e.current,
       grade: e.grade || "",
       description: e.description || "",
-      order: e.order,
+      order: String(e.order),
     });
     setSheetOpen(true);
   };
+
+  // Where a degree lands when "Display order" is left blank: after the last
+  // one, so a blank field appends instead of colliding on 0.
+  const nextOrder = () =>
+    (data || [])
+      .filter((e) => e.id !== editing?.id)
+      .reduce((max, e) => Math.max(max, e.order), -1) + 1;
 
   const submit = async () => {
     if (!form.degree.trim() || !form.institution.trim()) {
@@ -154,7 +162,10 @@ export default function AdminEducationPage() {
       current: form.current,
       grade: form.grade.trim() || null,
       description: form.description.trim(),
-      order: Number(form.order) || 0,
+      order:
+        form.order.trim() === ""
+          ? nextOrder()
+          : Math.max(0, Number(form.order) || 0),
     };
 
     try {
@@ -377,8 +388,11 @@ export default function AdminEducationPage() {
                   <Input
                     id="ed-order"
                     type="number"
+                    min={0}
+                    inputMode="numeric"
+                    placeholder="Automatic"
                     value={form.order}
-                    onChange={(e) => setForm({ ...form, order: Number(e.target.value) || 0 })}
+                    onChange={(e) => setForm({ ...form, order: e.target.value })}
                   />
                 </div>
               </div>

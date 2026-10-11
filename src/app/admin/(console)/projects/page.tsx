@@ -83,7 +83,8 @@ type FormState = {
   repoUrl: string;
   isFeatured: boolean;
   isPublished: boolean;
-  order: number;
+  /** Kept as text so the field can be left blank; blank means "append to the list". */
+  order: string;
 };
 
 const EMPTY_FORM: FormState = {
@@ -99,7 +100,7 @@ const EMPTY_FORM: FormState = {
   repoUrl: "",
   isFeatured: false,
   isPublished: true,
-  order: 0,
+  order: "",
 };
 
 function slugifyLocal(value: string) {
@@ -233,10 +234,17 @@ export default function AdminProjectsPage() {
       repoUrl: p.repoUrl || "",
       isFeatured: p.isFeatured,
       isPublished: p.isPublished,
-      order: p.order,
+      order: String(p.order),
     });
     setSheetOpen(true);
   };
+
+  // Where a project lands when "Order" is left blank: after the last one, so a
+  // blank field appends instead of colliding on 0.
+  const nextOrder = () =>
+    (data || [])
+      .filter((p) => p.id !== editing?.id)
+      .reduce((max, p) => Math.max(max, p.order), -1) + 1;
 
   const onTitleChange = (value: string) => {
     setForm((f) => ({
@@ -296,7 +304,10 @@ export default function AdminProjectsPage() {
       repoUrl: form.repoUrl || null,
       isFeatured: form.isFeatured,
       isPublished: form.isPublished,
-      order: Number(form.order) || 0,
+      order:
+        form.order.trim() === ""
+          ? nextOrder()
+          : Math.max(0, Number(form.order) || 0),
     };
     try {
       if (editing) {
@@ -633,8 +644,11 @@ export default function AdminProjectsPage() {
                   <Input
                     id="p-order"
                     type="number"
+                    min={0}
+                    inputMode="numeric"
+                    placeholder="Automatic"
                     value={form.order}
-                    onChange={(e) => setForm({ ...form, order: Number(e.target.value) })}
+                    onChange={(e) => setForm({ ...form, order: e.target.value })}
                   />
                 </div>
                 <div className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2">

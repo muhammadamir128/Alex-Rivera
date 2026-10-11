@@ -69,7 +69,8 @@ type FormState = {
   description: string;
   techUsed: string[];
   techInput: string;
-  order: number;
+  /** Kept as text so the field can be left blank; blank means "append to the list". */
+  order: string;
 };
 
 const EMPTY_FORM: FormState = {
@@ -82,7 +83,7 @@ const EMPTY_FORM: FormState = {
   description: "",
   techUsed: [],
   techInput: "",
-  order: 0,
+  order: "",
 };
 
 function formatDate(yyyy_mm: string) {
@@ -126,10 +127,17 @@ export default function AdminExperiencePage() {
       description: e.description || "",
       techUsed: e.techUsed || [],
       techInput: "",
-      order: e.order,
+      order: String(e.order),
     });
     setSheetOpen(true);
   };
+
+  // Where a role lands when "Display order" is left blank: after the last one,
+  // so a blank field appends instead of colliding on 0.
+  const nextOrder = () =>
+    (data || [])
+      .filter((e) => e.id !== editing?.id)
+      .reduce((max, e) => Math.max(max, e.order), -1) + 1;
 
   const addTech = () => {
     const raw = form.techInput.split(",").map((t) => t.trim()).filter(Boolean);
@@ -164,7 +172,10 @@ export default function AdminExperiencePage() {
       current: form.current,
       description: form.description,
       techUsed: form.techUsed,
-      order: Number(form.order) || 0,
+      order:
+        form.order.trim() === ""
+          ? nextOrder()
+          : Math.max(0, Number(form.order) || 0),
     };
     try {
       if (editing) {
@@ -412,11 +423,15 @@ export default function AdminExperiencePage() {
                 <Input
                   id="e-order"
                   type="number"
+                  min={0}
+                  inputMode="numeric"
+                  placeholder="Automatic"
                   value={form.order}
-                  onChange={(e) => setForm({ ...form, order: Number(e.target.value) })}
+                  onChange={(e) => setForm({ ...form, order: e.target.value })}
                 />
                 <p className="text-[11px] text-muted-foreground">
-                  Lower numbers appear first in the timeline.
+                  Lower numbers appear first in the timeline. Leave blank to add
+                  it at the end.
                 </p>
               </div>
             </div>
