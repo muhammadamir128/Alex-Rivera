@@ -526,7 +526,7 @@ export default function AdminMessagesPage() {
 
       {/* Reply compose dialog */}
       <Dialog open={replyOpen} onOpenChange={setReplyOpen}>
-        <DialogContent className="max-h-[88vh] gap-0 overflow-hidden border-white/10 bg-[#0f1729]/95 p-0 backdrop-blur-2xl sm:max-w-2xl sm:rounded-3xl">
+        <DialogContent className="max-h-[88vh] gap-0 overflow-hidden border-hairline bg-panel-deep p-0 backdrop-blur-2xl sm:max-w-2xl sm:rounded-3xl">
           <DialogHeader className="border-b border-white/5 px-6 py-4">
             <div className="flex items-center justify-between">
               <div>

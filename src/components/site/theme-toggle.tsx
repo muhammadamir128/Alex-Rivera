@@ -1,79 +1,66 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 /**
  * Theme toggle button — switches between dark and light themes.
- * Renders a compact icon button with a smooth icon transition.
+ * Renders a compact icon button; the sun/moon swap is a CSS transition so the
+ * correct icon is painted even before a script-driven animation frame runs.
  *
- * Uses a mounted flag to avoid hydration mismatch (next-themes reads
- * localStorage on mount). The flag is set synchronously in a layout
- * effect to avoid a flash.
+ * next-themes can only resolve the stored theme on the client, so the button is
+ * always rendered with the app's dark-first default and swaps once the theme is
+ * known. Client-side detection uses `useSyncExternalStore` rather than a mount
+ * effect or `requestAnimationFrame` — a setState-in-effect causes a cascading
+ * render, and animation frames are never delivered while the tab is hidden or
+ * the window is occluded, either of which would leave the toggle blank.
  */
-import { useEffect, useState } from "react";
+const subscribeToNothing = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export function ThemeToggle({ className }: { className?: string }) {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
+  const isClient = useSyncExternalStore(
+    subscribeToNothing,
+    getClientSnapshot,
+    getServerSnapshot
+  );
 
-  useEffect(() => {
-    // Use requestAnimationFrame to defer the state update out of the effect body
-    const raf = requestAnimationFrame(() => setMounted(true));
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div
-        className={cn(
-          "grid h-9 w-9 place-items-center rounded-lg glass",
-          className
-        )}
-        aria-hidden
-      />
-    );
-  }
-
-  const isDark = theme === "dark";
+  // `resolvedTheme` is only known once next-themes' own effect has run, which
+  // happens *after* this component's first client render. Dark is the app's
+  // default, so anything other than an explicit light resolution — including
+  // that first frame — renders as dark and the icon never flip-flops.
+  const isDark = !isClient || resolvedTheme !== "light";
+  const label = isDark ? "Switch to light mode" : "Switch to dark mode";
 
   return (
     <button
+      type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className={cn(
         "grid h-9 w-9 place-items-center rounded-lg glass text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-foreground",
         className
       )}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={label}
+      title={label}
     >
-      <AnimatePresence mode="wait" initial={false}>
-        {isDark ? (
-          <motion.span
-            key="sun"
-            initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
-            animate={{ rotate: 0, opacity: 1, scale: 1 }}
-            exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="grid place-items-center"
-          >
-            <Sun className="h-4 w-4" />
-          </motion.span>
-        ) : (
-          <motion.span
-            key="moon"
-            initial={{ rotate: 90, opacity: 0, scale: 0.5 }}
-            animate={{ rotate: 0, opacity: 1, scale: 1 }}
-            exit={{ rotate: -90, opacity: 0, scale: 0.5 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="grid place-items-center"
-          >
-            <Moon className="h-4 w-4" />
-          </motion.span>
+      <Sun
+        aria-hidden
+        className={cn(
+          "col-start-1 row-start-1 h-4 w-4 transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none",
+          isDark ? "rotate-0 opacity-100" : "rotate-90 opacity-0"
         )}
-      </AnimatePresence>
+      />
+      <Moon
+        aria-hidden
+        className={cn(
+          "col-start-1 row-start-1 h-4 w-4 transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none",
+          isDark ? "-rotate-90 opacity-0" : "rotate-0 opacity-100"
+        )}
+      />
     </button>
   );
 }

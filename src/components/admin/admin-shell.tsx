@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CommandPalette } from "@/components/admin/command-palette";
 import { ShortcutsHelp, ShortcutsHelpButton } from "@/components/admin/shortcuts-help";
+import { ThemeToggle } from "@/components/site/theme-toggle";
 
 export type NavItem = {
   href: string;
@@ -113,7 +114,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#070a14] text-foreground">
+    <div className="admin-console min-h-screen bg-background text-foreground">
       <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} />
       <ShortcutsHelp open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       {/* ambient glow */}
@@ -123,7 +124,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-white/[0.07] bg-[#080b16]/95 backdrop-blur-2xl shadow-[1px_0_0_0_rgba(255,255,255,0.02)] lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-hairline bg-panel-deep backdrop-blur-2xl shadow-[1px_0_0_0_rgba(255,255,255,0.02)] lg:flex">
         {/* subtle vertical accent line */}
         <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-blue-500/15 to-transparent" />
         <SidebarContent
@@ -137,7 +138,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* mobile top bar */}
-      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-white/5 bg-[#0a0e1a]/90 px-3 py-2.5 sm:px-4 sm:py-3 backdrop-blur-xl lg:hidden">
+      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-hairline bg-panel-deep px-3 py-2.5 sm:px-4 sm:py-3 backdrop-blur-xl lg:hidden">
         <Link href="/admin" className="flex items-center gap-2 shrink-0">
           <span className="grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 text-xs font-bold text-white">
             MA
@@ -153,6 +154,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <span>Home</span>
           </Link>
           <CmdKButton onClick={() => setCmdOpen(true)} />
+          <ThemeToggle />
           <button
             onClick={() => setMobileOpen((v) => !v)}
             className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-lg glass shrink-0"
@@ -179,7 +181,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-white/5 bg-[#0a0e1a] lg:hidden"
+              className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-hairline bg-panel-deep lg:hidden"
             >
               <SidebarContent
                 pathname={pathname}
@@ -231,12 +233,13 @@ function SidebarContent({
         <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 font-display text-sm font-bold text-white shadow-lg shadow-blue-500/30">
           MA
         </span>
-        <div>
-          <div className="font-display text-sm font-semibold">{admin?.name || "Muhammad Amir"}</div>
+        <div className="min-w-0 flex-1">
+          <div className="truncate font-display text-sm font-semibold">{admin?.name || "Muhammad Amir"}</div>
           <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
             Admin Console
           </div>
         </div>
+        <ThemeToggle className="h-8 w-8 shrink-0" />
       </div>
 
       {/* Dedicated Back to Home button */}

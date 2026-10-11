@@ -298,7 +298,7 @@ export function CommandPalette({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className="top-[15%] max-w-xl translate-y-0 gap-0 overflow-hidden rounded-2xl border-white/10 bg-[#0a0e1a]/95 p-0 backdrop-blur-2xl"
+        className="top-[15%] max-w-xl translate-y-0 gap-0 overflow-hidden rounded-2xl border-hairline bg-panel-deep p-0 backdrop-blur-2xl"
         onKeyDown={onKeyDown}
       >
         <DialogTitle className="sr-only">Command palette</DialogTitle>

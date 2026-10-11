@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Lock, Mail, Loader2, ArrowRight, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/site/theme-toggle";
 
 // Inner component that uses useSearchParams — must be inside <Suspense>
 function LoginForm() {
@@ -143,11 +144,16 @@ function LoginForm() {
 
 export default function AdminLoginPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#070a14] text-foreground flex items-center justify-center px-4">
+    <div className="admin-console relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 text-foreground">
       {/* ambient glow */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute -top-40 left-1/4 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px] animate-blob" />
         <div className="absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-violet-600/20 blur-[120px] animate-blob animation-delay-2000" />
+      </div>
+
+      {/* theme toggle */}
+      <div className="absolute right-4 top-4 z-10">
+        <ThemeToggle />
       </div>
 
       <motion.div

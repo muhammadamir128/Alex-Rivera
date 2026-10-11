@@ -110,10 +110,10 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
     <section id="work" className="relative scroll-mt-24 py-14 sm:py-20 overflow-hidden">
 
       {/* Cosmic Background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[#060913]">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-slate-50 dark:bg-[#060913]">
         <div className="absolute top-0 right-1/4 h-[30rem] w-[30rem] rounded-full bg-violet-600/10 blur-[130px]" />
         <div className="absolute bottom-0 left-1/4 h-[28rem] w-[28rem] rounded-full bg-cyan-600/8 blur-[120px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff07_1px,transparent_1px)] [background-size:28px_28px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(#0f172a0a_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff07_1px,transparent_1px)] [background-size:28px_28px]" />
       </div>
 
       {/* Animated corner circuit lines */}
@@ -173,7 +173,7 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search projects by title, tech..."
-                className="w-full rounded-full border border-white/10 bg-slate-950/60 backdrop-blur-xl py-2.5 pl-10 pr-9 text-xs sm:text-sm text-slate-200 outline-none transition-all placeholder:text-slate-600 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 shadow-sm"
+                className="w-full rounded-full border border-hairline bg-panel backdrop-blur-xl py-2.5 pl-10 pr-9 text-xs sm:text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 shadow-sm"
               />
               {search && (
                 <button
@@ -218,7 +218,7 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
                   "flex-shrink-0 rounded-full px-4 py-1.5 text-xs font-mono font-semibold tracking-wide transition-all duration-200 cursor-pointer border",
                   filter === tag
                     ? "bg-gradient-to-r from-cyan-500 to-violet-600 text-white border-transparent shadow-lg shadow-violet-500/30"
-                    : "border-white/10 bg-slate-950/50 text-slate-400 hover:border-cyan-500/30 hover:text-cyan-300 backdrop-blur-xl"
+                    : "border-hairline bg-panel text-slate-400 hover:border-cyan-500/30 hover:text-cyan-300 backdrop-blur-xl"
                 )}
               >
                 {tag}
@@ -254,7 +254,7 @@ export function Projects({ projects }: { projects: ProjectData[] }) {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-10 flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-slate-950/60 backdrop-blur-xl py-16 text-center"
+            className="mt-10 flex flex-col items-center justify-center rounded-2xl border border-hairline bg-panel backdrop-blur-xl py-16 text-center"
           >
             <div className="grid h-12 w-12 place-items-center rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
               <Search className="h-5 w-5" />
@@ -306,7 +306,7 @@ function ProjectCard({ project }: { project: ProjectData }) {
         }}
         className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl cursor-pointer transition-all duration-300"
         style={{
-          background: "rgba(6,9,19,0.85)",
+          background: "var(--panel-strong)",
           border: "1px solid rgba(59, 130, 246, 0.35)",
           boxShadow: "0 0 20px 2px rgba(59, 130, 246, 0.2), inset 0 0 12px rgba(59, 130, 246, 0.04)",
           backdropFilter: "blur(16px)",
@@ -377,7 +377,7 @@ function ProjectCard({ project }: { project: ProjectData }) {
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
                 aria-label={`Open ${project.title}`}
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-blue-500/30 bg-slate-950/50 text-slate-400 transition-all hover:scale-110 hover:text-blue-300 hover:border-blue-400/60 active:scale-95"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg border border-blue-500/30 bg-panel-inset text-slate-400 transition-all hover:scale-110 hover:text-blue-300 hover:border-blue-400/60 active:scale-95"
               >
                 <ArrowUpRight className="h-4 w-4" />
               </a>
@@ -396,8 +396,8 @@ function ProjectCard({ project }: { project: ProjectData }) {
                 key={tag}
                 className="rounded-md px-2 py-0.5 text-[11px] font-mono font-medium"
                 style={{
-                  background: "rgba(59, 130, 246, 0.08)",
-                  color: "#93c5fd",
+                  background: "var(--accent-blue-wash)",
+                  color: "var(--accent-blue-soft)",
                   border: "1px solid rgba(59, 130, 246, 0.25)",
                 }}
               >

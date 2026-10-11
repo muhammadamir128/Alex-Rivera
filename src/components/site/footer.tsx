@@ -59,7 +59,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
     : "MA";
 
   return (
-    <footer className="relative border-t border-white/10 bg-[#060913] backdrop-blur-2xl text-foreground">
+    <footer className="relative border-t border-hairline bg-slate-50 dark:bg-[#060913] backdrop-blur-2xl text-foreground">
       {/* Top gradient highlight bar */}
       <div
         aria-hidden
@@ -146,7 +146,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
               }}
               aria-label="Admin Access"
               title="Admin Access"
-              className="group relative grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-colors duration-200 hover:border-violet-500/50 hover:bg-violet-500/15 hover:text-white hover:shadow-lg hover:shadow-violet-500/25 cursor-pointer"
+              className="group relative grid h-9 w-9 place-items-center rounded-xl border border-hairline bg-white/5 text-slate-400 transition-colors duration-200 hover:border-violet-500/50 hover:bg-violet-500/15 hover:text-white hover:shadow-lg hover:shadow-violet-500/25 cursor-pointer"
             >
               <span className="relative z-10 transition-transform duration-200 group-hover:scale-110">
                 <Lock className="h-3.5 w-3.5" />
@@ -166,7 +166,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setPinModalOpen(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+              className="absolute inset-0 bg-slate-900/40 dark:bg-black/80 backdrop-blur-md"
             />
 
             <motion.div
@@ -174,7 +174,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 12 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-[#090d16] p-6 shadow-2xl text-foreground"
+              className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-hairline bg-panel-deep p-6 shadow-2xl text-foreground"
             >
               <button
                 type="button"
@@ -186,7 +186,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
               </button>
 
               <div className="flex items-center gap-3 mb-4">
-                <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500/20 to-violet-600/20 border border-white/10 text-blue-400">
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500/20 to-violet-600/20 border border-hairline text-blue-400">
                   <KeyRound className="h-5 w-5" />
                 </div>
                 <div>
@@ -206,7 +206,7 @@ export function Footer({ profile }: { profile: ProfileData }) {
                       if (pinError) setPinError("");
                     }}
                     placeholder="Enter password"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 tracking-wider"
+                    className="w-full rounded-xl border border-hairline bg-panel-inset px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 tracking-wider"
                   />
                   {pinError && (
                     <motion.p
@@ -271,7 +271,7 @@ function SocialButton({
       whileHover={{ y: -3, scale: 1.12 }}
       whileTap={{ scale: 0.94 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
-      className="group relative grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-300 transition-colors duration-200 hover:border-blue-500/50 hover:bg-blue-500/15 hover:text-blue-400 hover:shadow-lg hover:shadow-blue-500/25"
+      className="group relative grid h-9 w-9 place-items-center rounded-xl border border-hairline bg-white/5 text-slate-300 transition-colors duration-200 hover:border-blue-500/50 hover:bg-blue-500/15 hover:text-blue-400 hover:shadow-lg hover:shadow-blue-500/25"
     >
       <span className="relative z-10 transition-transform duration-200 group-hover:scale-110">
         {children}

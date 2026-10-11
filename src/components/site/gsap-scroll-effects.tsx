@@ -54,6 +54,15 @@ export function GsapScrollEffects() {
         if (!heading.hasAttribute("data-gsap-split")) {
           heading.setAttribute("data-gsap-split", "true");
 
+          // Word-splitting wraps every word in transformed inline-block spans.
+          // A transformed descendant stops the browser painting an ancestor's
+          // `background-clip: text`, so a gradient phrase would render fully
+          // transparent. Leave gradient text whole and reveal it as one block.
+          const isGradientText = (el: Element) => {
+            const cls = el.getAttribute("class") || "";
+            return cls.includes("bg-clip-text") || cls.includes("gradient-text");
+          };
+
           const wrapText = (node: Node) => {
             if (node.nodeType === Node.TEXT_NODE) {
               const text = node.textContent || "";
@@ -69,7 +78,9 @@ export function GsapScrollEffects() {
                   const outer = document.createElement("span");
                   outer.className = "inline-block overflow-hidden align-top";
                   const inner = document.createElement("span");
-                  inner.className = "inline-block gsap-split-word will-change-transform";
+                  // no `will-change`: keeping every word on its own paint layer
+                  // makes the browser skip repainting clipped gradient text
+                  inner.className = "inline-block gsap-split-word";
                   inner.textContent = chunk;
                   outer.appendChild(inner);
                   frag.appendChild(outer);
@@ -77,6 +88,11 @@ export function GsapScrollEffects() {
               });
               node.parentNode?.replaceChild(frag, node);
             } else if (node.nodeType === Node.ELEMENT_NODE) {
+              if (isGradientText(node as Element)) {
+                // inline-block so the phrase can be transformed like the words
+                (node as Element).classList.add("gsap-split-phrase", "inline-block", "align-top");
+                return;
+              }
               Array.from(node.childNodes).forEach(wrapText);
             }
           };
@@ -85,8 +101,19 @@ export function GsapScrollEffects() {
         }
 
         const words = heading.querySelectorAll<HTMLElement>(".gsap-split-word");
+        const phrases = heading.querySelectorAll<HTMLElement>(".gsap-split-phrase");
+        if (words.length === 0 && phrases.length === 0) return;
+
+        const reveal = gsap.timeline({
+          scrollTrigger: {
+            trigger: heading,
+            start: "top 88%",
+            toggleActions: "play reverse play reverse",
+          },
+        });
+
         if (words.length > 0) {
-          gsap.fromTo(
+          reveal.fromTo(
             words,
             {
               y: "115%",
@@ -102,12 +129,24 @@ export function GsapScrollEffects() {
               duration: 0.75,
               stagger: 0.035,
               ease: "power3.out",
-              scrollTrigger: {
-                trigger: heading,
-                start: "top 88%",
-                toggleActions: "play reverse play reverse",
-              },
-            }
+            },
+            0
+          );
+        }
+
+        if (phrases.length > 0) {
+          reveal.fromTo(
+            phrases,
+            { y: 26, opacity: 0, filter: "blur(4px)" },
+            {
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+              duration: 0.75,
+              ease: "power3.out",
+              clearProps: "transform,filter",
+            },
+            0.1
           );
         }
       });

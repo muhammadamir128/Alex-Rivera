@@ -200,7 +200,7 @@ export function TechTicker() {
   }, []);
 
   return (
-    <div className="relative w-full overflow-hidden border-y border-white/5 bg-slate-950/40 dark:bg-black/30 py-3.5 backdrop-blur-md select-none">
+    <div className="relative w-full overflow-hidden border-y border-border bg-background/80 py-3.5 backdrop-blur-md select-none">
       {/* Edge gradient masks for smooth fade */}
       <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-24 z-10 bg-gradient-to-r from-background to-transparent" />
       <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-24 z-10 bg-gradient-to-l from-background to-transparent" />

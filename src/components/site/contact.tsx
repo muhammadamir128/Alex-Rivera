@@ -78,7 +78,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
         border: "rgba(0,240,255,0.4)",
         glow: "rgba(0,240,255,0.12)",
         icon: "from-cyan-500 to-blue-600",
-        text: "#67e8f9",
+        text: "var(--accent-cyan-soft)",
         shimmer: "#00f0ff",
       },
     },
@@ -91,7 +91,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
         border: "rgba(59,130,246,0.4)",
         glow: "rgba(59,130,246,0.12)",
         icon: "from-blue-500 to-cyan-500",
-        text: "#93c5fd",
+        text: "var(--accent-blue-soft)",
         shimmer: "#38bdf8",
       },
     },
@@ -104,7 +104,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
         border: "rgba(14,165,233,0.4)",
         glow: "rgba(14,165,233,0.12)",
         icon: "from-sky-500 to-blue-600",
-        text: "#7dd3fc",
+        text: "var(--accent-sky-soft)",
         shimmer: "#00f0ff",
       },
     },
@@ -114,10 +114,10 @@ export function Contact({ profile }: { profile: ProfileData }) {
     <section id="contact" className="relative scroll-mt-24 py-14 sm:py-20 overflow-hidden">
 
       {/* Cosmic Background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[#060913]">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-slate-50 dark:bg-[#060913]">
         <div className="absolute top-0 left-1/3 h-[28rem] w-[28rem] rounded-full bg-cyan-600/8 blur-[130px]" />
         <div className="absolute bottom-0 right-1/3 h-[28rem] w-[28rem] rounded-full bg-blue-600/10 blur-[130px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff07_1px,transparent_1px)] [background-size:28px_28px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(#0f172a0a_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff07_1px,transparent_1px)] [background-size:28px_28px]" />
       </div>
 
       {/* Animated corner circuit lines */}
@@ -180,7 +180,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
                   className="group relative flex items-center gap-4 overflow-hidden rounded-2xl p-4 cursor-pointer"
                   style={{
-                    background: "rgba(6,9,19,0.75)",
+                    background: "var(--panel)",
                     border: `1px solid ${card.color.border}`,
                     boxShadow: `0 0 16px 2px ${card.color.glow}`,
                     backdropFilter: "blur(12px)",
@@ -237,7 +237,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
               onSubmit={onSubmit}
               className="relative overflow-hidden rounded-2xl p-6 sm:p-8"
               style={{
-                background: "rgba(6,9,19,0.80)",
+                background: "var(--panel-strong)",
                 border: "1px solid rgba(0,240,255,0.22)",
                 boxShadow: "0 0 28px 4px rgba(0,240,255,0.06), inset 0 0 20px rgba(0,240,255,0.02)",
                 backdropFilter: "blur(20px)",
@@ -270,7 +270,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
                     onBlur={() => setTouched({ ...touched, name: true })}
                     placeholder="Ada Lovelace"
                     className={cn(
-                      "bg-slate-950/60 border-white/10 text-slate-100 placeholder:text-slate-600 transition-colors focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20",
+                      "bg-panel-inset border-hairline text-foreground placeholder:text-muted-foreground transition-colors focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20",
                       touched.name && errors.name && "border-red-400/50",
                       touched.name && !errors.name && form.name && "border-emerald-400/50"
                     )}
@@ -286,7 +286,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
                     onBlur={() => setTouched({ ...touched, email: true })}
                     placeholder="ada@example.com"
                     className={cn(
-                      "bg-slate-950/60 border-white/10 text-slate-100 placeholder:text-slate-600 transition-colors focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20",
+                      "bg-panel-inset border-hairline text-foreground placeholder:text-muted-foreground transition-colors focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20",
                       touched.email && errors.email && "border-red-400/50",
                       touched.email && !errors.email && form.email && "border-emerald-400/50"
                     )}
@@ -315,7 +315,7 @@ export function Contact({ profile }: { profile: ProfileData }) {
                     placeholder="Tell me about your project, timeline, and budget…"
                     rows={5}
                     className={cn(
-                      "bg-slate-950/60 border-white/10 text-slate-100 resize-none placeholder:text-slate-600 transition-colors focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20",
+                      "bg-panel-inset border-hairline text-foreground resize-none placeholder:text-muted-foreground transition-colors focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20",
                       touched.message && errors.message && "border-red-400/50",
                       touched.message && !errors.message && form.message.trim().length >= MIN_MSG && "border-emerald-400/50"
                     )}

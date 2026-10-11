@@ -40,10 +40,10 @@ export function Experience({ items }: { items: ExperienceData[] }) {
     <section id="experience" className="relative scroll-mt-24 py-14 sm:py-20 overflow-hidden">
 
       {/* Cosmic Background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[#060913]">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-slate-50 dark:bg-[#060913]">
         <div className="absolute top-1/4 left-1/3 h-[32rem] w-[32rem] rounded-full bg-cyan-600/8 blur-[140px]" />
         <div className="absolute bottom-1/4 right-1/3 h-[32rem] w-[32rem] rounded-full bg-violet-600/10 blur-[140px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff07_1px,transparent_1px)] [background-size:28px_28px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(#0f172a0a_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff07_1px,transparent_1px)] [background-size:28px_28px]" />
       </div>
 
       {/* Animated flowing timeline SVG */}
@@ -224,7 +224,7 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                       whileHover={{ y: -4, transition: { duration: 0.2 } }}
                       className="group relative overflow-hidden rounded-2xl backdrop-blur-xl p-5 sm:p-6 shadow-2xl transition-all duration-300"
                       style={{
-                        background: "rgba(8,9,19,0.7)",
+                        background: "var(--panel)",
                         border: isCurrent
                           ? "1px solid rgba(0,240,255,0.35)"
                           : "1px solid rgba(139,92,246,0.30)",
@@ -270,13 +270,13 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                             <div
                               className="grid h-7 w-7 place-items-center rounded-lg"
                               style={{
-                                background: isCurrent ? "rgba(0,240,255,0.12)" : "rgba(139,92,246,0.12)",
+                                background: isCurrent ? "var(--accent-cyan-wash)" : "var(--accent-violet-wash)",
                                 border: isCurrent ? "1px solid rgba(0,240,255,0.3)" : "1px solid rgba(139,92,246,0.3)",
                               }}
                             >
                               <Briefcase
                                 className="h-3.5 w-3.5"
-                                style={{ color: isCurrent ? "#00f0ff" : "#c084fc" }}
+                                style={{ color: isCurrent ? "var(--accent-cyan-soft)" : "var(--accent-violet-soft)" }}
                               />
                             </div>
                             <h3 className="font-display text-base sm:text-lg font-bold text-white leading-tight">
@@ -285,7 +285,7 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                           </div>
                           <p
                             className="mt-1 text-sm font-semibold"
-                            style={{ color: isCurrent ? "#67e8f9" : "#c084fc" }}
+                            style={{ color: isCurrent ? "var(--accent-cyan-soft)" : "var(--accent-violet-soft)" }}
                           >
                             {exp.company}
                             {exp.location && (
@@ -318,8 +318,8 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                           <span
                             className="rounded-full px-2 py-0.5 font-mono text-[10px] font-medium"
                             style={{
-                              background: isCurrent ? "rgba(0,240,255,0.08)" : "rgba(139,92,246,0.08)",
-                              color: isCurrent ? "#67e8f9" : "#c084fc",
+                              background: isCurrent ? "var(--accent-cyan-wash)" : "var(--accent-violet-wash)",
+                              color: isCurrent ? "var(--accent-cyan-soft)" : "var(--accent-violet-soft)",
                               border: isCurrent ? "1px solid rgba(0,240,255,0.2)" : "1px solid rgba(139,92,246,0.2)",
                             }}
                           >
@@ -345,8 +345,8 @@ export function Experience({ items }: { items: ExperienceData[] }) {
                               transition={{ duration: 0.25, delay: ti * 0.04 }}
                               className="rounded-md px-2 py-0.5 text-[11px] font-mono font-medium"
                               style={{
-                                background: isCurrent ? "rgba(0,240,255,0.08)" : "rgba(139,92,246,0.08)",
-                                color: isCurrent ? "#a5f3fc" : "#e9d5ff",
+                                background: isCurrent ? "var(--accent-cyan-wash)" : "var(--accent-violet-wash)",
+                                color: isCurrent ? "var(--accent-cyan-badge)" : "var(--accent-violet-badge)",
                                 border: isCurrent ? "1px solid rgba(0,240,255,0.2)" : "1px solid rgba(139,92,246,0.2)",
                               }}
                             >

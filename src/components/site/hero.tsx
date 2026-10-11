@@ -176,15 +176,13 @@ export function Hero({ profile }: { profile: ProfileData }) {
             suppressHydrationWarning
             className="relative aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl glass neon-border neon-glow select-none"
           >
-            <img
-              alt={`Portrait of ${profile.name}`}
-              src={portraitSrc}
-              onError={() => {
-                if (portraitSrc !== FALLBACK_PORTRAIT) setPortraitSrc(FALLBACK_PORTRAIT);
-              }}
-              className="h-full w-full object-cover transition-transform duration-300 pointer-events-none select-none"
+            <div
+              role="img"
+              aria-label={`Portrait of ${profile.name}`}
+              className="h-full w-full bg-cover bg-no-repeat transition-transform duration-300 pointer-events-none select-none"
               style={{
-                objectPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
+                backgroundImage: `url("${portraitSrc.replaceAll('"', '%22')}")`,
+                backgroundPosition: `${profile.stats?.avatarPosX ?? 50}% ${profile.stats?.avatarPosY ?? 15}%`,
                 transform:
                   profile.stats?.avatarZoom && Number(profile.stats.avatarZoom) !== 100
                     ? `scale(${Number(profile.stats.avatarZoom) / 100})`

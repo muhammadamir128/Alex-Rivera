@@ -41,6 +41,13 @@
   --color-neon-blue: var(--neon-blue);
   --color-neon-violet: var(--neon-violet);
   --color-neon-cyan: var(--neon-cyan);
+  /* Theme-aware panel surfaces: dark "cosmic" glass in dark mode, solid
+     off-white in light mode. Used by the section cards, forms and shells. */
+  --color-panel: var(--panel);
+  --color-panel-strong: var(--panel-strong);
+  --color-panel-deep: var(--panel-deep);
+  --color-panel-inset: var(--panel-inset);
+  --color-hairline: var(--hairline);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -82,6 +89,26 @@
   --neon-blue: #3b82f6;
   --neon-violet: #8b5cf6;
   --neon-cyan: #22d3ee;
+
+  /* Panel surfaces (see @theme mapping above) */
+  --panel: rgba(8, 9, 19, 0.72);
+  --panel-strong: rgba(6, 9, 19, 0.86);
+  --panel-deep: rgba(4, 6, 14, 0.94);
+  --panel-inset: rgba(255, 255, 255, 0.05);
+  --hairline: rgba(255, 255, 255, 0.1);
+
+  /* Accent text/wash for elements that set their colour inline (JSX styles).
+     Inline styles cannot be overridden by the light-mode stylesheet, so those
+     components reference these variables instead of raw hex values. */
+  --accent-cyan-soft: #67e8f9;
+  --accent-cyan-badge: #a5f3fc;
+  --accent-violet-soft: #c084fc;
+  --accent-violet-badge: #e9d5ff;
+  --accent-blue-soft: #93c5fd;
+  --accent-sky-soft: #7dd3fc;
+  --accent-cyan-wash: rgba(0, 240, 255, 0.08);
+  --accent-violet-wash: rgba(139, 92, 246, 0.08);
+  --accent-blue-wash: rgba(59, 130, 246, 0.08);
 
   --chart-1: #3b82f6;
   --chart-2: #8b5cf6;
@@ -134,6 +161,23 @@
   --neon-blue: #2563eb;
   --neon-violet: #7c3aed;
   --neon-cyan: #0891b2;
+
+  /* Panel surfaces — solid, high-contrast surfaces for light mode */
+  --panel: rgba(255, 255, 255, 0.9);
+  --panel-strong: rgba(255, 255, 255, 0.96);
+  --panel-deep: #ffffff;
+  --panel-inset: rgba(15, 23, 42, 0.04);
+  --hairline: rgba(15, 23, 42, 0.1);
+
+  --accent-cyan-soft: #0e7490;
+  --accent-cyan-badge: #155e75;
+  --accent-violet-soft: #6d28d9;
+  --accent-violet-badge: #5b21b6;
+  --accent-blue-soft: #1d4ed8;
+  --accent-sky-soft: #0369a1;
+  --accent-cyan-wash: rgba(8, 145, 178, 0.1);
+  --accent-violet-wash: rgba(124, 58, 237, 0.1);
+  --accent-blue-wash: rgba(37, 99, 235, 0.09);
 
   --chart-1: #2563eb;
   --chart-2: #7c3aed;
@@ -231,6 +275,17 @@
   }
 }
 
+/* Light theme scrollbar — the dark track reads as a black stripe on `#f8fafc` */
+.light ::-webkit-scrollbar-track {
+  background: #e5eaf2;
+}
+.light ::-webkit-scrollbar-thumb {
+  border-color: #e5eaf2;
+}
+.light * {
+  scrollbar-color: rgba(124, 58, 237, 0.45) #e5eaf2;
+}
+
 /* ---------- Utility classes ---------- */
 @layer components {
   .glass {
@@ -246,9 +301,9 @@
     -webkit-backdrop-filter: blur(20px) saturate(160%);
   }
   .light .glass-strong {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(15, 23, 42, 0.08);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    background: rgba(255,  255, 255, 0.96);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.06);
   }
   .gradient-text {
     background: linear-gradient(110deg, #60a5fa 0%, #a78bfa 50%, #22d3ee 100%);
@@ -263,6 +318,13 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+  }
+  /* Darker stops so the gradient headings keep AA contrast on light surfaces */
+  .light .gradient-text {
+    background-image: linear-gradient(110deg, #0e7490 0%, #6d28d9 55%, #0891b2 100%);
+  }
+  .light .gradient-text-soft {
+    background-image: linear-gradient(110deg, #1d4ed8 0%, #6d28d9 100%);
   }
   .neon-border {
     position: relative;
@@ -293,6 +355,444 @@
       linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
     background-size: 56px 56px;
   }
+}
+
+/* ==========================================================================
+   LIGHT THEME — colour remap for the dark "cosmic" portfolio sections
+   ==========================================================================
+   #skills, #experience, #work, #contact and the footer ship dark surfaces by
+   default, so their hard-coded dark-theme text ramps have to be lifted when
+   `.light` is active. Surfaces themselves are handled by the `--panel-*`
+   tokens in the components — this layer only fixes foreground contrast.
+
+   `[class~="…"]` matches a whole utility token, so variant utilities such as
+   `hover:text-white` or `placeholder:text-slate-600` are deliberately left
+   alone; only the literal class on the element is remapped.
+   ========================================================================== */
+.light :is(#skills, #experience, #work, #contact, footer) {
+  color: #0f172a;
+}
+
+/* Headings and primary copy */
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-white"] {
+  color: #0f172a;
+}
+
+/* Muted copy — the dark-theme ramps (slate-300/400) fail AA on white */
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-slate-100"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-slate-200"] {
+  color: #1e293b;
+}
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-slate-300"] {
+  color: #334155;
+}
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-slate-400"] {
+  color: #52627a;
+}
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-slate-500"] {
+  color: #5b6b83;
+}
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-slate-600"] {
+  color: #64748b;
+}
+
+/* Opacity-suffixed ramps are separate utility tokens — they need their own
+   rules, and the alpha has to be dropped or the colour stays washed out. */
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-slate-300/80"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-slate-300/85"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-slate-300/90"] {
+  color: #334155;
+}
+.light :is(#skills, #experience, #work, #contact) [class~="text-cyan-400/80"],
+.light :is(#skills, #experience, #work, #contact) [class~="text-cyan-400/90"] {
+  color: #0e7490;
+}
+
+/* Accent copy — the 300/400 ramp is unreadable on light surfaces */
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-cyan-300"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-cyan-400"] {
+  color: #0e7490;
+}
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-blue-300"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-blue-400"] {
+  color: #1d4ed8;
+}
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-violet-300"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-violet-400"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-purple-300"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-purple-400"] {
+  color: #6d28d9;
+}
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-fuchsia-300"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-fuchsia-400"] {
+  color: #a21caf;
+}
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-pink-300"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-pink-400"] {
+  color: #be185d;
+}
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-emerald-300"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-emerald-400"] {
+  color: #047857;
+}
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-amber-300"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="text-amber-400"] {
+  color: #b45309;
+}
+
+/* Text sitting on a saturated gradient chip stays white */
+.light :is(#skills, #experience, #work, #contact, footer) [class*="bg-gradient"][class~="text-white"] {
+  color: #ffffff;
+}
+
+/* Hover states that brighten to white are invisible on light surfaces */
+.light :is(#skills, #experience, #work, #contact, footer) [class~="hover:text-white"]:hover {
+  color: #0f172a;
+}
+
+/* Soft white washes become faint slate washes so chips keep their shape */
+.light :is(#skills, #experience, #work, #contact, footer) [class~="bg-white/5"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="bg-white/[0.03]"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="bg-white/[0.04]"],
+.light :is(#skills, #experience, #work, #contact, footer) [class~="bg-white/[0.06]"] {
+  background-color: rgba(15, 23, 42, 0.045);
+}
+
+/* Gradient headings need darker stops to stay legible on light surfaces */
+.light :is(#skills, #experience, #work, #contact) .gsap-heading-split > span[class*="bg-clip-text"] {
+  background-image: linear-gradient(90deg, #0e7490 0%, #2563eb 52%, #7c3aed 100%);
+}
+
+/* Form controls inside the dark sections */
+.light :is(#skills, #experience, #work, #contact) input,
+.light #contact textarea {
+  color: #0f172a;
+}
+.light :is(#skills, #experience, #work, #contact) input::placeholder,
+.light #contact textarea::placeholder {
+  color: #7b8aa3;
+}
+
+/* ---------- Skills constellation & radar chart (SVG) ----------
+   SVG presentation attributes cannot read CSS variables, so the nodes carry
+   class hooks and the palette is switched here. */
+.chart-grid {
+  stroke: rgba(255, 255, 255, 0.08);
+}
+.chart-axis {
+  stroke: rgba(255, 255, 255, 0.12);
+}
+.chart-dot {
+  fill: #ffffff;
+}
+.chart-dot-active {
+  fill: #00f0ff;
+}
+.light .chart-grid {
+  stroke: rgba(15, 23, 42, 0.14);
+}
+.light .chart-axis {
+  stroke: rgba(15, 23, 42, 0.2);
+}
+.light .chart-dot {
+  fill: #1e293b;
+}
+.light .skill-node-text {
+  fill: #0f172a;
+}
+.light .skill-capsule {
+  fill: #ffffff;
+}
+.light .skill-capsule[data-tone="frontend"][data-selected="true"] {
+  fill: #ecfeff;
+}
+.light .skill-capsule[data-tone="bridge"][data-selected="true"] {
+  fill: #f5f3ff;
+}
+.light .skill-capsule[data-tone="backend"][data-selected="true"] {
+  fill: #faf5ff;
+}
+.light .skill-hub-core[data-tone="frontend"] {
+  fill: #e0f2fe;
+}
+.light .skill-hub-core[data-tone="backend"] {
+  fill: #f3e8ff;
+}
+
+/* ==========================================================================
+   ADMIN CONSOLE — light theme
+   ==========================================================================
+   The console was authored dark-first: opaque navy shells (`bg-[#070a14]`),
+   `bg-white/5` chips, `border-white/10` hairlines and `text-white` headings.
+   Rather than rewrite a few hundred class names across the admin routes, the
+   `.admin-console` wrapper remaps that palette here — the same technique the
+   public sections use. Radix portals (dialogs, sheets, popovers) mount as
+   direct children of `<body>` and so escape that wrapper; `body > [data-slot$="-content"]`
+   picks up those surfaces. The opaque modal panels themselves carry
+   `--panel-deep` at the call site, since the remap only covers utilities.
+   ========================================================================== */
+.light :is(.admin-console, body > [data-slot$="-content"]) {
+  color: #0f172a;
+}
+
+/* --- Foregrounds --- */
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-white"] {
+  color: #0f172a;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-white/70"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-white/40"] {
+  color: #475569;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-white/10"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-white/5"] {
+  color: rgba(15, 23, 42, 0.25);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:text-white"]:hover {
+  color: #0f172a;
+}
+
+/* White copy that sits on a saturated chip or over an image stays white */
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-gradient"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-blue-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-blue-6"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-violet-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-violet-6"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-indigo-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-cyan-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-teal-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-emerald-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-green-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-amber-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-orange-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-red-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-rose-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-fuchsia-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-pink-5"][class~="text-white"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="bg-black"][class~="text-white"] {
+  color: #ffffff;
+}
+
+/* --- Accent copy: the 300/400 ramps fail AA on white panels --- */
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-blue-200"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-blue-300"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-blue-400"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:text-blue-200"]:hover,
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:text-blue-300"]:hover,
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="group-hover:text-blue-400"]:is(:hover, :focus-visible) {
+  color: #1d4ed8;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-sky-400"] {
+  color: #0369a1;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-cyan-300"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-cyan-400"] {
+  color: #0e7490;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-indigo-400"] {
+  color: #4338ca;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-violet-300"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-violet-400"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-purple-300"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-purple-400"] {
+  color: #6d28d9;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-fuchsia-400"] {
+  color: #a21caf;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-pink-400"] {
+  color: #be185d;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-teal-400"] {
+  color: #0f766e;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-emerald-300"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-emerald-400"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:text-emerald-300"]:hover {
+  color: #047857;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-green-400"] {
+  color: #15803d;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-amber-300"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-amber-400"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:text-amber-300"]:hover {
+  color: #b45309;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-orange-400"] {
+  color: #c2410c;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-red-200"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-red-300"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-red-400"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:text-red-300"]:hover,
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:text-red-400"]:hover {
+  color: #b91c1c;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-rose-300"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="text-rose-400"] {
+  color: #be123c;
+}
+
+/* --- Surface washes: white-alpha chips become faint slate washes --- */
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/5"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/[0.04]"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/[0.05]"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/[0.06]"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/5"]:hover,
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/[0.04]"]:hover,
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/[0.05]"]:hover,
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/[0.06]"]:hover {
+  background-color: rgba(15, 23, 42, 0.045);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/[0.015]"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/[0.02]"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/[0.025]"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/[0.03]"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/[0.02]"]:hover,
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/[0.025]"]:hover,
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/[0.03]"]:hover {
+  background-color: rgba(15, 23, 42, 0.03);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/10"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/[0.08]"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/10"]:hover,
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/[0.08]"]:hover {
+  background-color: rgba(15, 23, 42, 0.07);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/15"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-white/20"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/15"]:hover,
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/20"]:hover {
+  background-color: rgba(15, 23, 42, 0.11);
+}
+
+/* --- Hairlines --- */
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="border-white/5"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="divide-white/5"] > * + * {
+  border-color: rgba(15, 23, 42, 0.08);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="border-white/10"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="border-white/[0.07]"] {
+  border-color: rgba(15, 23, 42, 0.12);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="border-white/20"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="border-white"] {
+  border-color: rgba(15, 23, 42, 0.2);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="ring-white/5"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="ring-white/10"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="ring-white/15"] {
+  --tw-ring-color: rgba(15, 23, 42, 0.12);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="ring-white/20"] {
+  --tw-ring-color: rgba(15, 23, 42, 0.2);
+}
+
+/* --- Opaque dark shells and modal panels become solid white --- */
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-[#070a14]"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-[#080b16]/95"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-[#0a0e1a]"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-[#0a0e1a]/90"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-[#0a0e1a]/95"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-[#0f1729]/95"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-[#0c101c]"] {
+  background-color: #ffffff;
+}
+
+/* Portalled panels sit above a dark scrim, so page-white reads as grey —
+   give them a solid surface instead. Tooltips keep their inverted chip. */
+.light body > :is(
+  [data-slot$="dialog-content"],
+  [data-slot$="sheet-content"],
+  [data-slot$="alert-dialog-content"],
+  [data-slot$="drawer-content"],
+  [data-slot$="popover-content"],
+  [data-slot$="dropdown-menu-content"],
+  [data-slot$="select-content"],
+  [data-slot$="context-menu-content"]
+) {
+  background-color: #ffffff;
+}
+
+/* --- Glass cards: a light-mode card needs an edge and a soft lift --- */
+.light :is(.admin-console, body > [data-slot$="-content"]) .glass {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 28px -18px rgba(15, 23, 42, 0.18);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="hover:bg-white/[0.06]"]:hover {
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05), 0 16px 32px -18px rgba(15, 23, 42, 0.22);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) aside {
+  box-shadow: 1px 0 0 0 rgba(15, 23, 42, 0.05);
+}
+/* Thumbnail scrims sit over artwork — keep them dark, just less heavy */
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-black/30"],
+.light :is(.admin-console, body > [data-slot$="-content"]) [class~="bg-black/40"] {
+  background-color: rgba(15, 23, 42, 0.35);
+}
+
+/* Media-tile toolbars float over a dark artwork scrim, so their controls stay
+   white in both themes — the palette remap above would otherwise darken them
+   onto a dark gradient. */
+.light :is(.admin-console, body > [data-slot$="-content"]) [class*="from-black/"] [class~="text-white"] {
+  color: #ffffff;
+}
+
+/* The console nav scrolls inside a 256px rail — the global light scrollbar
+   paints a full-width track that reads as a grey stripe on the white rail. */
+.light :is(.admin-console, body > [data-slot$="-content"]) ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) ::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.18);
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) ::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.3);
+  background-clip: content-box;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 23, 42, 0.22) transparent;
+}
+
+/* --- Recharts: grid, axes and tooltip were tuned for the dark canvas ---
+   Recharts writes these as SVG presentation attributes / inline styles, so a
+   plain stylesheet rule wins for the attributes and `!important` is needed
+   for the tooltip box. */
+.light :is(.admin-console, body > [data-slot$="-content"]) .recharts-cartesian-grid line {
+  stroke: rgba(15, 23, 42, 0.08);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) .recharts-cartesian-axis line,
+.light :is(.admin-console, body > [data-slot$="-content"]) .recharts-cartesian-axis-line {
+  stroke: rgba(15, 23, 42, 0.14);
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) .recharts-cartesian-axis-tick text,
+.light :is(.admin-console, body > [data-slot$="-content"]) .recharts-text.recharts-cartesian-axis-tick-value {
+  fill: #5b6b83;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) .recharts-legend-item-text {
+  color: #334155 !important;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) .recharts-tooltip-wrapper > div {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.18) !important;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) .recharts-active-dot > circle {
+  stroke: #ffffff;
+}
+.light :is(.admin-console, body > [data-slot$="-content"]) .recharts-sector,
+.light :is(.admin-console, body > [data-slot$="-content"]) .recharts-pie-label-text {
+  stroke: #ffffff;
 }
 
 /* ---------- Animations ---------- */

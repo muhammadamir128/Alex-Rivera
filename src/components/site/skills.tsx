@@ -432,11 +432,11 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
       {/* Deep cosmic gradient background matching the screenshot */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-[#060913]"
+        className="pointer-events-none absolute inset-0 -z-10 bg-slate-50 dark:bg-[#060913]"
       >
         <div className="absolute top-1/3 left-1/4 h-[30rem] w-[30rem] rounded-full bg-cyan-600/10 blur-[140px]" />
         <div className="absolute top-1/3 right-1/4 h-[30rem] w-[30rem] rounded-full bg-violet-600/12 blur-[140px]" />
-        <div className="absolute inset-0 grid-noise opacity-30" />
+        <div className="absolute inset-0 bg-[radial-gradient(#0f172a0a_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:28px_28px]" />
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -464,7 +464,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             whileHover={{ y: -3, transition: { duration: 0.25 } }}
-            className="w-full rounded-2xl glass p-4 sm:p-5 border border-white/10 hover:border-cyan-500/40 shadow-xl bg-slate-950/60 backdrop-blur-xl transition-colors duration-300 relative group flex flex-col justify-between"
+            className="w-full rounded-2xl glass p-4 sm:p-5 border border-hairline hover:border-cyan-500/40 shadow-xl bg-panel backdrop-blur-xl transition-colors duration-300 relative group flex flex-col justify-between"
           >
             {/* Ambient background glow on card hover */}
             <div className="pointer-events-none absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10" />
@@ -502,7 +502,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                     if (e.target.value) setSelectedFilter(null);
                   }}
                   placeholder="e.g., Real-time Chat, SaaS, Blog"
-                  className="w-full rounded-xl border border-white/15 bg-white/5 pl-3.5 pr-8 py-2 text-xs text-white placeholder:text-slate-400 focus:border-cyan-400/60 focus:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                  className="w-full rounded-xl border border-hairline bg-panel-inset pl-3.5 pr-8 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-cyan-400/60 focus:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all"
                 />
                 {searchQuery ? (
                   <button
@@ -580,7 +580,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
             onMouseEnter={handleCardMouseEnter}
             onMouseLeave={handleCardMouseLeave}
             className={cn(
-              "w-full md:col-span-2 lg:col-span-1 rounded-2xl glass p-4 sm:p-5 border shadow-xl bg-slate-950/60 backdrop-blur-xl transition-all duration-300 relative group flex flex-col justify-between overflow-hidden",
+              "w-full md:col-span-2 lg:col-span-1 rounded-2xl glass p-4 sm:p-5 border shadow-xl bg-panel backdrop-blur-xl transition-all duration-300 relative group flex flex-col justify-between overflow-hidden",
               isInspecting && activeNode
                 ? activeNode.category === "backend"
                   ? "border-violet-500/50 hover:border-violet-400/70"
@@ -803,7 +803,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             whileHover={{ y: -3, transition: { duration: 0.25 } }}
-            className="w-full rounded-2xl glass p-4 sm:p-5 border border-white/10 hover:border-violet-500/40 shadow-xl bg-slate-950/60 backdrop-blur-xl flex flex-col items-center transition-colors duration-300 relative group"
+            className="w-full rounded-2xl glass p-4 sm:p-5 border border-hairline hover:border-violet-500/40 shadow-xl bg-panel backdrop-blur-xl flex flex-col items-center transition-colors duration-300 relative group"
           >
             {/* Ambient background glow on card hover */}
             <div className="pointer-events-none absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-violet-500/0 via-fuchsia-500/10 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10" />
@@ -836,7 +836,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                     exit={{ opacity: 0, scale: 0.8 }}
                     className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none"
                   >
-                    <div className="rounded-lg bg-slate-950/90 border border-cyan-400/60 px-2 py-1 shadow-lg shadow-cyan-500/20 backdrop-blur-md text-center">
+                    <div className="rounded-lg bg-panel-deep border border-cyan-400/60 px-2 py-1 shadow-lg shadow-cyan-500/20 backdrop-blur-md text-center">
                       <p className="text-[10px] font-display font-bold text-white">{hoveredRadarAxis.label}</p>
                       <p className="text-[11px] font-mono font-extrabold text-cyan-300">{hoveredRadarAxis.score}</p>
                     </div>
@@ -878,20 +878,20 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                 <polygon
                   points="50,15 80,32 80,68 50,85 20,68 20,32"
                   fill="none"
-                  stroke="rgba(255,255,255,0.08)"
+                  className="chart-grid"
                   strokeWidth="1"
                 />
                 <polygon
                   points="50,25 70,36 70,64 50,75 30,64 30,36"
                   fill="none"
-                  stroke="rgba(255,255,255,0.08)"
+                  className="chart-grid"
                   strokeWidth="1"
                   strokeDasharray="2 3"
                 />
                 <polygon
                   points="50,35 60,41 60,59 50,65 40,59 40,41"
                   fill="none"
-                  stroke="rgba(255,255,255,0.08)"
+                  className="chart-grid"
                   strokeWidth="1"
                 />
 
@@ -903,7 +903,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                     y1="50"
                     x2={axis.x}
                     y2={axis.y}
-                    stroke="rgba(255,255,255,0.12)"
+                    className="chart-axis"
                     strokeWidth="0.8"
                   />
                 ))}
@@ -956,7 +956,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                         fill={isHovered ? "#00f0ff" : "#ffffff"}
                         stroke={isHovered ? "#ffffff" : "transparent"}
                         strokeWidth="1"
-                        className="transition-all duration-200"
+                        className={cn("transition-all duration-200", isHovered ? "chart-dot-active" : "chart-dot")}
                       />
                     </g>
                   );
@@ -999,10 +999,10 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
         {/* Centerpiece: Responsive Constellation & Grid Container */}
         <div
           ref={constellationContainerRef}
-          className="relative w-full rounded-3xl border border-white/10 bg-slate-950/40 p-3 sm:p-5 lg:p-6 backdrop-blur-2xl shadow-2xl flex flex-col items-center justify-center transition-all overflow-hidden"
+          className="relative w-full rounded-3xl border border-hairline bg-panel p-3 sm:p-5 lg:p-6 backdrop-blur-2xl shadow-2xl flex flex-col items-center justify-center transition-all overflow-hidden"
         >
           {/* Subtle star particles / background grid lines */}
-          <div aria-hidden className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none rounded-3xl" />
+          <div aria-hidden className="absolute inset-0 bg-[radial-gradient(#0f172a0a_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none rounded-3xl" />
 
           {/* Top Controls: Mode Switcher + Mobile Navigation Hint */}
           <div className="w-full flex items-center justify-between mb-2 px-1 z-20">
@@ -1012,7 +1012,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                 <span>↔</span> Swipe constellation • Tap for info
               </span>
             </div>
-            <div className="flex items-center rounded-xl bg-white/5 p-1 border border-white/10">
+            <div className="flex items-center rounded-xl bg-white/5 p-1 border border-hairline">
               <button
                 type="button"
                 onClick={() => setViewMode("constellation")}
@@ -1046,7 +1046,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
             /* Responsive Grid View (Perfect on mobile, tablet, and compact views) */
             <div className="w-full py-2 z-10 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {/* Frontend Ecosystem Column */}
-              <div className="rounded-2xl border border-cyan-500/20 bg-cyan-950/10 p-4 sm:p-5 backdrop-blur-xl">
+              <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 dark:bg-cyan-950/10 p-4 sm:p-5 backdrop-blur-xl">
                 <div className="flex items-center gap-2.5 mb-3.5 pb-2.5 border-b border-cyan-500/20">
                   <div className="grid h-8 w-8 place-items-center rounded-lg bg-cyan-500/20 text-cyan-300 font-bold">
                     <Code2 className="h-4 w-4" />
@@ -1086,7 +1086,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
               </div>
 
               {/* Backend & Infrastructure Column */}
-              <div className="rounded-2xl border border-violet-500/20 bg-violet-950/10 p-4 sm:p-5 backdrop-blur-xl">
+              <div className="rounded-2xl border border-violet-500/20 bg-violet-500/5 dark:bg-violet-950/10 p-4 sm:p-5 backdrop-blur-xl">
                 <div className="flex items-center gap-2.5 mb-3.5 pb-2.5 border-b border-violet-500/20">
                   <div className="grid h-8 w-8 place-items-center rounded-lg bg-violet-500/20 text-violet-300 font-bold">
                     <Server className="h-4 w-4" />
@@ -1478,7 +1478,9 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                           }
                           strokeWidth={isSelected ? 1.8 : 1}
                           filter={isSelected ? (isBackend ? "url(#purpleGlow)" : "url(#cyanGlow)") : undefined}
-                          className="transition-colors duration-200"
+                          data-selected={isSelected ? "true" : undefined}
+                          data-tone={isBackend ? "backend" : isBridge ? "bridge" : "frontend"}
+                          className="skill-capsule transition-colors duration-200"
                         />
 
                         {/* Node Label Text */}
@@ -1490,7 +1492,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                           fill="#ffffff"
                           fontSize="11"
                           fontWeight={isSelected ? "700" : "500"}
-                          className="pointer-events-none select-none font-sans tracking-wide"
+                          className="skill-node-text pointer-events-none select-none font-sans tracking-wide"
                         >
                           {node.label}
                         </text>
@@ -1542,6 +1544,8 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                           fill={isFrontend ? "#072b45" : "#2b104c"}
                           stroke={isFrontend ? "#00f0ff" : "#c084fc"}
                           strokeWidth={2}
+                          data-tone={isFrontend ? "frontend" : "backend"}
+                          className="skill-hub-core"
                         />
 
                         {/* Hub Title Text */}
@@ -1553,7 +1557,7 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                           fill="#ffffff"
                           fontSize="14"
                           fontWeight="700"
-                          className="pointer-events-none select-none font-display tracking-wide drop-shadow-md"
+                          className="skill-node-text pointer-events-none select-none font-display tracking-wide drop-shadow-md"
                         >
                           {hub.label}
                         </text>
@@ -1574,8 +1578,8 @@ export function Skills({ skills }: { skills?: SkillData[] }) {
                     className={cn(
                       "md:hidden mt-3 w-full rounded-2xl glass p-4 border shadow-xl backdrop-blur-2xl relative",
                       activeNode.category === "backend"
-                        ? "border-violet-500/50 bg-slate-950/90"
-                        : "border-cyan-400/50 bg-slate-950/90"
+                        ? "border-violet-500/50 bg-panel-deep"
+                        : "border-cyan-400/50 bg-panel-deep"
                     )}  >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">

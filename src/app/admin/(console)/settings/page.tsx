@@ -548,19 +548,19 @@ export default function AdminSettingsPage() {
                     <button
                       type="button"
                       onClick={() => setSeoOgImage("")}
-                      className="absolute right-2 top-2 rounded-md bg-black/60 px-2 py-0.5 text-[10px] text-red-400 hover:bg-black/80 hover:text-red-300 transition-colors"
+                      className="absolute right-2 top-2 rounded-md bg-panel-deep/85 backdrop-blur px-2 py-0.5 text-[10px] text-red-400 transition-colors hover:bg-panel-deep hover:text-red-300"
                     >
                       Remove
                     </button>
                   )}
-                  <div className="absolute bottom-2 left-2 rounded-md bg-black/60 px-2 py-0.5 text-[10px] text-white/70">
+                  <div className="absolute bottom-2 left-2 rounded-md bg-panel-deep/85 backdrop-blur px-2 py-0.5 text-[10px] text-white/70">
                     1200 × 630 recommended
                   </div>
                   {seoOgImage && !ogImgError && (
                     <button
                       type="button"
                       onClick={() => setShowPreviewModal(true)}
-                      className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-md bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] font-medium text-white hover:bg-black/90 hover:text-blue-300 transition-all shadow-md cursor-pointer border border-white/10"
+                      className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-md bg-panel-deep/85 backdrop-blur-md px-2.5 py-1 text-[11px] font-medium text-white transition-all hover:bg-panel-deep hover:text-blue-300 shadow-md cursor-pointer border border-white/10"
                       title="Preview full image">
                       <Eye className="h-3.5 w-3.5 text-blue-400" />
                       <span>Preview</span>

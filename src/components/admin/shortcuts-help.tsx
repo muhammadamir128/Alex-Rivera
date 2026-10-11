@@ -92,7 +92,7 @@ export function ShortcutsHelp({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="top-[12%] max-w-lg translate-y-0 gap-0 overflow-hidden rounded-2xl border-white/10 bg-[#0a0e1a]/95 p-0 backdrop-blur-2xl">
+      <DialogContent className="top-[12%] max-w-lg translate-y-0 gap-0 overflow-hidden rounded-2xl border-hairline bg-panel-deep p-0 backdrop-blur-2xl">
         <DialogTitle className="sr-only">Keyboard shortcuts</DialogTitle>
         <DialogDescription className="sr-only">
           List of available keyboard shortcuts in the admin panel.
