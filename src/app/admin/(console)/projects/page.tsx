@@ -50,6 +50,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 type Project = {
@@ -119,7 +126,7 @@ export default function AdminProjectsPage() {
     []
   );
   const [search, setSearch] = useState("");
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [sortBy, setSortBy] = useState<"order-asc" | "order-desc" | "title-asc" | "title-desc">("order-asc");
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editing, setEditing] = useState<Project | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
@@ -208,10 +215,14 @@ export default function AdminProjectsPage() {
     const list = (data || []).filter((p) =>
       p.title.toLowerCase().includes(search.trim().toLowerCase())
     );
-    return [...list].sort((a, b) =>
-      sortDir === "asc" ? a.order - b.order : b.order - a.order
-    );
-  }, [data, search, sortDir]);
+    return [...list].sort((a, b) => {
+      if (sortBy === "order-asc") return a.order - b.order;
+      if (sortBy === "order-desc") return b.order - a.order;
+      if (sortBy === "title-asc") return a.title.localeCompare(b.title);
+      if (sortBy === "title-desc") return b.title.localeCompare(a.title);
+      return a.order - b.order;
+    });
+  }, [data, search, sortBy]);
 
   const openCreate = () => {
     setEditing(null);
@@ -425,15 +436,21 @@ export default function AdminProjectsPage() {
               className="pl-9"
             />
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
-            className="gap-2"
+          <Select
+            value={sortBy}
+            onValueChange={(val: any) => setSortBy(val)}
           >
-            <ArrowUpDown className="h-3.5 w-3.5" />
-            Order {sortDir === "asc" ? "↑" : "↓"}
-          </Button>
+            <SelectTrigger className="h-8 gap-2 rounded-xl border-white/10 bg-white/[0.03] px-3 text-xs text-foreground hover:border-white/20 hover:bg-white/[0.06] shadow-sm">
+              <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground mr-0.5 shrink-0" />
+              <SelectValue placeholder="Sort projects" />
+            </SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="order-asc">Order (1 → 9)</SelectItem>
+              <SelectItem value="order-desc">Order (9 → 1)</SelectItem>
+              <SelectItem value="title-asc">Title (A → Z)</SelectItem>
+              <SelectItem value="title-desc">Title (Z → A)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="mt-4">
